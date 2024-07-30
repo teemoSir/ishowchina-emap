@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>我秀地图-添加dom标签</title>
+    <meta charset="utf-8"/>
+    <link href="" rel="shortcut icon" type="image/x-icon"/>
+    <link href="../css/imap-gl.css" rel="stylesheet"/>
+    <script src="../js/imap-gl.js"></script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            z-index: 0;
+        }
+
+        .btn {
+            position: absolute;
+            left: 10px;
+
+            padding: 3px 5px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<button id="togglebtn_hw" class="btn" style="top: 10px;" type="button">隐藏-道路限高限宽限重信息</button>
+
+<button id="togglebtn_w" class="btn" style="top: 40px" type="button">隐藏-道路转弯半径信息</button>
+<script>
+    var map = new imapgl.Map({
+        container: 'map',
+        center: [116.27771321722543, 39.952128183377255],
+        zoom: 3,
+        minZoom: 3,
+        hash: true,
+        maxZoom: 20,
+        localIdeographFontFamily: "微软雅黑, 'Microsoft Sans Serif', sans-serif,宋体",
+        antialias: false,
+        style: "../styles/v1/light-v10-gcj02-lc.json"
+    });
+
+    var ele_hw = document.getElementById("togglebtn_hw")
+    var ele_w = document.getElementById("togglebtn_w")
+    ele_hw.addEventListener("click", function (e) {
+        var ishow = map.getLayoutProperty("road_furniturejy", "visibility")
+        if (ishow == "visible") {
+            map.setLayoutProperty('road_furniturejy', 'visibility', 'none');
+            ele_hw.innerText = "显示-道路限高限宽限重信息";
+        } else {
+            map.setLayoutProperty('road_furniturejy', 'visibility', 'visible');
+            ele_hw.innerText = "隐藏-道路限高限宽限重信息";
+        }
+    })
+
+    ele_w.addEventListener("click", function (e) {
+        var ishow = map.getLayoutProperty("cross_radiuscp", "visibility")
+        if (ishow == "visible") {
+            map.setLayoutProperty('cross_radiuscp', 'visibility', 'none');
+            ele_w.innerText = "显示-道路转弯半径信息";
+        } else {
+            map.setLayoutProperty('cross_radiuscp', 'visibility', 'visible');
+            ele_w.innerText = "隐藏-道路转弯半径信息";
+        }
+    })
+</script>
+</body>
+</html>

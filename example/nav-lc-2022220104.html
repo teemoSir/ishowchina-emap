@@ -1,0 +1,1392 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link href="" rel="shortcut icon" type="image/x-icon" />
+    <title></title>
+
+    <script src="../js/vue.global.js"></script>
+    <!--<script src="../../imap_jw/js/vue.js" type="text/javascript"></script>-->
+    <!--   <script src="js/test.js" type="text/javascript" charset="utf-8"></script>-->
+    <link href="../css/imap-gl.css" rel="stylesheet" />
+    <script src="../js/imap-gl.js"></script>
+    <script src="../js/turf.min.js"></script>
+</head>
+<style type="text/css">
+    #app {
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        left: 0;
+        top: 0;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .map_contaner {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+    }
+    
+    .evenDiv {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background-color: #ffffff;
+        border-radius: 2px;
+        width: 380px;
+        padding: 10px;
+        box-sizing: border-box;
+        box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+        font-size: 13px;
+    }
+    
+    .showData {
+        position: relative;
+        top: 77px;
+        left: 15px;
+        background-color: #44b79d;
+        border-radius: 2px;
+        width: 380px;
+        padding: 10px;
+        box-sizing: border-box;
+        box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+        font-size: 13px;
+    }
+    
+    .lane {
+        position: absolute;
+        top: 15px;
+        left: 410px;
+        border-radius: 2px;
+        background-color: #138DF6;
+        display: inline-block;
+        padding: 10px 14px 5px 16px;
+        box-sizing: border-box;
+        box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+        opacity: 0.9;
+    }
+    
+    .showData>table {
+        width: 100%;
+    }
+    
+    .evenDiv>table {
+        width: 100%;
+    }
+    
+    .evenDiv>table tr {
+        line-height: 35px;
+    }
+    
+    .evenDiv>table input {
+        border: none;
+    }
+    
+    .evenDiv>table input:focus {
+        border: none;
+        outline: none;
+    }
+    
+    .search-btn {
+        opacity: 0.8;
+        height: 25px;
+        line-height: 25px;
+        text-align: center;
+        margin-left: auto;
+        color: #FFF;
+        background-color: #44b79d;
+        cursor: pointer;
+        position: relative;
+        border-radius: 2px;
+        box-sizing: border-box;
+        box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+    }
+    
+    .search-btn:hover {
+        opacity: 1;
+    }
+    
+    .search-link {
+        width: 70px;
+        height: 25px;
+        line-height: 25px;
+        text-align: center;
+        color: #44b79d;
+        cursor: pointer;
+        position: absolute;
+        border-radius: 2px;
+    }
+    
+    .message {
+        position: fixed;
+        bottom: 15px;
+        right: 15px;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        background-color: #69C5B1;
+        padding: 10px;
+        border-radius: 2px;
+        font-size: 10px;
+        box-sizing: border-box;
+        box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+        max-width: 200px;
+    }
+
+    .map-btn {
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        justify-content: center;
+        align-items: center;
+        background-color: #ffffff;
+        padding: 10px;
+        border-radius: 2px;
+        font-size: 13px;
+        box-sizing: border-box;
+        box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+        max-width: 150px;
+    }
+    
+    .click-btn {
+        height: 25px;
+        line-height: 25px;
+        text-align: center;
+        border-radius: 2px;
+        color: #44b79d;
+        background-color: #ffffff;
+        cursor: pointer;
+        position: relative;
+        border: 1px solid #44b79d;
+        margin-top: -1px;
+        position: relative;
+        border-radius: 2px;
+        box-sizing: border-box;
+        box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+    }
+    
+    .click-btn:hover {
+        background-color: #44b79d;
+        color: #ffffff;
+    }
+</style>
+
+<body>
+    <div id="app">
+
+    </div>
+</body>
+
+
+<script type="text/javascript">
+    const wsServer = "ws://172.192.100.42:8088";
+    //const wsServer = "ws://192.168.11.17:8088";
+    const httpServer = "http://172.192.100.7:10000";
+
+
+    Vue.createApp({
+        data() {
+            return {
+                msg: "vue",
+                routeArr: [],
+                socket: null,
+                lnglat: [],
+                isTest: [1, 3],
+                carLocaltion: [],
+                searchBtnState: -1,
+                navLineInfo: {
+                    CurRoadName: 0,
+                    NextRoadName: "",
+                    Icon: "",
+                    RouteRemainDis: 0,
+                    RouteRemainTime: 0,
+                    SegRemainDis: 0,
+                    CarDirection: 0
+                },
+                landImgBack: [],
+                landImgFront: [],
+                landImgBackground: [],
+                carWidth: 2.10,
+                carHeight: 2.00,
+                carWeight: 21.5,
+                carRadius: null,
+                gpsLocationIcon: null,
+                beginPoint: null,
+                endPoint: null,
+                message: "",
+                carAngle: 0,
+                pageData: true,
+                messageCount: null,
+                fitBounds: null,
+                carStrategy: [{
+                        id: -1,
+                        value: "请选择算路策略"
+                    }, {
+                        id: 11,
+                        value: "速度最快"
+                    }, {
+                        id: 12,
+                        value: "距离最短"
+                    }, {
+                        id: 0,
+                        value: "费用最少"
+                    },
+                    //{id:2,value:"国道优先"},
+                    //{id:4,value:"省道优先"},
+                    //{id:5,value:"不走高速"},
+                    //{id:10,value:"不走快速路（不含高速）"},
+                    {
+                        id: 6,
+                        value: "多策略"
+                    }
+                ],
+                carStrategyValue: -1,
+                lineColor: ["FB6370", "23C9B5", "D6B97D"],
+                DCL: false,
+                mapbtn:[
+                    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGYAAABACAYAAADoKgJJAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDE0IDc5LjE1MTQ4MSwgMjAxMy8wMy8xMy0xMjowOToxNSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpERjc4ODIwNTEzMkYxMUU2QkU3N0E5NTEyOEM4RjBDNyIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpERjc4ODIwNjEzMkYxMUU2QkU3N0E5NTEyOEM4RjBDNyI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkRGNzg4MjAzMTMyRjExRTZCRTc3QTk1MTI4QzhGMEM3IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkRGNzg4MjA0MTMyRjExRTZCRTc3QTk1MTI4QzhGMEM3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+yOgrHQAADORJREFUeNrcnXlwVPUdwL/7jr3e7tsrm4sk5AaCciQgthzVXoN2pqLOFC39w4JTWxTrTFtr1ZlYUEoso1OvqqOUFrTTP2CMiljKjAOWEaytYBgJEA4TQkIgIdndZK939Pv9bRZiTAhCwr6335nfvLdHlvfe5/e9fscXC1x7sQw51yFDcrjlJGRSqismX/Jz4Up/WNdHf6YWFDxwkyeXCs+/8HKN1+eZJwjiTI7jqjjOUoTfCOC5bOE4Kx4B3wPOwgEvCMDzHP49vceBQUTB7tOLd3wOz1vxro/izTfh7e/F10066NpE/KPCuKlBCgY/b96N9sZ3tn/H7Xb/iOP572mqGozFYqAq/aBoCqqLhYGgL6uaDjwCEEQRRGxW0Qo2uw2sVht7TY3nefptSP18JkSnZ5SDIHIQwlSE9H3qlBo2PHZj24FtC77/Lr4TnwizckUaY6HujYDX/uGPRbW1dQ8IVuHHiXg8T9M08Mhu8Pm8rLldLnA6nexBD5VoNAbhSBj6ekMQCvVBbygEiqKy70qSBA6HA2w2O4NEWpQpQKnb1b90zgBpBEmjYw++3qhr+rP44Sl9DCs9lim7mrskIOLqNWtL6ubO/R1v4e5WlKQ9Ly8I5WWl4Pf7r/iH4/E4tLaegvbT7ZBESG63jM3NIGUa0EgdNN1U7IyaqicR1CZ8/Xtk0zoaoIkAQ38joMmSHn7ksVV2u+1hURBcU6orobi4aNwfWDgcgc8PHYLevhB4PF5sMgJygoD+yEB+6AIkpkEISFW1GAJ6EjVo/UgmbrzB0JOwPr3+mRk1Nddt4Cz69OnTp0FJcfGE3/TAwADsP9CExyj4A36mRTab7YIPMh4gBoe0qBnP70bF2T9Ue8YLjGUQin3zm//4qSzLTxdNKnDMuP66r/iMiZbOM2fg4MHP0QdJ4PP7mC/CiM9wcEguao+aQEC/Qu15IQ1nPMCwaMvj8Uivvr5xjUtyrppTOxtyc4MZu+FkUoH/fPIJxBMKBINBcGFgYUTTNtS8IRxqL+P5AwhHHQsMfzlQKiur5Bde/PNrXq/nnpsWLWB2PpNCuQ75s1gsCh0dHfhaMFxQMCSNSKUHqZB/DnKahUrTGPB7lKvRGAHNlmvDXza9HgwG7lgw/xuG65UnT34BR1qOoQbngdfrZYCMaNbSpo1pjqZuQ/9zW1V5iXolGkOfSX/b/Pf1wZzAskUL5xvSVBAMq9WK4XXrhaTUiJqT1p7B66pGT1Pe3d37FmrO1wJDBBwb/7p5FfqS33wLoVxrJ/91xCOnTOvp9tMsUhPJ3xj0etNwEM8M9D9Rv8+zZzQAI5k367qG9QvQsa5ZOP+bzLEaXSrKy8DnlaGnpxuiNASkqoa9VvI55Cexs69tOdG28HLB8PMXLPRPmTr19blzanlMIMEsMnv2LEgmEmxoJ5lMXnKgNfNwGBhO4PktLcdb5bHAsFxl1YMPPVFcVDgpGMwBMwmZCOxMTGv6+/tBVRRDXy8bVee4IAJqGAuM8Njj9ddjILZi1swZYEahMbWC/Hzo6+vFPCfBEjwjdySOpjk4y31o0maNBoZpS13dnCenVldzRnb2Y8n0mmkwgBpDWqMZ2Newh45weI63YMDyp9HAkLZMdzjsN5eWTgYzC3Wq4qJJEA6HmNYY2dekTRrKomMn2mqHg2GRWG1d3SOVFWUWoyZoX0eqq6sgOhCFaDRq6Ajt4ugARznY2uFguNm1dR6b1bq4rKwUskFIawJ+LzNnisGDgItao38XfY1vKBjx/gdW3R4I+Kxm9i3DpRxzm/5IhIXQRg4ChiSevCjwy9NgCJWYn5d/7+SSYsgm8fl87O4o4TQ6mBQcltv87AKYnJwcBx5r8vLyINtEdrvYVLU5wNACFa0KgwAXgeEffuTRWqfkEI04SHm1kpcbZNMDNBJghgQZw2eLKArfZmCmVE9ZTD0rGwWtAdMYVVUMHzan4WBO80MGxu6w3yDLnqwEQ0ugyIzRkigzgGFO0WKZyaWST0sJrfvKVhEw0qRcxhwag0GzppcwMKqqeWiyKVuFhj001SwaQ0sJNS/z9mh/kYuYtWAoDKXVkmASH6PpILJwWVM1nqZks1ZjMKum+XYdzKEx2IHYumO6YAtdeLaKPrjO2EwaTmB0PNHi8VjWgkkkkoPz7BaTgEll/hpGLSotPc1WoTyGre0ySQKNnUhjYHieT/T29WYtGBoro0WBZpnO4DguSWBUURRC3d3dWQkl0t/PTBit9DEDGPKFAs/1MTC8ILT29JzPSjAdpzvYLjUj7gq4hMa0MjCYau7r7Q0ZfqbvSoRWaNrtdjBLAk3BoyDwB1hU1n3u7Dt2hw3a29uzDkzX2XMgOZ2mWLSYcvw6diTb2wxMfX39px6PRzlytCWroJw9exaUpAJ2hxPMMjOLib5uFcUPWPzY1NQ04Ha5Dra1ncoqc9bUdBDcbGugA8ww10SO32a1HsXTcPpqk/FY9BXaxk37HbNBFOxgJ79oBZrOsNnMMkBrAafT/ioLAAbf0RoaGrYGgzmJ/326H7JhcOZTvA9y+LTJijqcGcRuEzVREDYMBQM7duwISZLzfVVRodnkWkPa8llTE/j8AZAkl2nMmNPp2Imn578EBiVx5HDzU/n5+fpHe/exmzOrfPzxx2zDrM/rZWbMDPkL+hZw2G2PXshlhnymLV++/KDXI39Awxd7/r3HlFB6+/rgwGdNkBPIQTPmwSjHagptcbmcH+Lpf0cCQxI/cGD/o5MmTVIPNTfD6Y4OU0Gh+i7vvbcdvB4fqwXgwPzFDGYMTZhut1kf/FL2P/zeVq5c2WSzChsC2OO2b38fqECPWWT3rt1swJKgyLIMZpj8o1Fv2SW9gqf7LwWGArL46tWrnygsLGgXMZrZ+lajKXKbQxiwfN58GAKBIPh9flbWxOhJJZkwdB3neJ777VeAjfB9defOnd2Hmw/dW1xUpMZicXjn3W3MTBhVjh8/Dh/s+pCtIfP7feCWZVOMjbldkoYm7E48DV0OGJZwrlixYk8s2l9fWJAP57q7obHxbUNqzpEjR+CfO3ZCwO9HbQmA1+sDpwkyfQQCslt6nCzwyKnm6EKjfvKuXbteCkeiSzvPdOIN2+GO25ewLdtGEEqG9+7bx0wX5SxB1BgfAiJtMXKITKGx3+d5Ey/xJzBK+cmxrt5aWlrq37Rp82uhcOQHXV1doGoK3Lp4MRQUFGQugVQU1JJ/QdupdlYXjcplUbE6P8KhIX4jawtB8fnkbZzFchu5jdEHZ8YavEE4JSUlgTfeeONF9DdLOhFOKBSGWTOvhxvnzbvmD4Fqx5DpoqJtXq+Hlcei6hjMhBk8PHagxfF53G/j6V3YomM9eLgMODZJkjyNjY31GKn9oqOzi+2lt4oCLFq4AMrKyib8pvoHBmD37g9Z7Ri37GYVlyTJzcbCCAqNIPMGrobhdjnBJTkpLL7/6LFWtaqiBK4WzAXNoUBi69at96AZW9N1rsceDoUgHA6zLdw33DAHKisrx32BUAh//6OP9kLLsWMgOSWQEAhBoMXilNmTxpD5MioUqoDh83oS2Il/fexE2/PphYfjWeGP7TzDJtXX18+85ZZbX8JkblrP+V4YGOiHSKQfaJltVUUF1NRMYxHSlUoikYCjLS1wCPOSM2e62AwkmSk7FS7F3MopOdlwPmkNBSJGNF+kJZLTQZpyGM/vajnRtl8fshp0ImpiUrTmKC8v9z333HP35ebm/rIvFJHCkQjbIEQjBVQZlgrt5OXlsiAhBzPxAEZMtKNgeLRE2717enqAVukQhI7OTujrRTOJD5w0IT1fT42qyZKmuN0uVuHPiCWw6HKozAvmKDGB55/Ct9YfPd4aIx4TUXpxpPyHTJtz5cqVFUuXLn0Ie/SdCMcWiUQhkUywXk+7uKgpShJoOoEcNitww6XMDn1mwdcCL7Bi2OmyVgSB5uippc5Flps4Bkv+GrEWJt2XAzuRS3Ik8do241tPoJa06qOsmZ7I8r6s+l8aECakxcuWLfs5Rki3x+OJYP9AFPAISYSiaWpqUfdgEc+h6k5bJCxcqjL5YOGbVEN4IppG0hLyKdSoJxqp/iXBoI7jwGQRr+08XtdGfPtZBNLG1koP05JrBWY4IPI/9sLCQldDQ8PNFRUVS7B336Soqi8eJ61JsFqWiqJBupi0Dhfrd1EJeY5B4dAMotbYUqaLtIPmVGgqIlO+JF2Yjq6NNkGJTJNJu4Ue/HgHti3YtiGQqD64OD+TBbFH+i1u0AdRExGMbd26ddOqq6vnyrI8HXtXOZqqQrxRFzYHaoac1hJhmCmjo8Bq/WfcZFH1Blo/TLX9T9EoELbPsFFt/4MIQ01rx+UAyQSYkfwQP3gc2ob/bxjUtCFNHTxO6Kip0bdlWDL872bs6RgdzP8FGAA2nNrD0ya6SQAAAABJRU5ErkJggg==",
+                    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGYAAABACAYAAADoKgJJAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDE0IDc5LjE1MTQ4MSwgMjAxMy8wMy8xMy0xMjowOToxNSAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDpGMTdDMTRDQTEzMkYxMUU2QkM5RUE2NzFDQzFFMTFFQiIgeG1wTU06RG9jdW1lbnRJRD0ieG1wLmRpZDpGMTdDMTRDQjEzMkYxMUU2QkM5RUE2NzFDQzFFMTFFQiI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkYxN0MxNEM4MTMyRjExRTZCQzlFQTY3MUNDMUUxMUVCIiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkYxN0MxNEM5MTMyRjExRTZCQzlFQTY3MUNDMUUxMUVCIi8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+PwDrjwAADZBJREFUeNrcnQlwlOUZ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",
+                    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGYAAABACAYAAADoKgJJAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyFpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDYuMC1jMDAyIDc5LjE2NDQ4OCwgMjAyMC8wNy8xMC0yMjowNjo1MyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NjE3MjE0RTE1QTMwMTFFQ0IzMzM5NzFCOTc5MDVFNjciIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NjE3MjE0RTA1QTMwMTFFQ0IzMzM5NzFCOTc5MDVFNjciIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIChXaW5kb3dzKSI+IDx4bXBNTTpEZXJpdmVkRnJvbSBzdFJlZjppbnN0YW5jZUlEPSJ4bXAuaWlkOkRGNzg4MjA1MTMyRjExRTZCRTc3QTk1MTI4QzhGMEM3IiBzdFJlZjpkb2N1bWVudElEPSJ4bXAuZGlkOkRGNzg4MjA2MTMyRjExRTZCRTc3QTk1MTI4QzhGMEM3Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+DNTT6gAACJBJREFUeNrsnFlsG0UY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"
+                ],
+                mapbtnDefault:[0,0,0],
+                xz_layer:["cross_radiuscp","road_furniturejy_width","road_furniturejy_height","road_furniturejy_weight"]
+            }
+        },
+        created: function() {
+            console.warn("20211228")
+        },
+        watch: {
+            message(newValue, oldValue) {
+                var _this = this;
+                setTimeout(function() {
+                    _this.message = "";
+                }, 5000)
+            }
+        },
+        methods: {
+            initMap() {
+                //加载地图
+                //imapgl.msp_server = "http://api.ishowchina.com";
+                imapgl.workerCount = 6; //获取并设置在带有GL JS映射的页面上实例化的Web Worker的数量。默认情况下，它设置为CPU内核数的一半（上限为6）。
+                imapgl.maxParallelImageRequests = 5; //获取并设置要并行加载的最大图像数量（栅格图块，子画面，图标）
+                // imapgl.baseApiUrl = 'http://172.192.100.51:54321/';
+                this.map = new imapgl.Map({
+                    container: 'map',
+                    center: [116.27771321722543, 39.952128183377255],
+                    zoom: 12,
+                    minZoom: 3,
+                    maxZoom: 20,
+                    hash: false,
+                    antialias: false,
+                    style: httpServer + '/imap_jw/styles/v1/light-v10-gcj02-lc.json'
+                });
+                var _this = this;
+                this.map.on("rotate", function(e) {
+                    //console.log(e)
+                    var car = document.getElementById("arrow");
+                    if (1 == 2 && car && _this.carAngle) {
+
+                        var d = _this.map.getPitch();
+                        var b = _this.map.getBearing();
+                        console.log(_this.carAngle, d, b)
+                        car.style.transformStyle = "preserve-3d";
+                        car.style.transform = "rotateX({0}deg) rotateZ({x}deg)".replace("{0}", d).replace("{x}", b - _this.carAngle);
+                    }
+                })
+            },
+            addMarker(type) {
+
+                let marker_red = document.createElement("div")
+                marker_red.style.cssText = "width:30px;height:30px";
+                marker_red.innerHTML = "<svg t='1594346569381' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='6357' width='32' height='32' xmlns:xlink='http://www.w3.org/1999/xlink'><defs><style type='text/css'></style></defs><path d='M512 0C345.975467 0 152.234667 101.444267 152.234667 359.765333c0 175.3088 276.753067 562.7904 359.765333 664.234667 73.796267-101.444267 359.765333-479.709867 359.765333-664.234667C871.765333 101.512533 678.024533 0 512 0z' p-id='6358' fill='#E8371B'></path></svg><div style='position: absolute;position: absolute;left: 9.3px;top: 3px;font-size: 14px;color: #ffffff;'>终</div>"
+                let marker_blue = document.createElement("div")
+                marker_blue.style.cssText = "width:30px;height:30px";
+                marker_blue.innerHTML = "<svg t='1594346569381' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='6357' width='32' height='32' xmlns:xlink='http://www.w3.org/1999/xlink'><defs><style type='text/css'></style></defs><path d='M512 0C345.975467 0 152.234667 101.444267 152.234667 359.765333c0 175.3088 276.753067 562.7904 359.765333 664.234667 73.796267-101.444267 359.765333-479.709867 359.765333-664.234667C871.765333 101.512533 678.024533 0 512 0z' p-id='6358' fill='#398CF3'></path></svg><div style='position: absolute;position: absolute;left: 9.3px;top: 3px;font-size: 14px;color: #ffffff;'>起</div>"
+
+                if (type == "marker_red") {
+                    let m = this.lnglat[1]
+                    this.map[type] = new imapgl.Marker(marker_red, {
+                        offset: [0, -15]
+                    }).setLngLat([Number(m.lng), Number(m.lat)]).addTo(this.map);
+                }
+                if (type == "marker_blue") {
+                    let m = this.lnglat[0]
+                    this.map[type] = new imapgl.Marker(marker_blue, {
+                        offset: [0, -15]
+                    }).setLngLat([Number(m.lng), Number(m.lat)]).addTo(this.map);
+                }
+            },
+            initWebsocket() {
+                if (window.WebSocket) {
+                    //实例化
+                    this.socket = new WebSocket(wsServer);
+                    //监听连接
+                    this.socket.onopen = this.open;
+                    //监听报错
+                    this.socket.onerror = this.error;
+                    //监听返回信息
+                    this.socket.onmessage = this.getMessage;
+                    //监听关闭
+                    this.socket.onclose = this.close;
+                }
+            },
+            open() {
+                if (this.checkHeart) clearInterval(this.checkHeart);
+                this.message = "WebSocket 连接成功";
+                console.warn(this.message);
+                this.getWss = 1;
+            },
+            error() {
+                this.message = "连接异常,请重启WebSocket,刷新页面";
+                console.warn(this.message);
+                this.getWss = 2;
+                //this.wsReLoad()
+            },
+            getMessage(data) {
+                if (this.pageData) {
+                    var ndata = JSON.parse(data.data);
+                    this.messageCount = ndata.MessageCount;
+                    this.pageData = false;
+                    this.routeArr = [];
+                } else {
+                    //console.warn("分包接收:" + ndata.MessageCount);
+                    this.routeArr.push(data.data);
+
+                    // if (this.routeArr.length < this.messageCount) {
+                    if (this.routeArr.join("").length >= this.messageCount) {
+                        // console.log(this.routeArr.join(""))
+                        ndata = JSON.parse(this.routeArr.join(""));
+                        this.pageData = true;
+                        this.messageCount = null;
+                    } else {
+                        return;
+                    }
+                }
+
+                switch (ndata.FunctionName) {
+                    //算路状态
+                    case "OnSetRouteRequestState":
+                        if (ndata.Parameter.Result == 1) {
+
+                            this.message = "算路成功";
+                            console.warn(this.message);
+
+                            //this.searchBtnState=0;
+                        } else {
+                            this.message = "算路失败:Result is " + ndata.Parameter.Result;
+                            console.warn(this.message);
+
+                            //状态置空
+                            this.carStrategyValue = -1;
+                        }
+
+                        break;
+                        //算路数据
+                    case "requestRoute":
+
+                        this.message = "线路规划完成";
+                        console.warn(this.message);
+                        this.routeGo(ndata.ReturnValue.RouteCoors);
+                        if (this.carStrategyValue == 6 && this.searchBtnState != 2) {
+                            this.searchBtnState = 0;
+                        } else if (this.searchBtnState != 2) {
+                            this.searchBtnState = 1;
+                        }
+
+                        break;
+                        //导航位置数据
+                    case "updateNaviInfo":
+                        let llas = ndata.Parameter.BaseNaviInfo; //Angle Latitude Longitude
+
+                        if (!llas || !llas.Longitude || !llas.Latitude) {
+                            return;
+                        }
+                        if (this.searchBtnState == 2) {
+                            this.carLocaltion = [Number(llas.Longitude), Number(llas.Latitude)];
+                            this.carAngle = llas.CarDirection;
+
+                            this.updateNaviInfo(ndata)
+                        }
+
+                        break;
+                        //获取car的当前位置
+                    case "updateLaneInfo":
+                        let ShowLaneInfo = ndata.Parameter;
+                        if (ShowLaneInfo) {
+                            this.unioLand(ShowLaneInfo);
+                        } else {
+                            this.landImgFront = [];
+                        }
+                        break;
+                    case "updateNaviStatus":
+                        if (!ndata.Parameter.GPSNaviMode) return;
+                        this.updateNaviStatus(ndata.Parameter.GPSNaviMode);
+
+                        break;
+                    case "updateGPSInfo":
+                        if (!ndata.Parameter) return;
+                        this.updateGPSInfo(ndata.Parameter);
+
+                        break;
+
+                    case "messageLength":
+                        //MessageCount
+                        //   console.warn("分包" + ndata.MessageCount);
+                        this.messageCount = ndata.MessageCount;
+                        break;
+                }
+            },
+            updateNaviStatus(gpsMode) {
+
+                // let gpsMode = ndata.Parameter.GPSNaviMode;
+
+                /**  导航停止。
+                 GPS_NAVI_MODE_STOP = 0,
+                 /**  导航开始。
+                 GPS_NAVI_MODE_START = 1,
+                 到达途经点。
+                 GPS_NAVI_MODE_ARRIVE_MID = 2,
+                 到达终点。
+                 GPS_NAVI_MODE_ARRIVE_DEST = 3,
+                 偏离路径。
+                 GPS_NAVI_MODE_LEEWAY = 4
+                 */
+                switch (gpsMode) {
+                    case 0:
+                        console.warn("导航停止");
+                        this.message = "停止导航";
+                        break;
+                    case 1:
+                        console.warn("开始导航");
+                        this.message = "开始导航";
+                        break;
+                    case 2:
+                        console.warn("到达途径点");
+                        break;
+                    case 3:
+                        //结束清空
+                        if (this.lnglat[0] && this.lnglat[1]) {
+                            this.setBounds([
+                                [this.lnglat[0].lng, this.lnglat[0].lat],
+                                [this.lnglat[1].lng, this.lnglat[1].lat]
+                            ])
+                            this.map.easeTo({
+                                pitch: 0,
+                                bearing: 0,
+                                easing: function(t) {
+                                    return t * (2 - t)
+                                }
+                            });
+                        }
+                        console.warn("到达目的地");
+                        this.message = "到达目的地";
+                        this.clearLine();
+                        break;
+                    case 4:
+                        this.message = "偏航，重新规划中";
+                        console.warn(this.message);
+
+                        //多路径偏航上报
+                        if (this.carStrategyValue == 6) {
+                            this.selectRoute();
+                            this.DCL = true;
+                        }
+
+                        //this.DCL = true;
+                        /*    const _this = this;
+                         setTimeout(function () {
+                         _this.openNavi();
+                         }, 5000)*/
+                        break;
+                }
+            },
+            updateGPSInfo(lla) {
+                //let lla = ndata.Parameter; //Angle Latitude Longitude
+
+                if (!lla || !lla.Longitude || !lla.Latitude) {
+                    return;
+                }
+                if (this.searchBtnState != 2) {
+                    this.carLocaltion = [Number(lla.Longitude), Number(lla.Latitude)];
+                    this.carAngle = lla.Angle;
+
+                    //添加小车
+                    if (!this.carMarker) {
+                        this.carIcon(this.carLocaltion);
+                    } else {
+                        this.carMarker.setLngLat(this.carLocaltion);
+                        const car = document.getElementById("arrow");
+                        var d = this.map.getPitch();
+                        var b = this.map.getBearing();
+                        car.style.transformStyle = "preserve-3d";
+                        car.style.transform = "rotateX({0}deg) rotateZ({x}deg)".replace("{0}", d).replace("{x}", this.carAngle - b);
+                    }
+                }
+            },
+            routeGo(newArr) {
+                this.newArrLine = newArr;
+                //算路数据绘制
+                if (this.carStrategyValue == 6) {
+
+                    /*if (newArr.length>1) {
+						
+						for (var i in newArr) {
+                            this.drawLineM2(newArr[i], this.lineColor[i]);
+                        }
+					}else{
+						this.drawLine(newArr[0]);
+					}*/
+
+                    if (this.DCL == false) {
+                        for (var i in newArr) {
+                            this.drawLineM2(newArr[i], this.lineColor[i]);
+                        }
+                    } else if (this.DCL == true) {
+                        //if (typeof(this.DCL) != "number") {
+                        //    console.warn("DCL Not is Number," + this.DCL);
+                        //    return
+                        //}
+                        this.drawLine(newArr[0]);
+                    }
+                } else {
+                    this.drawLine(newArr[0]);
+                }
+
+                if (this.searchBtnState <= 0) {
+                    //if (this.carStrategyValue == 6) {
+                    //视野设置
+                    //this.setBounds(newArr[0]);
+                    // } else {
+                    //视野设置
+                    //this.setBounds(newArr[0]);
+                    //}
+                    this.setBounds(newArr[0]);
+                }
+            },
+            carStrategyChangeVue(e) {
+                //DCL
+                if (this.carStrategyValue == 6) {
+                    this.DCL = false;
+                    this.searchBtnState = -1;
+                }
+                this.reqRoute();
+            },
+        
+            updateNaviInfo(curData) {
+                //console.log("carAngle:" + this.carAngle)
+                //添加小车
+                if (!this.carMarker) {
+                    this.carIcon(this.carLocaltion);
+                } else {
+
+                    const car = document.getElementById("arrow");
+                    var d = this.map.getPitch();
+                    car.style.transformStyle = "preserve-3d";
+                    car.style.transform = "rotateX({0}deg) rotateZ({x}deg)".replace("{0}", d).replace("{x}", 0);
+
+                    this.carMarker.setLngLat(this.carLocaltion);
+                }
+                //console.warn("updateNaviInfo");
+                //赋值
+                this.navLineInfo = curData.Parameter.BaseNaviInfo;
+
+                this.map.easeTo({
+                    //                    pitch: 60,
+                    bearing: Number(this.carAngle),
+                    center: this.carLocaltion,
+                    //zoom: 16,
+                    easing: function(t) {
+                        return t * (2 - t)
+                    }
+                });
+            },
+            setBounds(lnglat) {
+                var xx = [],
+                    yy = [];
+                lnglat.map(function(a) {
+                    xx.push(Number(a[0]));
+                    yy.push(Number(a[1]));
+                });
+                xx.sort(function(a, b) {
+                    return a - b
+                });
+                yy.sort(function(a, b) {
+                    return a - b
+                });
+
+                let bbox = [
+                    [Number(xx[0]), Number(yy[0])],
+                    [Number(xx[xx.length - 1]), Number(yy[yy.length - 1])]
+                ];
+                //console.log(xx);
+                //console.log(yy);
+                //console.log(bbox);
+                this.map.fitBounds(bbox, {
+                    padding: {
+                        top: 250,
+                        bottom: 50,
+                        left: 350,
+                        right: 50
+                    }
+                });
+
+            },
+            send(param) {
+                if (this.socket.readyState == 1) this.socket.send(param);
+            },
+            close(e) {
+                this.message = 'WebSocket 连接断开:code_' + e.code + ' reason_' + e.reason + ' wasClean_' + e.wasClean;
+                console.warn(this.message);
+                //this.getWss = 3;
+                // this.wsReLoad();
+            },
+            wsReLoad() {
+                if (this.checkHeart) clearTimeout(this.checkHeart)
+                const _this = this;
+                if (this.socket.readyState != 1) {
+                    this.checkHeart = setInterval(function() {
+                        console.warn('websocket 5秒后 即将重连');
+                        if (window.WebSocket) {
+                            //实例化
+                            _this.socket = null;
+                            _this.socket = new WebSocket(wsServer);
+                            //监听连接
+                            _this.socket.onopen = this.open;
+                            //监听报错
+                            _this.socket.onerror = this.error;
+                            //监听返回信息
+                            _this.socket.onmessage = this.getMessage;
+                            //监听关闭
+                            _this.socket.onclose = this.close;
+
+                        }
+
+                        if (_this.socket.readyState == 1) {
+                            if (this.checkHeart) clearInterval(this.checkHeart)
+                        }
+                    }, 5000)
+                }
+            },
+            openNavi() {
+                if (this.socket.readyState == 1) {
+                    let obj = {
+                        "FunctionName": "naviStatus",
+                        "Parameter": {
+                            "NaviStatus": this.isTest[0],
+                        },
+                    }
+
+                    this.send(JSON.stringify(obj));
+
+                    //设置状态
+                    this.map.setPitch(60);
+                    this.map.setZoom(16);
+                    this.searchBtnState = 2;
+                }
+
+            },
+            selectRoute(index) {
+                if (this.socket.readyState == 1) {
+                    let obj = {
+                        FunctionName: "selectRoute",
+                        Parameter: {
+                            RouteID: index,
+                        },
+                    }
+
+                    this.send(JSON.stringify(obj));
+                    this.message = "多策略偏航上报完成";
+                    console.warn(this.message);
+
+                }
+            },
+            closeNavi() {
+                if (this.socket.readyState == 1) {
+                    let obj = {
+                        FunctionName: "naviStatus",
+                        Parameter: {
+                            NaviStatus: this.isTest[1],
+                        },
+                    }
+
+                    this.send(JSON.stringify(obj));
+
+                    this.map.setBearing(0);
+                    this.map.setPitch(0);
+
+                    let _this = this;
+                    setTimeout(function() {
+                        // console.log(_this.fitBounds);
+                        if (_this.fitBounds) {
+                            _this.map.fitBounds(_this.fitBounds);
+                        }
+                        _this = null;
+                    }, 0)
+                    this.clearLine();
+                    this.message = "导航关闭，已退出";
+                    console.warn(this.message);
+
+                }
+
+            },
+            reqRoute() {
+                if (!this.lnglat[0] || !this.lnglat[1]) {
+                    this.message = "请设置起终点";
+                    console.warn(this.message);
+                    return;
+                }
+
+                if (this.socket.readyState == 1) {
+                    let option = {
+                        FunctionName: "requestRoute",
+                        Parameter: {
+                            //Strategy: 11,
+                            StartPoint: {
+                                X: this.lnglat[0].lng,
+                                Y: this.lnglat[0].lat
+                            },
+                            EndPoint: {
+                                X: this.lnglat[1].lng,
+                                Y: this.lnglat[1].lat
+                            },
+                            Radius: this.carRadius,
+                            Height: this.carHeight,
+                            Width: this.carWidth,
+                            Weight: this.carWeight,
+                            Strategy: this.carStrategyValue
+                        }
+                    }
+                    this.send(JSON.stringify(option))
+                }
+            },
+            gpsLocation() {
+                if (!this.carLocaltion) return;
+
+                if (!this.gpsLocationIcon) {
+                    const gpsLocationIcon = document.createElement("div")
+                    gpsLocationIcon.id = "gpsLocationIcon";
+                    gpsLocationIcon.innerHTML = "<div style='border: 1px solid #138df63b;border-radius: 50px;background-color: #138df62e;padding: 20px'><div style='background-color: #1891FF;width:10px;height:10px;border-radius: 5px'></div></div>";
+                    this.gpsLocationIcon = new imapgl.Marker(gpsLocationIcon).setLngLat(this.carLocaltion).addTo(this.map);
+                } else {
+                    //                this.searchBtnState = -1;
+                    if (this.searchBtnState == 2) {
+                        this.gpsLocationIcon.setLngLat([0, 0]);
+                    } else {
+                        this.gpsLocationIcon.setLngLat(this.carLocaltion);
+                    }
+
+                }
+            },
+            getGps() {
+                if (!this.carLocaltion[0] || !this.carLocaltion[1]) return;
+                this.beginPoint = (this.carLocaltion[0]).toFixed(5) + "," + (this.carLocaltion[1]).toFixed(5);
+
+                //模拟绘制
+                this.map["marker_blue"] && this.map["marker_blue"].remove();
+                this.lnglat[0] = {
+                    lng: this.carLocaltion[0],
+                    lat: this.carLocaltion[1]
+                }
+                this.addMarker("marker_blue");
+
+                /* this.map.easeTo({
+                 center: this.carLocaltion,
+                 easing: function (t) {
+                 return t * (2 - t)
+                 }
+                 });*/
+
+
+            },
+            addCoord(type) {
+                this.carStrategyValue = -1;
+                //鼠标
+                var canvasContainer = this.map.getCanvasContainer();
+                canvasContainer.style.cursor = "crosshair";
+
+                const _this = this;
+                this.map.once("click", function(e) {
+
+                    //清空历史轨迹
+                    _this.drawLine();
+
+                    canvasContainer.style.cursor = "";
+                    _this.lnglat[type] = e.lngLat;
+
+                    if (type == 0) {
+                        _this.map["marker_blue"] && _this.map["marker_blue"].remove()
+                        _this.beginPoint = (_this.lnglat[type].lng).toFixed(5) + "," + (_this.lnglat[type].lat).toFixed(5);
+                        _this.addMarker("marker_blue");
+
+                    }
+                    if (type == 1) {
+                        _this.map["marker_red"] && _this.map["marker_red"].remove()
+                        _this.endPoint = (_this.lnglat[type].lng).toFixed(5) + "," + (_this.lnglat[type].lat).toFixed(5);
+                        _this.addMarker("marker_red");
+
+                    }
+
+
+                    if (_this.lnglat[0] && _this.lnglat[1]) {
+                        _this.searchBtnState = 0;
+                    }
+                    //添加并检测是否起点终点完整
+                    /* if (_this.lnglat[1] && !_this.lnglat[0]) {
+                         _this.getGps();
+                         _this.searchBtnState = 0;
+                     } else if (_this.lnglat[0] && _this.lnglat[1]) {
+                         _this.searchBtnState = 0;
+                     }*/
+                })
+            },
+            closeConnect() {
+                this.socket.close();
+            },
+
+            carIcon(lnglat) {
+                if (!this.carMarker) {
+                    this.carDiv = document.createElement("div")
+                    this.carDiv.id = "arrow-div";
+                    this.carDiv.innerHTML = "<img id='arrow' src='../../imap_jw/images/arrow.png' style='width: 100px;height: 100px;'>";
+                    this.carMarker = new imapgl.Marker(this.carDiv).setLngLat(lnglat).addTo(this.map);
+                }
+
+
+            },
+            getImgSrc() {
+                if (this.navLineInfo.Icon) return "../images/route-icon/hud_action_" + (this.navLineInfo.Icon - 1) + ".png";
+            },
+            clearLine() {
+                if (this.map.getLayer('navLines-style-1')) {
+                    this.map.removeLayer('navLines-style-1');
+                }
+                if (this.map.getSource('route')) {
+                    this.map.removeSource('route');
+                }
+                //清空marker点
+                this.lnglat = [];
+                this.map["marker_red"] && this.map["marker_red"].remove();
+                this.map["marker_blue"] && this.map["marker_blue"].remove();
+
+                if (this.carMarker) {
+                    this.carMarker.remove();
+                    this.carMarker = null;
+                }
+
+
+                //状态修改
+                this.searchBtnState = -1;
+                this.landImgBack = [];
+                this.landImgFront = [];
+                this.beginPoint = null;
+                this.endPoint = null;
+
+                this.newArrLine = [];
+                this.carStrategyValue = -1;
+                this.DCL = false;
+                //清空历史
+                for (var i in this.lineColor) {
+                    if (this.map.getLayer(this.lineColor[i])) {
+                        this.map.removeLayer(this.lineColor[i]);
+                    }
+                    if (this.map.getSource(this.lineColor[i])) {
+                        this.map.removeSource(this.lineColor[i]);
+                    }
+                    if (this.map.getLayer(this.lineColor[i] + "Height")) {
+                        this.map.removeLayer(this.lineColor[i] + "Height")
+                    }
+                }
+
+
+                // this.gpsLocation()
+            },
+            mouseoverLineH(index) {
+                //this.map.setPaintProperty (this.lineColor[index], "line-color", "rgba(69,156,80,0.8)");
+                //this.map.setPaintProperty (this.lineColor[index], "line-opacity", 1);
+                //"line-opacity":0.5,
+
+                this.map.addLayer({
+                    "id": this.lineColor[index] + "Height",
+                    "type": "line",
+                    "source": this.lineColor[index],
+                    "layout": {
+                        "visibility": "visible",
+                        "line-join": "round",
+                        "line-cap": "round"
+                    },
+                    "paint": {
+                        "line-translate-anchor": "viewport",
+                        "line-opacity": 1,
+
+                        "line-width": {
+                            "stops": [
+                                [
+                                    7,
+                                    11
+                                ],
+                                [
+                                    18,
+                                    21
+                                ]
+                            ],
+                            "base": 1.2
+                        },
+                        "line-color": "rgba(69,156,80,0.8)"
+                    },
+                    "interactive": true
+                });
+            },
+            mouseoutLineH(index) {
+                if (this.map.getLayer(this.lineColor[index] + "Height")) {
+                    this.map.removeLayer(this.lineColor[index] + "Height")
+                }
+                //this.map.setPaintProperty (this.lineColor[index], "line-color", "#999999");
+                //this.map.setPaintProperty (this.lineColor[index], "line-opacity", 0.5);
+            },
+            drawLine(lines) {
+
+                //清空历史
+                for (var i in this.lineColor) {
+                    if (this.map.getLayer(this.lineColor[i])) {
+                        this.map.removeLayer(this.lineColor[i]);
+                    }
+                    if (this.map.getSource(this.lineColor[i])) {
+                        this.map.removeSource(this.lineColor[i]);
+                    }
+
+                    if (this.map.getLayer(this.lineColor[i] + "Height")) {
+                        this.map.removeLayer(this.lineColor[i] + "Height")
+                    }
+                }
+
+                if (this.map.getLayer('navLines-style-1')) {
+                    this.map.removeLayer('navLines-style-1');
+                }
+                if (this.map.getSource('route')) {
+                    this.map.removeSource('route');
+                }
+                if (!lines) {
+                    return;
+                }
+                this.map.addSource('route', {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'Feature',
+                        'properties': {},
+                        'geometry': {
+                            'type': 'LineString',
+                            'coordinates': lines
+                        }
+                    }
+                });
+                this.map.addLayer({
+                    "id": "navLines-style-1",
+                    "type": "line",
+                    "source": "route",
+                    "layout": {
+                        "visibility": "visible",
+                        "line-join": "round",
+                        "line-cap": "round"
+                    },
+                    "paint": {
+                        "line-translate-anchor": "viewport",
+                        "line-width": {
+                            "stops": [
+                                [
+                                    7,
+                                    5
+                                ],
+                                [
+                                    18,
+                                    20
+                                ]
+                            ],
+                            "base": 1.2
+                        },
+                        "line-color": "rgba(69,156,80,0.8)"
+                    },
+                    "interactive": true
+                });
+
+                //记录当前地图范围
+                this.fitBounds = this.map.getBounds();
+            },
+            drawLineM2(lines, name) {
+                //清空历史
+                if (this.map.getLayer('navLines-style-1')) {
+                    this.map.removeLayer('navLines-style-1');
+                }
+                if (this.map.getSource('route')) {
+                    this.map.removeSource('route');
+                }
+
+                if (this.map.getLayer(name)) {
+                    this.map.removeLayer(name);
+                }
+                if (this.map.getSource(name)) {
+                    this.map.removeSource(name);
+                }
+                this.map.addSource(name, {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'Feature',
+                        'properties': {},
+                        'geometry': {
+                            'type': 'LineString',
+                            'coordinates': lines
+                        }
+                    }
+                });
+                this.map.addLayer({
+                    "id": name,
+                    "type": "line",
+                    "source": name,
+                    "layout": {
+                        "visibility": "visible",
+                        "line-join": "round",
+                        "line-cap": "round"
+                    },
+                    "paint": {
+                        "line-translate-anchor": "viewport",
+                        "line-opacity": 0.5,
+
+                        "line-width": {
+                            "stops": [
+                                [
+                                    7,
+                                    5
+                                ],
+                                [
+                                    18,
+                                    20
+                                ]
+                            ],
+                            "base": 1.2
+                        },
+                        "line-color": "#999999"
+                    },
+                    "interactive": true
+                });
+
+                //记录当前地图范围
+                this.fitBounds = this.map.getBounds();
+            },
+            clickLineH(index) {
+                //清空历史
+                for (var i in this.lineColor) {
+                    if (this.map.getLayer(this.lineColor[i])) {
+                        this.map.removeLayer(this.lineColor[i]);
+                    }
+                    if (this.map.getSource(this.lineColor[i])) {
+                        this.map.removeSource(this.lineColor[i]);
+                    }
+                }
+
+                //上报多路径下标
+                this.selectRoute(index);
+
+                //绘制
+                this.drawLine(this.newArrLine[index]);
+                this.searchBtnState = 1;
+                console.warn("DCL is " + index);
+                this.DCL = index;
+            },
+            testValue() {
+                var whash = window.location.hash;
+
+                if (!whash.split("#")[1]) {
+                    return;
+                }
+                console.warn(whash);
+                var hash = whash.split("#")[1].split(";");
+                if (!hash || !hash[0] || !hash[1] || !hash[0].split(",")[0] || !hash[1].split(",")[0] || !hash[0].split(",")[1] || !hash[1].split(",")[1]) {
+                    return;
+                }
+
+                this.lnglat[0] = {
+                    lng: Number(hash[0].split(",")[0]),
+                    lat: Number(hash[0].split(",")[1])
+                };
+                this.lnglat[1] = {
+                    lng: Number(hash[1].split(",")[0]),
+                    lat: Number(hash[1].split(",")[1])
+                };
+
+                this.beginPoint = hash[0],
+                    this.endPoint = hash[1],
+                    this.addMarker("marker_blue");
+                this.addMarker("marker_red");
+                if (this.lnglat[0] && this.lnglat[1]) {
+                    this.searchBtnState = 0;
+                }
+            },
+            xymapbtn(v){
+              
+                switch(v){
+                    case 0:
+                        if(this.mapbtn[this.mapbtnDefault[0]]==this.mapbtn[0]){
+                            this.mapbtnDefault[0]=1;
+                            this.mapbtnDefault[1]=2;
+                            this.mapbtnDefault[2]=2;
+
+                            this.tigglePoiStyle("none")
+                        }else{
+                            this.mapbtnDefault[0]=0;
+                            this.mapbtnDefault[1]=0;
+                            this.mapbtnDefault[2]=0;
+
+                            this.tigglePoiIcon("text-size",11);
+                            this.tigglePoiIcon("icon-size",1);
+                            this.tigglePoiStyle("visible")
+                        }
+
+                    break;
+                    case 1:
+                        if(this.mapbtnDefault[0]==1)return;
+                        if(this.mapbtn[this.mapbtnDefault[1]]==this.mapbtn[0]){
+                            this.mapbtnDefault[1]=1;
+                            
+                            if(this.mapbtnDefault[1]==1 && this.mapbtnDefault[2]==1){
+                                this.mapbtnDefault[0]=1;
+                                this.mapbtnDefault[1]=2;
+                                this.mapbtnDefault[2]=2;
+                            }
+                            this.tigglePoiIcon("icon-size",0);
+                        }else{
+                            this.mapbtnDefault[1]=0;
+
+                            this.tigglePoiIcon("icon-size",1);
+                        }
+                  
+                    break;
+                    case 2:
+                        if(this.mapbtnDefault[0]==1)return;
+                        if(this.mapbtn[this.mapbtnDefault[2]]==this.mapbtn[0]){
+                            this.mapbtnDefault[2]=1;
+                     
+                            if(this.mapbtnDefault[1]==1 && this.mapbtnDefault[2]==1){
+                                this.mapbtnDefault[0]=1;
+                                this.mapbtnDefault[1]=2;
+                                this.mapbtnDefault[2]=2;
+                            }
+                            this.tigglePoiIcon("text-size",0);
+                        }else{
+                            this.mapbtnDefault[2]=0;
+                            this.tigglePoiIcon("text-size",11);
+                        }
+                    break;
+                }
+            },
+            tigglePoiStyle(v){
+                for(var i in this.xz_layer){
+                    this.map.setLayoutProperty(this.xz_layer[i], 'visibility',v);
+                }
+            },
+            tigglePoiIcon(l,v){
+                //this.xz_layer=["poi-zoom-13-01","poi-zoom-13-02","poi-zoom-14-01","poi-zoom-14-02","poi-zoom-15-01"]
+                for(var i in this.xz_layer){
+                    this.map.setLayoutProperty(this.xz_layer[i], l,v);
+                }
+            },
+            unioLand(data) {    
+
+                let BackLaneArray = data.BackLaneArray.filter(function(item) {
+                    return item
+                });
+                let LaneArray = data.LaneArray.filter(function(item) {
+                    return item
+                });
+
+                //console.warn(BackLaneArray, LaneArray)
+
+                //如果BackLaneArray 与 LaneArray 任何一个长度为0，及清空当前
+                if (BackLaneArray.length == 0 || LaneArray.length == 0) {
+                    this.landImgFront = [];
+                    this.landImgBack = [];
+                    return;
+                }
+
+                this.landImgBack = [];
+                this.landImgFront = [];
+                this.landImgBackground = BackLaneArray;
+                for (var i = 0; i < BackLaneArray.length; i++) {
+                    if (BackLaneArray[i] != 15) {
+                        this.landImgBack.push("../images/drawable-hdpi/back_" + BackLaneArray[i].toString() + ".png")
+                    }
+                    /*    BackLaneArray[i] == 2 ||
+                     BackLaneArray[i] == 4 ||
+                     BackLaneArray[i] == 6 ||
+                     BackLaneArray[i] == 7 ||
+                     BackLaneArray[i] == 10 ||
+                     BackLaneArray[i] == 11 ||
+                     BackLaneArray[i] == 12 ||
+                     BackLaneArray[i] == 14*/
+                    //前景
+                    if (BackLaneArray[i] == 0 ||
+                        BackLaneArray[i] == 1 ||
+                        BackLaneArray[i] == 3 ||
+                        BackLaneArray[i] == 5 ||
+                        BackLaneArray[i] == 8 ||
+                        BackLaneArray[i] == 13) {
+                        if (LaneArray[i] == 15) {
+                            this.landImgFront.push("../images/drawable-hdpi/opacity.png");
+                        } else {
+                            this.landImgFront.push("../images/drawable-hdpi/front_" + BackLaneArray[i].toString() + ".png");
+                        }
+                    } else if (BackLaneArray[i] < 15) {
+                        let frontname = "";
+                        if (BackLaneArray[i] == 10) {
+                            if (LaneArray[i] == 0) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_0.png";
+                            } else if (LaneArray[i] == 8) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_1.png";
+                            } else if (LaneArray[i] == 15) {
+                                frontname = "opacity.png";
+                            }
+                        } else if (BackLaneArray[i] == 9) {
+                            if (LaneArray[i] == 0) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_0.png";
+                            } else if (LaneArray[i] == 5) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_1.png";
+                            } else if (LaneArray[i] == 15) {
+                                frontname = "opacity.png";
+                            }
+                        } else if (BackLaneArray[i] == 2) {
+                            if (LaneArray[i] == 0) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_0.png";
+                            } else if (LaneArray[i] == 1) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_1.png";
+                            } else if (LaneArray[i] == 15) {
+                                frontname = "opacity.png";
+                            }
+                        } else if (BackLaneArray[i] == 4) {
+                            if (LaneArray[i] == 0) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_0.png";
+                            } else if (LaneArray[i] == 3) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_1.png";
+                            } else if (LaneArray[i] == 15) {
+                                frontname = "opacity.png";
+                            }
+                        } else if (BackLaneArray[i] == 6) {
+                            if (LaneArray[i] == 1) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_0.png";
+                            } else if (LaneArray[i] == 3) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_1.png";
+                            } else if (LaneArray[i] == 15) {
+                                frontname = "opacity.png";
+                            }
+                        } else if (BackLaneArray[i] == 7) {
+                            if (LaneArray[i] == 0) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_0.png";
+                            } else if (LaneArray[i] == 1) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_1.png";
+                            } else if (LaneArray[i] == 3) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_2.png";
+                            } else if (LaneArray[i] == 15) {
+                                frontname = "opacity.png";
+                            }
+                        } else if (BackLaneArray[i] == 11) {
+                            if (LaneArray[i] == 5) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_0.png";
+                            } else if (LaneArray[i] == 1) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_1.png";
+                            } else if (LaneArray[i] == 15) {
+                                frontname = "opacity.png";
+                            }
+                        } else if (BackLaneArray[i] == 12) {
+                            if (LaneArray[i] == 8) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_0.png";
+                            } else if (LaneArray[i] == 3) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_1.png";
+                            } else if (LaneArray[i] == 15) {
+                                frontname = "opacity.png";
+                            }
+                        } else if (BackLaneArray[i] == 14) {
+                            if (LaneArray[i] == 1) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_0.png";
+                            } else if (LaneArray[i] == 5) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_1.png";
+                            } else if (LaneArray[i] == 15) {
+                                frontname = "opacity.png";
+                            }
+                        }
+                        if (frontname) {
+                            this.landImgFront.push("../images/drawable-hdpi/" + frontname)
+                        }
+
+                    }
+                }
+            },
+        },
+        mounted() {
+            //初始化地图
+            this.initMap();
+            //websocket连接
+            this.initWebsocket();
+            //使用测试数据
+            this.testValue();
+        },
+        destroyed() {
+            this.socket.close();
+            this.socket.onclose = this.close;
+        },
+        template: `
+				<div id='map' class='map_contaner'></div> 
+				<div class='evenDiv'>
+				<table  v-if="searchBtnState!=2">
+                    <tr><td></td><td>起点:</td><td><input style="border-bottom: 1px dashed #999999;height: 30px;cursor: pointer" v-model="beginPoint"  @click="addCoord(0)" type="text" placeholder="我的位置" readonly="readonly" ></td><td style="width:40px"><span style="color: #4c6079"  v-if="1==2"><a href="#" @click="getGps()">定位</a></span></td></tr>
+                    <tr><td></td><td>终点:</td><td><input style="border-bottom: 1px dashed #999999;height: 30px;cursor: pointer" v-model="endPoint"  @click="addCoord(1)" type="text" placeholder="请在地图中选择终点" readonly="readonly" ></td><td></td></tr>
+                    <tr><td></td><td>车宽:</td><td><input class="inp" v-model="carWidth" type="number" step="0.00" placeholder="单位:米"  ></td><td><span v-if="carWidth" style="color: #4c6079">米</span></td></tr>
+                    <tr><td></td><td>车高:</td><td><input class="inp" v-model="carHeight" type="number" step="0.00" placeholder="单位:米"  ></td><td><span v-if="carHeight" style="color: #4c6079">米</span></td></tr>
+                    <tr><td></td><td>车重:</td><td><input class="inp" v-model="carWeight"  type="number" step="0.00" placeholder="单位:吨" ></td><td><span v-if="carWeight" style="color: #4c6079">吨</span></td></tr>
+                    <tr><td></td><td>转弯半径:</td><td><input class="inp" v-model="carRadius" type="number" step="0.00" placeholder="单位:米" ></td><td><span v-if="carRadius" style="color: #4c6079">米</span></td></tr>
+                    <tr><td></td><td>算路策略:</td><td>	
+                    <select id="carStrategyKey" v-model="carStrategyValue" style="border:0;outline:none;line-height:35px" @change="carStrategyChangeVue($event)" >
+					<option v-for="(option,id) in carStrategy" :key="id" :value="option.id" >{{option.value}}</option>
+                    </select>
+                    </td><td></td></tr>
+				</table>
+				<!--<div href="" class="search-link"  v-if="searchBtnState==2">{{navStateName}}</div>-->
+				<!--<div href="" @click='clearLine' class="search-link"  v-if="searchBtnState==1">清除线路</div>-->
+				<!--<div @click='reqRoute' class="search-btn" v-if="searchBtnState==0">路径规划</div>-->
+				<div v-if="carStrategyValue==6&&searchBtnState==0">
+					<div class="click-btn" @mouseover="mouseoverLineH(0)" @mouseout="mouseoutLineH(0)" @click="clickLineH(0)">速度最快</div>
+					<div class="click-btn" @mouseover="mouseoverLineH(1)" @mouseout="mouseoutLineH(1)" @click="clickLineH(1)">费用最少</div>
+					<div class="click-btn" @mouseover="mouseoverLineH(2)" @mouseout="mouseoutLineH(2)" @click="clickLineH(2)">距离最短</div>
+				</div>
+				<div @click='openNavi' class="search-btn" v-if="searchBtnState==1">开始导航</div>
+				<div @click='closeNavi' class="search-btn" v-if="searchBtnState==2">退出</div>
+				</div>
+                <div class="showData"  v-if="searchBtnState==2">
+                    <table>
+                    <tr><td rowspan="2" style="width: 145px"><div style="color: rgb(234 242 245);font-size: 12px">当前 {{navLineInfo.CurRoadName}}</div><img :src="getImgSrc()" style="height: 60px; padding: 20px" alt=""></td><td><span style="font-size: 45px;color: #FFFFFF">{{(navLineInfo.SegRemainDis>=1000)?Number((navLineInfo.SegRemainDis/1000).toFixed(1))+"公里":navLineInfo.SegRemainDis+"米"}}</span><span style="color: #FFFFFF;font-size: 20px"></span></td><td><span style="color: rgb(234 242 245);font-size: 20px">进入</span></td></tr>
+                    <tr><td colspan="2"><span style="color: rgb(234 242 245);font-size: 20px">{{navLineInfo.NextRoadName}}</span></td><td></td></tr>
+                    <tr><td colspan="3" style="border-top: 1px solid #ffffff;"><span style="color: #FFFFFF;font-size: 20px;" >{{(navLineInfo.RouteRemainDis>=1000)?(Number((navLineInfo.RouteRemainDis/1000).toFixed(1)))+"公里":(navLineInfo.RouteRemainDis)+"米"}}后到达 目的地</span></td></tr>
+                    </table>
+				</div>
+                <div class="lane" v-if="(landImgFront!=0)&&searchBtnState==2">
+                    <div style="position: absolute">
+                    <img style="border-left: 3px dashed #ffffff;border-right: 3px dashed #ffffff;margin-left: -3px" v-for="item in landImgFront"  v-bind:src="item" alt="">
+                  </div>
+                    <img style="border-left: 3px dashed #ffffff;border-right: 3px dashed #ffffff;margin-left: -3px" v-for="item in landImgBack"  v-bind:src="item" alt="">
+                 </div>
+               <div class="message" v-if="message">
+				 	{{message}}
+                </div>
+                <div class="map-btn">
+				 	<table>
+                        <tr><td>隐藏限制信息</td><td><img  @click="xymapbtn(0)" :src="mapbtn[mapbtnDefault[0]]" style="height:22px;cursor:pointer"></td></tr>
+                        <tr><td>隐藏图标</td><td><img @click="xymapbtn(1)" :src="mapbtn[mapbtnDefault[1]]" style="height:22px;cursor:pointer"></td></tr>
+                        <tr><td>隐藏文字</td><td><img @click="xymapbtn(2)" :src="mapbtn[mapbtnDefault[2]]" style="height:22px;cursor:pointer"></td></tr>
+                   </table>
+                </div>
+				`
+    }).mount("#app")
+</script>
+
+</html>

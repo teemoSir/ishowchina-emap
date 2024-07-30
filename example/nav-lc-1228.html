@@ -1,0 +1,1302 @@
+﻿<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link href="" rel="shortcut icon" type="image/x-icon" />
+    <title></title>
+
+    <script src="../js/vue.global.js"></script>
+    <!--<script src="../../imap_jw/js/vue.js" type="text/javascript"></script>-->
+    <!--   <script src="js/test.js" type="text/javascript" charset="utf-8"></script>-->
+    <link href="../css/imap-gl.css" rel="stylesheet" />
+    <script src="../js/imap-gl.js"></script>
+    <script src="../js/turf.min.js"></script>
+</head>
+<style type="text/css">
+    #app {
+        position: absolute;
+        width: 100vw;
+        height: 100vh;
+        left: 0;
+        top: 0;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .map_contaner {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+    }
+    
+    .evenDiv {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background-color: #ffffff;
+        border-radius: 2px;
+        width: 380px;
+        padding: 10px;
+        box-sizing: border-box;
+        box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+        font-size: 13px;
+    }
+    
+    .showData {
+        position: relative;
+        top: 77px;
+        left: 15px;
+        background-color: #44b79d;
+        border-radius: 2px;
+        width: 380px;
+        padding: 10px;
+        box-sizing: border-box;
+        box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+        font-size: 13px;
+    }
+    
+    .lane {
+        position: absolute;
+        top: 15px;
+        left: 410px;
+        border-radius: 2px;
+        background-color: #138DF6;
+        display: inline-block;
+        padding: 10px 14px 5px 16px;
+        box-sizing: border-box;
+        box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+        opacity: 0.9;
+    }
+    
+    .showData>table {
+        width: 100%;
+    }
+    
+    .evenDiv>table {
+        width: 100%;
+    }
+    
+    .evenDiv>table tr {
+        line-height: 35px;
+    }
+    
+    .evenDiv>table input {
+        border: none;
+    }
+    
+    .evenDiv>table input:focus {
+        border: none;
+        outline: none;
+    }
+    
+    .search-btn {
+        opacity: 0.8;
+        height: 25px;
+        line-height: 25px;
+        text-align: center;
+        margin-left: auto;
+        color: #FFF;
+        background-color: #44b79d;
+        cursor: pointer;
+        position: relative;
+        border-radius: 2px;
+        box-sizing: border-box;
+        box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+    }
+    
+    .search-btn:hover {
+        opacity: 1;
+    }
+    
+    .search-link {
+        width: 70px;
+        height: 25px;
+        line-height: 25px;
+        text-align: center;
+        color: #44b79d;
+        cursor: pointer;
+        position: absolute;
+        border-radius: 2px;
+    }
+    
+    .message {
+        position: fixed;
+        top: 15px;
+        right: 15px;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        background-color: #69C5B1;
+        padding: 10px;
+        border-radius: 2px;
+        font-size: 10px;
+        box-sizing: border-box;
+        box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+        max-width: 200px;
+    }
+    
+    .click-btn {
+        height: 25px;
+        line-height: 25px;
+        text-align: center;
+        border-radius: 2px;
+        color: #44b79d;
+        background-color: #ffffff;
+        cursor: pointer;
+        position: relative;
+        border: 1px solid #44b79d;
+        margin-top: -1px;
+        position: relative;
+        border-radius: 2px;
+        box-sizing: border-box;
+        box-shadow: 1px 2px 1px rgba(0, 0, 0, 0.15);
+    }
+    
+    .click-btn:hover {
+        background-color: #44b79d;
+        color: #ffffff;
+    }
+</style>
+
+<body>
+    <div id="app">
+
+    </div>
+</body>
+
+
+<script type="text/javascript">
+    const wsServer = "ws://172.192.100.42:8088";
+    //const wsServer = "ws://192.168.11.17:8088";
+    const httpServer = "http://172.192.100.7:10000";
+
+
+    Vue.createApp({
+        data() {
+            return {
+                msg: "vue",
+                routeArr: [],
+                socket: null,
+                lnglat: [],
+                isTest: [1, 3],
+                carLocaltion: [],
+                searchBtnState: -1,
+                navLineInfo: {
+                    CurRoadName: 0,
+                    NextRoadName: "",
+                    Icon: "",
+                    RouteRemainDis: 0,
+                    RouteRemainTime: 0,
+                    SegRemainDis: 0,
+                    CarDirection: 0
+                },
+                landImgBack: [],
+                landImgFront: [],
+                landImgBackground: [],
+                carWidth: 2.10,
+                carHeight: 2.00,
+                carWeight: 21.5,
+                carRadius: null,
+                gpsLocationIcon: null,
+                beginPoint: null,
+                endPoint: null,
+                message: "",
+                carAngle: 0,
+                pageData: true,
+                messageCount: null,
+                fitBounds: null,
+                carStrategy: [{
+                        id: -1,
+                        value: "请选择算路策略"
+                    }, {
+                        id: 11,
+                        value: "速度最快"
+                    }, {
+                        id: 12,
+                        value: "距离最短"
+                    }, {
+                        id: 0,
+                        value: "费用最少"
+                    },
+                    //{id:2,value:"国道优先"},
+                    //{id:4,value:"省道优先"},
+                    //{id:5,value:"不走高速"},
+                    //{id:10,value:"不走快速路（不含高速）"},
+                    {
+                        id: 6,
+                        value: "多策略"
+                    }
+                ],
+                carStrategyValue: -1,
+                lineColor: ["FB6370", "23C9B5", "D6B97D"],
+                DCL: false
+            }
+        },
+        //	created:{
+        //},
+        created: function() {
+            //this.message="请设置起点与终点（如起点为空，默认将使用GPS位置为起点）"
+
+
+            console.warn("20211214")
+        },
+        watch: {
+            message(newValue, oldValue) {
+                var _this = this;
+                setTimeout(function() {
+                    _this.message = "";
+                }, 5000)
+            }
+        },
+        methods: {
+            initMap() {
+                //加载地图
+                //imapgl.msp_server = "http://api.ishowchina.com";
+                imapgl.workerCount = 6; //获取并设置在带有GL JS映射的页面上实例化的Web Worker的数量。默认情况下，它设置为CPU内核数的一半（上限为6）。
+                imapgl.maxParallelImageRequests = 5; //获取并设置要并行加载的最大图像数量（栅格图块，子画面，图标）
+                // imapgl.baseApiUrl = 'http://172.192.100.51:54321/';
+                this.map = new imapgl.Map({
+                    container: 'map',
+                    center: [116.27771321722543, 39.952128183377255],
+                    zoom: 12,
+                    minZoom: 3,
+                    maxZoom: 20,
+                    hash: false,
+                    antialias: false,
+                    style: httpServer + '/imap_jw/styles/v1/light-v10-gcj02-lc.json'
+                });
+                var _this = this;
+                this.map.on("rotate", function(e) {
+                    //console.log(e)
+                    var car = document.getElementById("arrow");
+                    if (1 == 2 && car && _this.carAngle) {
+
+                        var d = _this.map.getPitch();
+                        var b = _this.map.getBearing();
+                        console.log(_this.carAngle, d, b)
+                        car.style.transformStyle = "preserve-3d";
+                        car.style.transform = "rotateX({0}deg) rotateZ({x}deg)".replace("{0}", d).replace("{x}", b - _this.carAngle);
+                    }
+                })
+            },
+            addMarker(type) {
+
+                let marker_red = document.createElement("div")
+                marker_red.style.cssText = "width:30px;height:30px";
+                marker_red.innerHTML = "<svg t='1594346569381' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='6357' width='32' height='32' xmlns:xlink='http://www.w3.org/1999/xlink'><defs><style type='text/css'></style></defs><path d='M512 0C345.975467 0 152.234667 101.444267 152.234667 359.765333c0 175.3088 276.753067 562.7904 359.765333 664.234667 73.796267-101.444267 359.765333-479.709867 359.765333-664.234667C871.765333 101.512533 678.024533 0 512 0z' p-id='6358' fill='#E8371B'></path></svg><div style='position: absolute;position: absolute;left: 9.3px;top: 3px;font-size: 14px;color: #ffffff;'>终</div>"
+                let marker_blue = document.createElement("div")
+                marker_blue.style.cssText = "width:30px;height:30px";
+                marker_blue.innerHTML = "<svg t='1594346569381' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='6357' width='32' height='32' xmlns:xlink='http://www.w3.org/1999/xlink'><defs><style type='text/css'></style></defs><path d='M512 0C345.975467 0 152.234667 101.444267 152.234667 359.765333c0 175.3088 276.753067 562.7904 359.765333 664.234667 73.796267-101.444267 359.765333-479.709867 359.765333-664.234667C871.765333 101.512533 678.024533 0 512 0z' p-id='6358' fill='#398CF3'></path></svg><div style='position: absolute;position: absolute;left: 9.3px;top: 3px;font-size: 14px;color: #ffffff;'>起</div>"
+
+                if (type == "marker_red") {
+                    let m = this.lnglat[1]
+                    this.map[type] = new imapgl.Marker(marker_red, {
+                        offset: [0, -15]
+                    }).setLngLat([Number(m.lng), Number(m.lat)]).addTo(this.map);
+                }
+                if (type == "marker_blue") {
+                    let m = this.lnglat[0]
+                    this.map[type] = new imapgl.Marker(marker_blue, {
+                        offset: [0, -15]
+                    }).setLngLat([Number(m.lng), Number(m.lat)]).addTo(this.map);
+                }
+            },
+            initWebsocket() {
+                if (window.WebSocket) {
+                    //实例化
+                    this.socket = new WebSocket(wsServer);
+                    //监听连接
+                    this.socket.onopen = this.open;
+                    //监听报错
+                    this.socket.onerror = this.error;
+                    //监听返回信息
+                    this.socket.onmessage = this.getMessage;
+                    //监听关闭
+                    this.socket.onclose = this.close;
+                }
+            },
+            open() {
+                if (this.checkHeart) clearInterval(this.checkHeart);
+                this.message = "WebSocket 连接成功";
+                console.warn(this.message);
+                this.getWss = 1;
+            },
+            error() {
+                this.message = "连接异常,请重启WebSocket,刷新页面";
+                console.warn(this.message);
+                this.getWss = 2;
+                //this.wsReLoad()
+            },
+            getMessage(data) {
+                if (this.pageData) {
+                    var ndata = JSON.parse(data.data);
+                    this.messageCount = ndata.MessageCount;
+                    this.pageData = false;
+                    this.routeArr = [];
+                } else {
+                    //console.warn("分包接收:" + ndata.MessageCount);
+                    this.routeArr.push(data.data);
+
+                    // if (this.routeArr.length < this.messageCount) {
+                    if (this.routeArr.join("").length >= this.messageCount) {
+                        // console.log(this.routeArr.join(""))
+                        ndata = JSON.parse(this.routeArr.join(""));
+                        this.pageData = true;
+                        this.messageCount = null;
+                    } else {
+                        return;
+                    }
+                }
+
+                switch (ndata.FunctionName) {
+                    //算路状态
+                    case "OnSetRouteRequestState":
+                        if (ndata.Parameter.Result == 1) {
+
+                            this.message = "算路成功";
+                            console.warn(this.message);
+
+                            //this.searchBtnState=0;
+                        } else {
+                            this.message = "算路失败:Result is " + ndata.Parameter.Result;
+                            console.warn(this.message);
+
+                            //状态置空
+                            this.carStrategyValue = -1;
+                        }
+
+                        break;
+                        //算路数据
+                    case "requestRoute":
+
+                        this.message = "线路规划完成";
+                        console.warn(this.message);
+                        this.routeGo(ndata.ReturnValue.RouteCoors);
+                        if (this.carStrategyValue == 6 && this.searchBtnState != 2) {
+                            this.searchBtnState = 0;
+                        } else if (this.searchBtnState != 2) {
+                            this.searchBtnState = 1;
+                        }
+
+                        break;
+                        //导航位置数据
+                    case "updateNaviInfo":
+                        let llas = ndata.Parameter.BaseNaviInfo; //Angle Latitude Longitude
+
+                        if (!llas || !llas.Longitude || !llas.Latitude) {
+                            return;
+                        }
+                        if (this.searchBtnState == 2) {
+                            this.carLocaltion = [Number(llas.Longitude), Number(llas.Latitude)];
+                            this.carAngle = llas.CarDirection;
+
+                            this.updateNaviInfo(ndata)
+                        }
+
+                        break;
+                        //获取car的当前位置
+                    case "updateLaneInfo":
+                        let ShowLaneInfo = ndata.Parameter;
+                        if (ShowLaneInfo) {
+                            this.unioLand(ShowLaneInfo);
+                        } else {
+                            this.landImgFront = [];
+                        }
+                        break;
+                    case "updateNaviStatus":
+                        if (!ndata.Parameter.GPSNaviMode) return;
+                        this.updateNaviStatus(ndata.Parameter.GPSNaviMode);
+
+                        break;
+                    case "updateGPSInfo":
+                        if (!ndata.Parameter) return;
+                        this.updateGPSInfo(ndata.Parameter);
+
+                        break;
+
+                    case "messageLength":
+                        //MessageCount
+                        //   console.warn("分包" + ndata.MessageCount);
+                        this.messageCount = ndata.MessageCount;
+                        break;
+                }
+            },
+            updateNaviStatus(gpsMode) {
+
+                // let gpsMode = ndata.Parameter.GPSNaviMode;
+
+                /**  导航停止。
+                 GPS_NAVI_MODE_STOP = 0,
+                 /**  导航开始。
+                 GPS_NAVI_MODE_START = 1,
+                 到达途经点。
+                 GPS_NAVI_MODE_ARRIVE_MID = 2,
+                 到达终点。
+                 GPS_NAVI_MODE_ARRIVE_DEST = 3,
+                 偏离路径。
+                 GPS_NAVI_MODE_LEEWAY = 4
+                 */
+                switch (gpsMode) {
+                    case 0:
+                        console.warn("导航停止");
+                        this.message = "停止导航";
+                        break;
+                    case 1:
+                        console.warn("开始导航");
+                        this.message = "开始导航";
+                        break;
+                    case 2:
+                        console.warn("到达途径点");
+                        break;
+                    case 3:
+                        //结束清空
+                        if (this.lnglat[0] && this.lnglat[1]) {
+                            this.setBounds([
+                                [this.lnglat[0].lng, this.lnglat[0].lat],
+                                [this.lnglat[1].lng, this.lnglat[1].lat]
+                            ])
+                            this.map.easeTo({
+                                pitch: 0,
+                                bearing: 0,
+                                easing: function(t) {
+                                    return t * (2 - t)
+                                }
+                            });
+                        }
+                        console.warn("到达目的地");
+                        this.message = "到达目的地";
+                        this.clearLine();
+                        break;
+                    case 4:
+                        this.message = "偏航，重新规划中";
+                        console.warn(this.message);
+
+                        //多路径偏航上报
+                        if (this.carStrategyValue == 6) {
+                            this.selectRoute();
+                            this.DCL = true;
+                        }
+
+                        //this.DCL = true;
+                        /*    const _this = this;
+                         setTimeout(function () {
+                         _this.openNavi();
+                         }, 5000)*/
+                        break;
+                }
+            },
+            updateGPSInfo(lla) {
+                //let lla = ndata.Parameter; //Angle Latitude Longitude
+
+                if (!lla || !lla.Longitude || !lla.Latitude) {
+                    return;
+                }
+                if (this.searchBtnState != 2) {
+                    this.carLocaltion = [Number(lla.Longitude), Number(lla.Latitude)];
+                    this.carAngle = lla.Angle;
+
+                    //添加小车
+                    if (!this.carMarker) {
+                        this.carIcon(this.carLocaltion);
+                    } else {
+                        this.carMarker.setLngLat(this.carLocaltion);
+                        const car = document.getElementById("arrow");
+                        var d = this.map.getPitch();
+                        var b = this.map.getBearing();
+                        car.style.transformStyle = "preserve-3d";
+                        car.style.transform = "rotateX({0}deg) rotateZ({x}deg)".replace("{0}", d).replace("{x}", this.carAngle - b);
+                    }
+                }
+            },
+            routeGo(newArr) {
+                this.newArrLine = newArr;
+                //算路数据绘制
+                if (this.carStrategyValue == 6) {
+
+                    /*if (newArr.length>1) {
+						
+						for (var i in newArr) {
+                            this.drawLineM2(newArr[i], this.lineColor[i]);
+                        }
+					}else{
+						this.drawLine(newArr[0]);
+					}*/
+
+                    if (this.DCL == false) {
+                        for (var i in newArr) {
+                            this.drawLineM2(newArr[i], this.lineColor[i]);
+                        }
+                    } else if (this.DCL == true) {
+                        //if (typeof(this.DCL) != "number") {
+                        //    console.warn("DCL Not is Number," + this.DCL);
+                        //    return
+                        //}
+                        this.drawLine(newArr[0]);
+                    }
+                } else {
+                    this.drawLine(newArr[0]);
+                }
+
+                if (this.searchBtnState <= 0) {
+                    //if (this.carStrategyValue == 6) {
+                    //视野设置
+                    //this.setBounds(newArr[0]);
+                    // } else {
+                    //视野设置
+                    //this.setBounds(newArr[0]);
+                    //}
+                    this.setBounds(newArr[0]);
+                }
+            },
+            carStrategyChangeVue(e) {
+                //DCL
+                if (this.carStrategyValue == 6) {
+                    this.DCL = false;
+                    this.searchBtnState = -1;
+                }
+                this.reqRoute();
+            },
+            updateNaviInfo(curData) {
+                //console.log("carAngle:" + this.carAngle)
+                //添加小车
+                if (!this.carMarker) {
+                    this.carIcon(this.carLocaltion);
+                } else {
+
+                    const car = document.getElementById("arrow");
+                    var d = this.map.getPitch();
+                    car.style.transformStyle = "preserve-3d";
+                    car.style.transform = "rotateX({0}deg) rotateZ({x}deg)".replace("{0}", d).replace("{x}", 0);
+
+                    this.carMarker.setLngLat(this.carLocaltion);
+                }
+                //console.warn("updateNaviInfo");
+                //赋值
+                this.navLineInfo = curData.Parameter.BaseNaviInfo;
+
+                this.map.easeTo({
+                    //                    pitch: 60,
+                    bearing: Number(this.carAngle),
+                    center: this.carLocaltion,
+                    //zoom: 16,
+                    easing: function(t) {
+                        return t * (2 - t)
+                    }
+                });
+            },
+            setBounds(lnglat) {
+                var xx = [],
+                    yy = [];
+                lnglat.map(function(a) {
+                    xx.push(Number(a[0]));
+                    yy.push(Number(a[1]));
+                });
+                xx.sort(function(a, b) {
+                    return a - b
+                });
+                yy.sort(function(a, b) {
+                    return a - b
+                });
+
+                let bbox = [
+                    [Number(xx[0]), Number(yy[0])],
+                    [Number(xx[xx.length - 1]), Number(yy[yy.length - 1])]
+                ];
+                //console.log(xx);
+                //console.log(yy);
+                //console.log(bbox);
+                this.map.fitBounds(bbox, {
+                    padding: {
+                        top: 250,
+                        bottom: 50,
+                        left: 350,
+                        right: 50
+                    }
+                });
+
+            },
+            send(param) {
+                if (this.socket.readyState == 1) this.socket.send(param);
+            },
+            close(e) {
+                this.message = 'WebSocket 连接断开:code_' + e.code + ' reason_' + e.reason + ' wasClean_' + e.wasClean;
+                console.warn(this.message);
+                //this.getWss = 3;
+                // this.wsReLoad();
+            },
+            wsReLoad() {
+                if (this.checkHeart) clearTimeout(this.checkHeart)
+                const _this = this;
+                if (this.socket.readyState != 1) {
+                    this.checkHeart = setInterval(function() {
+                        console.warn('websocket 5秒后 即将重连');
+                        if (window.WebSocket) {
+                            //实例化
+                            _this.socket = null;
+                            _this.socket = new WebSocket(wsServer);
+                            //监听连接
+                            _this.socket.onopen = this.open;
+                            //监听报错
+                            _this.socket.onerror = this.error;
+                            //监听返回信息
+                            _this.socket.onmessage = this.getMessage;
+                            //监听关闭
+                            _this.socket.onclose = this.close;
+
+                        }
+
+                        if (_this.socket.readyState == 1) {
+                            if (this.checkHeart) clearInterval(this.checkHeart)
+                        }
+                    }, 5000)
+                }
+            },
+            openNavi() {
+                if (this.socket.readyState == 1) {
+                    let obj = {
+                        "FunctionName": "naviStatus",
+                        "Parameter": {
+                            "NaviStatus": this.isTest[0],
+                        },
+                    }
+
+                    this.send(JSON.stringify(obj));
+
+                    //设置状态
+                    this.map.setPitch(60);
+                    this.map.setZoom(16);
+                    this.searchBtnState = 2;
+                }
+
+            },
+            selectRoute(index) {
+                if (this.socket.readyState == 1) {
+                    let obj = {
+                        FunctionName: "selectRoute",
+                        Parameter: {
+                            RouteID: index,
+                        },
+                    }
+
+                    this.send(JSON.stringify(obj));
+                    this.message = "多策略偏航上报完成";
+                    console.warn(this.message);
+
+                }
+            },
+            closeNavi() {
+                if (this.socket.readyState == 1) {
+                    let obj = {
+                        FunctionName: "naviStatus",
+                        Parameter: {
+                            NaviStatus: this.isTest[1],
+                        },
+                    }
+
+                    this.send(JSON.stringify(obj));
+
+                    this.map.setBearing(0);
+                    this.map.setPitch(0);
+
+                    let _this = this;
+                    setTimeout(function() {
+                        // console.log(_this.fitBounds);
+                        if (_this.fitBounds) {
+                            _this.map.fitBounds(_this.fitBounds);
+                        }
+                        _this = null;
+                    }, 0)
+                    this.clearLine();
+                    this.message = "导航关闭，已退出";
+                    console.warn(this.message);
+
+                }
+
+            },
+            reqRoute() {
+                if (!this.lnglat[0] || !this.lnglat[1]) {
+                    this.message = "请设置起终点";
+                    console.warn(this.message);
+                    return;
+                }
+
+                if (this.socket.readyState == 1) {
+                    let option = {
+                        FunctionName: "requestRoute",
+                        Parameter: {
+                            //Strategy: 11,
+                            StartPoint: {
+                                X: this.lnglat[0].lng,
+                                Y: this.lnglat[0].lat
+                            },
+                            EndPoint: {
+                                X: this.lnglat[1].lng,
+                                Y: this.lnglat[1].lat
+                            },
+                            Radius: this.carRadius,
+                            Height: this.carHeight,
+                            Width: this.carWidth,
+                            Weight: this.carWeight,
+                            Strategy: this.carStrategyValue
+                        }
+                    }
+                    this.send(JSON.stringify(option))
+                }
+            },
+            gpsLocation() {
+                if (!this.carLocaltion) return;
+
+                if (!this.gpsLocationIcon) {
+                    const gpsLocationIcon = document.createElement("div")
+                    gpsLocationIcon.id = "gpsLocationIcon";
+                    gpsLocationIcon.innerHTML = "<div style='border: 1px solid #138df63b;border-radius: 50px;background-color: #138df62e;padding: 20px'><div style='background-color: #1891FF;width:10px;height:10px;border-radius: 5px'></div></div>";
+                    this.gpsLocationIcon = new imapgl.Marker(gpsLocationIcon).setLngLat(this.carLocaltion).addTo(this.map);
+                } else {
+                    //                this.searchBtnState = -1;
+                    if (this.searchBtnState == 2) {
+                        this.gpsLocationIcon.setLngLat([0, 0]);
+                    } else {
+                        this.gpsLocationIcon.setLngLat(this.carLocaltion);
+                    }
+
+                }
+            },
+            getGps() {
+                if (!this.carLocaltion[0] || !this.carLocaltion[1]) return;
+                this.beginPoint = (this.carLocaltion[0]).toFixed(5) + "," + (this.carLocaltion[1]).toFixed(5);
+
+                //模拟绘制
+                this.map["marker_blue"] && this.map["marker_blue"].remove();
+                this.lnglat[0] = {
+                    lng: this.carLocaltion[0],
+                    lat: this.carLocaltion[1]
+                }
+                this.addMarker("marker_blue");
+
+                /* this.map.easeTo({
+                 center: this.carLocaltion,
+                 easing: function (t) {
+                 return t * (2 - t)
+                 }
+                 });*/
+
+
+            },
+            addCoord(type) {
+                this.carStrategyValue = -1;
+                //鼠标
+                var canvasContainer = this.map.getCanvasContainer();
+                canvasContainer.style.cursor = "crosshair";
+
+                const _this = this;
+                this.map.once("click", function(e) {
+
+                    //清空历史轨迹
+                    _this.drawLine();
+
+                    canvasContainer.style.cursor = "";
+                    _this.lnglat[type] = e.lngLat;
+
+                    if (type == 0) {
+                        _this.map["marker_blue"] && _this.map["marker_blue"].remove()
+                        _this.beginPoint = (_this.lnglat[type].lng).toFixed(5) + "," + (_this.lnglat[type].lat).toFixed(5);
+                        _this.addMarker("marker_blue");
+
+                    }
+                    if (type == 1) {
+                        _this.map["marker_red"] && _this.map["marker_red"].remove()
+                        _this.endPoint = (_this.lnglat[type].lng).toFixed(5) + "," + (_this.lnglat[type].lat).toFixed(5);
+                        _this.addMarker("marker_red");
+
+                    }
+
+
+                    if (_this.lnglat[0] && _this.lnglat[1]) {
+                        _this.searchBtnState = 0;
+                    }
+                    //添加并检测是否起点终点完整
+                    /* if (_this.lnglat[1] && !_this.lnglat[0]) {
+                         _this.getGps();
+                         _this.searchBtnState = 0;
+                     } else if (_this.lnglat[0] && _this.lnglat[1]) {
+                         _this.searchBtnState = 0;
+                     }*/
+                })
+            },
+            closeConnect() {
+                this.socket.close();
+            },
+
+            carIcon(lnglat) {
+                if (!this.carMarker) {
+                    this.carDiv = document.createElement("div")
+                    this.carDiv.id = "arrow-div";
+                    this.carDiv.innerHTML = "<img id='arrow' src='../../imap_jw/images/arrow.png' style='width: 100px;height: 100px;'>";
+                    this.carMarker = new imapgl.Marker(this.carDiv).setLngLat(lnglat).addTo(this.map);
+                }
+
+
+            },
+            getImgSrc() {
+                if (this.navLineInfo.Icon) return "../images/route-icon/hud_action_" + (this.navLineInfo.Icon - 1) + ".png";
+            },
+            clearLine() {
+                if (this.map.getLayer('navLines-style-1')) {
+                    this.map.removeLayer('navLines-style-1');
+                }
+                if (this.map.getSource('route')) {
+                    this.map.removeSource('route');
+                }
+                //清空marker点
+                this.lnglat = [];
+                this.map["marker_red"] && this.map["marker_red"].remove();
+                this.map["marker_blue"] && this.map["marker_blue"].remove();
+
+                if (this.carMarker) {
+                    this.carMarker.remove();
+                    this.carMarker = null;
+                }
+
+
+                //状态修改
+                this.searchBtnState = -1;
+                this.landImgBack = [];
+                this.landImgFront = [];
+                this.beginPoint = null;
+                this.endPoint = null;
+
+                this.newArrLine = [];
+                this.carStrategyValue = -1;
+                this.DCL = false;
+                //清空历史
+                for (var i in this.lineColor) {
+                    if (this.map.getLayer(this.lineColor[i])) {
+                        this.map.removeLayer(this.lineColor[i]);
+                    }
+                    if (this.map.getSource(this.lineColor[i])) {
+                        this.map.removeSource(this.lineColor[i]);
+                    }
+                    if (this.map.getLayer(this.lineColor[i] + "Height")) {
+                        this.map.removeLayer(this.lineColor[i] + "Height")
+                    }
+                }
+
+
+                // this.gpsLocation()
+            },
+            mouseoverLineH(index) {
+                //this.map.setPaintProperty (this.lineColor[index], "line-color", "rgba(69,156,80,0.8)");
+                //this.map.setPaintProperty (this.lineColor[index], "line-opacity", 1);
+                //"line-opacity":0.5,
+
+                this.map.addLayer({
+                    "id": this.lineColor[index] + "Height",
+                    "type": "line",
+                    "source": this.lineColor[index],
+                    "layout": {
+                        "visibility": "visible",
+                        "line-join": "round",
+                        "line-cap": "round"
+                    },
+                    "paint": {
+                        "line-translate-anchor": "viewport",
+                        "line-opacity": 1,
+
+                        "line-width": {
+                            "stops": [
+                                [
+                                    7,
+                                    11
+                                ],
+                                [
+                                    18,
+                                    21
+                                ]
+                            ],
+                            "base": 1.2
+                        },
+                        "line-color": "rgba(69,156,80,0.8)"
+                    },
+                    "interactive": true
+                });
+            },
+            mouseoutLineH(index) {
+                if (this.map.getLayer(this.lineColor[index] + "Height")) {
+                    this.map.removeLayer(this.lineColor[index] + "Height")
+                }
+                //this.map.setPaintProperty (this.lineColor[index], "line-color", "#999999");
+                //this.map.setPaintProperty (this.lineColor[index], "line-opacity", 0.5);
+            },
+            drawLine(lines) {
+
+                //清空历史
+                for (var i in this.lineColor) {
+                    if (this.map.getLayer(this.lineColor[i])) {
+                        this.map.removeLayer(this.lineColor[i]);
+                    }
+                    if (this.map.getSource(this.lineColor[i])) {
+                        this.map.removeSource(this.lineColor[i]);
+                    }
+
+                    if (this.map.getLayer(this.lineColor[i] + "Height")) {
+                        this.map.removeLayer(this.lineColor[i] + "Height")
+                    }
+                }
+
+                if (this.map.getLayer('navLines-style-1')) {
+                    this.map.removeLayer('navLines-style-1');
+                }
+                if (this.map.getSource('route')) {
+                    this.map.removeSource('route');
+                }
+                if (!lines) {
+                    return;
+                }
+                this.map.addSource('route', {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'Feature',
+                        'properties': {},
+                        'geometry': {
+                            'type': 'LineString',
+                            'coordinates': lines
+                        }
+                    }
+                });
+                this.map.addLayer({
+                    "id": "navLines-style-1",
+                    "type": "line",
+                    "source": "route",
+                    "layout": {
+                        "visibility": "visible",
+                        "line-join": "round",
+                        "line-cap": "round"
+                    },
+                    "paint": {
+                        "line-translate-anchor": "viewport",
+                        "line-width": {
+                            "stops": [
+                                [
+                                    7,
+                                    5
+                                ],
+                                [
+                                    18,
+                                    20
+                                ]
+                            ],
+                            "base": 1.2
+                        },
+                        "line-color": "rgba(69,156,80,0.8)"
+                    },
+                    "interactive": true
+                });
+
+                //记录当前地图范围
+                this.fitBounds = this.map.getBounds();
+            },
+            drawLineM2(lines, name) {
+                //清空历史
+                if (this.map.getLayer('navLines-style-1')) {
+                    this.map.removeLayer('navLines-style-1');
+                }
+                if (this.map.getSource('route')) {
+                    this.map.removeSource('route');
+                }
+
+                if (this.map.getLayer(name)) {
+                    this.map.removeLayer(name);
+                }
+                if (this.map.getSource(name)) {
+                    this.map.removeSource(name);
+                }
+                this.map.addSource(name, {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'Feature',
+                        'properties': {},
+                        'geometry': {
+                            'type': 'LineString',
+                            'coordinates': lines
+                        }
+                    }
+                });
+                this.map.addLayer({
+                    "id": name,
+                    "type": "line",
+                    "source": name,
+                    "layout": {
+                        "visibility": "visible",
+                        "line-join": "round",
+                        "line-cap": "round"
+                    },
+                    "paint": {
+                        "line-translate-anchor": "viewport",
+                        "line-opacity": 0.5,
+
+                        "line-width": {
+                            "stops": [
+                                [
+                                    7,
+                                    5
+                                ],
+                                [
+                                    18,
+                                    20
+                                ]
+                            ],
+                            "base": 1.2
+                        },
+                        "line-color": "#999999"
+                    },
+                    "interactive": true
+                });
+
+                //记录当前地图范围
+                this.fitBounds = this.map.getBounds();
+            },
+            clickLineH(index) {
+                //清空历史
+                for (var i in this.lineColor) {
+                    if (this.map.getLayer(this.lineColor[i])) {
+                        this.map.removeLayer(this.lineColor[i]);
+                    }
+                    if (this.map.getSource(this.lineColor[i])) {
+                        this.map.removeSource(this.lineColor[i]);
+                    }
+                }
+
+                //上报多路径下标
+                this.selectRoute(index);
+
+                //绘制
+                this.drawLine(this.newArrLine[index]);
+                this.searchBtnState = 1;
+                console.warn("DCL is " + index);
+                this.DCL = index;
+            },
+            testValue() {
+                var whash = window.location.hash;
+
+                if (!whash.split("#")[1]) {
+                    return;
+                }
+                console.warn(whash);
+                var hash = whash.split("#")[1].split(";");
+                if (!hash || !hash[0] || !hash[1] || !hash[0].split(",")[0] || !hash[1].split(",")[0] || !hash[0].split(",")[1] || !hash[1].split(",")[1]) {
+                    return;
+                }
+
+                this.lnglat[0] = {
+                    lng: Number(hash[0].split(",")[0]),
+                    lat: Number(hash[0].split(",")[1])
+                };
+                this.lnglat[1] = {
+                    lng: Number(hash[1].split(",")[0]),
+                    lat: Number(hash[1].split(",")[1])
+                };
+
+                this.beginPoint = hash[0],
+                    this.endPoint = hash[1],
+
+                    this.addMarker("marker_blue");
+                this.addMarker("marker_red");
+                if (this.lnglat[0] && this.lnglat[1]) {
+                    this.searchBtnState = 0;
+                }
+            },
+            unioLand(data) {
+
+                let BackLaneArray = data.BackLaneArray.filter(function(item) {
+                    return item
+                });
+                let LaneArray = data.LaneArray.filter(function(item) {
+                    return item
+                });
+
+                //console.warn(BackLaneArray, LaneArray)
+
+                //如果BackLaneArray 与 LaneArray 任何一个长度为0，及清空当前
+                if (BackLaneArray.length == 0 || LaneArray.length == 0) {
+                    this.landImgFront = [];
+                    this.landImgBack = [];
+                    return;
+                }
+
+                this.landImgBack = [];
+                this.landImgFront = [];
+                this.landImgBackground = BackLaneArray;
+                for (var i = 0; i < BackLaneArray.length; i++) {
+                    if (BackLaneArray[i] != 15) {
+                        this.landImgBack.push("../images/drawable-hdpi/back_" + BackLaneArray[i].toString() + ".png")
+                    }
+                    /*    BackLaneArray[i] == 2 ||
+                     BackLaneArray[i] == 4 ||
+                     BackLaneArray[i] == 6 ||
+                     BackLaneArray[i] == 7 ||
+                     BackLaneArray[i] == 10 ||
+                     BackLaneArray[i] == 11 ||
+                     BackLaneArray[i] == 12 ||
+                     BackLaneArray[i] == 14*/
+                    //前景
+                    if (BackLaneArray[i] == 0 ||
+                        BackLaneArray[i] == 1 ||
+                        BackLaneArray[i] == 3 ||
+                        BackLaneArray[i] == 5 ||
+                        BackLaneArray[i] == 8 ||
+                        BackLaneArray[i] == 13) {
+                        if (LaneArray[i] == 15) {
+                            this.landImgFront.push("../images/drawable-hdpi/opacity.png");
+                        } else {
+                            this.landImgFront.push("../images/drawable-hdpi/front_" + BackLaneArray[i].toString() + ".png");
+                        }
+                    } else if (BackLaneArray[i] < 15) {
+                        let frontname = "";
+                        if (BackLaneArray[i] == 10) {
+                            if (LaneArray[i] == 0) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_0.png";
+                            } else if (LaneArray[i] == 8) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_1.png";
+                            } else if (LaneArray[i] == 15) {
+                                frontname = "opacity.png";
+                            }
+                        } else if (BackLaneArray[i] == 9) {
+                            if (LaneArray[i] == 0) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_0.png";
+                            } else if (LaneArray[i] == 5) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_1.png";
+                            } else if (LaneArray[i] == 15) {
+                                frontname = "opacity.png";
+                            }
+                        } else if (BackLaneArray[i] == 2) {
+                            if (LaneArray[i] == 0) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_0.png";
+                            } else if (LaneArray[i] == 1) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_1.png";
+                            } else if (LaneArray[i] == 15) {
+                                frontname = "opacity.png";
+                            }
+                        } else if (BackLaneArray[i] == 4) {
+                            if (LaneArray[i] == 0) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_0.png";
+                            } else if (LaneArray[i] == 3) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_1.png";
+                            } else if (LaneArray[i] == 15) {
+                                frontname = "opacity.png";
+                            }
+                        } else if (BackLaneArray[i] == 6) {
+                            if (LaneArray[i] == 1) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_0.png";
+                            } else if (LaneArray[i] == 3) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_1.png";
+                            } else if (LaneArray[i] == 15) {
+                                frontname = "opacity.png";
+                            }
+                        } else if (BackLaneArray[i] == 7) {
+                            if (LaneArray[i] == 0) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_0.png";
+                            } else if (LaneArray[i] == 1) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_1.png";
+                            } else if (LaneArray[i] == 3) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_2.png";
+                            } else if (LaneArray[i] == 15) {
+                                frontname = "opacity.png";
+                            }
+                        } else if (BackLaneArray[i] == 11) {
+                            if (LaneArray[i] == 5) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_0.png";
+                            } else if (LaneArray[i] == 1) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_1.png";
+                            } else if (LaneArray[i] == 15) {
+                                frontname = "opacity.png";
+                            }
+                        } else if (BackLaneArray[i] == 12) {
+                            if (LaneArray[i] == 8) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_0.png";
+                            } else if (LaneArray[i] == 3) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_1.png";
+                            } else if (LaneArray[i] == 15) {
+                                frontname = "opacity.png";
+                            }
+                        } else if (BackLaneArray[i] == 14) {
+                            if (LaneArray[i] == 1) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_0.png";
+                            } else if (LaneArray[i] == 5) {
+                                frontname = "front_" + BackLaneArray[i].toString() + "_1.png";
+                            } else if (LaneArray[i] == 15) {
+                                frontname = "opacity.png";
+                            }
+                        }
+                        if (frontname) {
+                            this.landImgFront.push("../images/drawable-hdpi/" + frontname)
+                        }
+
+                    }
+                }
+            },
+        },
+        mounted() {
+            //初始化地图
+            this.initMap();
+            //websocket连接
+            this.initWebsocket();
+            //使用测试数据
+            this.testValue();
+        },
+        destroyed() {
+            this.socket.close();
+            this.socket.onclose = this.close;
+        },
+        template: `
+				<div id='map' class='map_contaner'></div> 
+				<div class='evenDiv'>
+				<table  v-if="searchBtnState!=2">
+				<!--<tr><td  colspan="5" style="color: #44b79d">请在地图中依次点击标记起点与终点</td></tr>-->
+                    <tr><td></td><td>起点:</td><td><input style="border-bottom: 1px dashed #999999;height: 30px;cursor: pointer" v-model="beginPoint"  @click="addCoord(0)" type="text" placeholder="我的位置" readonly="readonly" ></td><td style="width:40px"><span style="color: #4c6079"  v-if="1==2"><a href="#" @click="getGps()">定位</a></span></td></tr>
+                    <tr><td></td><td>终点:</td><td><input style="border-bottom: 1px dashed #999999;height: 30px;cursor: pointer" v-model="endPoint"  @click="addCoord(1)" type="text" placeholder="请在地图中选择终点" readonly="readonly" ></td><td></td></tr>
+                    <tr><td></td><td>车宽:</td><td><input class="inp" v-model="carWidth" type="number" step="0.00" placeholder="单位:米"  ></td><td><span v-if="carWidth" style="color: #4c6079">米</span></td></tr>
+                    <tr><td></td><td>车高:</td><td><input class="inp" v-model="carHeight" type="number" step="0.00" placeholder="单位:米"  ></td><td><span v-if="carHeight" style="color: #4c6079">米</span></td></tr>
+                    <tr><td></td><td>车重:</td><td><input class="inp" v-model="carWeight"  type="number" step="0.00" placeholder="单位:吨" ></td><td><span v-if="carWeight" style="color: #4c6079">吨</span></td></tr>
+                    <tr><td></td><td>转弯半径:</td><td><input class="inp" v-model="carRadius" type="number" step="0.00" placeholder="单位:米" ></td><td><span v-if="carRadius" style="color: #4c6079">米</span></td></tr>
+                    <tr><td></td><td>算路策略:</td><td>	
+                    <select id="carStrategyKey" v-model="carStrategyValue" style="border:0;outline:none;line-height:35px" @change="carStrategyChangeVue($event)" >
+					<option v-for="(option,id) in carStrategy" :key="id" :value="option.id" >{{option.value}}</option>
+                    </select>
+                    </td><td></td></tr>
+				</table>
+				<!--<div href="" class="search-link"  v-if="searchBtnState==2">{{navStateName}}</div>-->
+				<!--<div href="" @click='clearLine' class="search-link"  v-if="searchBtnState==1">清除线路</div>-->
+				<!--<div @click='reqRoute' class="search-btn" v-if="searchBtnState==0">路径规划</div>-->
+				<div v-if="carStrategyValue==6&&searchBtnState==0">
+					<div class="click-btn" @mouseover="mouseoverLineH(0)" @mouseout="mouseoutLineH(0)" @click="clickLineH(0)">速度最快</div>
+					<div class="click-btn" @mouseover="mouseoverLineH(1)" @mouseout="mouseoutLineH(1)" @click="clickLineH(1)">费用最少</div>
+					<div class="click-btn" @mouseover="mouseoverLineH(2)" @mouseout="mouseoutLineH(2)" @click="clickLineH(2)">距离最短</div>
+				</div>
+				<div @click='openNavi' class="search-btn" v-if="searchBtnState==1">开始导航</div>
+				<div @click='closeNavi' class="search-btn" v-if="searchBtnState==2">退出</div>
+				</div>
+                <div class="showData"  v-if="searchBtnState==2">
+                    <table>
+                    <tr><td rowspan="2" style="width: 145px"><div style="color: rgb(234 242 245);font-size: 12px">当前 {{navLineInfo.CurRoadName}}</div><img :src="getImgSrc()" style="height: 60px; padding: 20px" alt=""></td><td><span style="font-size: 45px;color: #FFFFFF">{{(navLineInfo.SegRemainDis>=1000)?Number((navLineInfo.SegRemainDis/1000).toFixed(1))+"公里":navLineInfo.SegRemainDis+"米"}}</span><span style="color: #FFFFFF;font-size: 20px"></span></td><td><span style="color: rgb(234 242 245);font-size: 20px">进入</span></td></tr>
+                    <tr><td colspan="2"><span style="color: rgb(234 242 245);font-size: 20px">{{navLineInfo.NextRoadName}}</span></td><td></td></tr>
+                    <tr><td colspan="3" style="border-top: 1px solid #ffffff;"><span style="color: #FFFFFF;font-size: 20px;" >{{(navLineInfo.RouteRemainDis>=1000)?(Number((navLineInfo.RouteRemainDis/1000).toFixed(1)))+"公里":(navLineInfo.RouteRemainDis)+"米"}}后到达 目的地</span></td></tr>
+                    </table>
+				</div>
+                <div class="lane" v-if="(landImgFront!=0)&&searchBtnState==2">
+                    <div style="position: absolute">
+                    <img style="border-left: 3px dashed #ffffff;border-right: 3px dashed #ffffff;margin-left: -3px" v-for="item in landImgFront"  v-bind:src="item" alt="">
+                  </div>
+                    <img style="border-left: 3px dashed #ffffff;border-right: 3px dashed #ffffff;margin-left: -3px" v-for="item in landImgBack"  v-bind:src="item" alt="">
+                 </div>
+               <div class="message" v-if="message">
+			   <!--<div style="font-weight:bold;padding:0 0 10px 0;font-size:12px;border-bottom:1px solid #ffffff">提示</div>-->
+				 	{{message}}
+                </div>
+				`
+    }).mount("#app")
+</script>
+
+</html>

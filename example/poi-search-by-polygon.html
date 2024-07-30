@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>我秀地图-POI多边形查询</title>
+    <meta charset="utf-8"/>
+    <link  href=""  rel="shortcut icon" type="image/x-icon" />
+    <link href="../css/imap-gl.css" rel="stylesheet"/>
+    <script src="../js/imap-gl.js"></script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            z-index: 0;
+        }
+
+    </style>
+</head>
+<body>
+<div id='map'></div>
+<script>
+    //设置msp_server为本地msp服务IP地址
+    //imapgl.msp_server = "http://172.192.100.30:25001"
+    imapgl.msp_server = "http://api.ishowchina.com"
+    var map = new imapgl.Map({
+        container: 'map',
+        center: [116.27771321722543, 39.952128183377255],
+        zoom: 3,
+        minZoom: 3,
+        hash: true,
+        maxZoom: 20,
+        localIdeographFontFamily: "微软雅黑, 'Microsoft Sans Serif', sans-serif,宋体",
+        antialias: false,
+        style: "../styles/v1/light-v10-gcj02.json"
+    });
+
+    //坐标msp服务实例
+    var msp = new imapgl.MspControl()
+
+    var options = {
+        query: "东直门",
+        datasource:"" ,
+        type: "",
+        regionType:"rectangle",
+        scope: 1,
+        page_size: 1,
+        page_num: 1,
+        bounds:"116.204,39.9938;116.456,39.8833",
+        displaygeom: 1,
+        children:1,
+        out_coord_type: ""
+    }
+    /* POI多边形搜索
+     * options                          入参对象
+     * options.query string             关键字，或关键字的首字母、拼音。格式如，公园/gy/gongyuan。;可选参数
+     * options.datasource string        数据源，默认取值poi，可填用户自定义的数据源，多个数据源之间用“,”分隔，格式如，poi,mypoi。;可选参数
+     * options.regionType string        几何对象类型。可选rectangle（矩形）、polygon（多边形）默认值为rectangle。;可选参数
+     * options.type string              关键字类型，多个类型之间用“|”分隔。格式如，医院|学校|酒店……;可选参数
+     * options.scope string             检索结果详细程度。取值含义如下： 1返回基本信息； 2返回POI详细信息。 默认值为1。;可选参数
+     * options.page_size int            每页记录数，最大值为50。默认值为10，超过50则按照50处理。;可选参数
+     * options.page_num int             分页页码，1为第一页。默认值为1。;可选参数
+     * options.bounds string            地理坐标点集合，描述图形的顶点与拐点。目前支持四种图形类型：坐标点经、纬度间使用半角“,”隔开，坐标对间使用半角“;”分隔。 如： x1,y1;x2,y2; x3,y3;x4,y4;x5,y5; regionType=rectangle，矩形左下、右上（或左上、右下）两个顶点的坐标； regionType=polygon，多边形所有顶点的顺序坐标，且首尾坐标相同;可选参数
+     * options.displaygeom string       是否返回aoi或road几何图形，默认不返回； 1：返回；0或空：不返回;可选参数
+     * options.children string          是否返回子POI，默认不返回； 1：返回；0或空：不返回;可选参数
+     * options.out_coord_type string    坐标类型，默认为gcj02。允许的值为： gcj02： 国测局坐标 wgs84： gps设备获取的坐标 baidu : 百度坐标;可选参数
+     *
+     * return
+     * data                             返回值对象
+     * data.status	                    状态，0为成功，其他为失败。
+     * data.message	                    状态说明。
+     * data.total	                    检索到的类型记录总数。
+     * data.results	                    检索结果。
+     * */
+    msp.POISearchByPolygon(options, function (data) {
+        console.log(data)
+        alert(JSON.stringify(data))
+    })
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>我秀地图</title>
+    <meta charset="utf-8"/>
+    <link href="../css/imap-gl.css" rel="stylesheet"/>
+    <script src="../js/imap-gl.js"></script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+        }
+
+        #map2 {
+            position: absolute;
+            right: 0;
+            height: 100%;
+            width: 50%;
+            float: left;
+        }
+
+        #map1 {
+            position: absolute;
+            left: 0;
+            height: 100%;
+            width: 50%;
+            float: left;
+        }
+    </style>
+</head>
+
+<body>
+<div id="map1"></div>
+<div id="map2"></div>
+
+<script>
+    var map1_x;
+    var map1_y;
+    var map1_zoom;
+    var map2_x;
+    var map2_y;
+    var map2_zoom;
+    var map1_pitch;
+    var map2_pitch;
+    var map1_bear;
+    var map2_bear;
+
+    var map1 = new imapgl.Map({
+        container: 'map1',
+        center: [105.27771321722543, 39.952128183377255],
+        zoom: 3,
+        dragPan: false,
+        dragRotate: false,
+        keyboard: false,
+        pitchWithRotate: false,
+        boxZoom: false,
+        scrollZoom: false,
+        style: "../styles/v1/light-v10-gcj02-gd.json"
+    });
+
+
+    map1.on("load", function () {
+        map1.addLayer({
+            "id": "tms-test",
+            "type": "raster",
+            'source': {
+                'type': 'raster',
+                'tileSize':256,
+                'tiles': [
+                    "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=0&scale=0&style=8&x={x}&y={y}&z={z}"
+                   //  "http://webrd01.is.autonavi.com/appmaptile?lang=zh_cn&size=1&scale=1&style=7&x={x}&y={y}&z={z}"
+                ]
+            }
+        });
+    })
+
+
+    var map2 = new imapgl.Map({
+        container: 'map2',
+        center: [105.27771321722543, 39.952128183377255],
+        zoom: 3,
+        style: "../styles/v1/light-v10-gcj02.json"
+    });
+    map2.on('render', function () {
+        map1.setBearing(map2.getBearing());
+
+        map1.setPitch(map2.getPitch());
+
+        map1.setZoom(map2.getZoom());
+
+        map1.setCenter([map2.getCenter().lng, map2.getCenter().lat]);
+    });
+
+</script>
+</body>
+
+
+</html>
+

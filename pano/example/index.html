@@ -1,0 +1,495 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <!--<script src="../dist/ishowchina-panorama.js"></script>-->
+    <link rel="stylesheet" type="text/css" href="../gl/photo-sphere-viewer.css"/>
+    <script src="../gl/webglpano.min.js"></script>
+    <script src="../gl/panorama.js"></script>
+
+    <script src="../js/vue.js"></script>
+    <script src="../js/csv.min.js"></script>
+    <script src="../js/csv-exportor.min.js"></script>
+    <!--    <script type="text/javascript"
+                src="http://api.ishowchina.com/v4/webapi/js/auth?v=3.8.1&t=jsmap&ak=ec85d3648154874552835438ac6a02b2"></script>-->
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .map {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            z-index: 1000000;
+            width: 300px;
+            height: 50%
+        }
+
+        #edit {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            z-index: 1000000;
+            width: 30%;
+            height: 100%
+        }
+
+        .panel {
+            background-color: #ffffff;
+            border: 1px solid #cccccc;
+            padding: 5px;
+            position: absolute;
+            right: 15px;
+            top: 15px;
+            z-index: 1000000;
+            width: 310px;
+            border-radius: 2px;
+            display: none;
+
+        }
+
+        .panel button {
+            padding: 5px 2px;
+            margin: 2px 0;
+
+        }
+
+        .panel button:hover {
+            cursor: pointer;
+        }
+
+        #edit div {
+            padding: 15px;
+
+        }
+
+        .panolist {
+            max-height: 300px;
+            overflow-y: scroll;
+        }
+
+        .panolist table th, td {
+
+            padding: 2px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .panolist table tr:hover {
+            background-color: #dddddd;
+
+        }
+
+        [v-cloak] {
+            display: none;
+        }
+
+        .header {
+            padding: 8px 5px;
+            border-bottom: 1px solid #cccccc;
+        }
+    </style>
+</head>
+<body>
+<div id="container" class="container"></div>
+<!--<div id="map" class="map"></div>-->
+<div class="panel" id="panel" v-cloak>
+    <div class="header">附近全景站点</div>
+    <table width="100%" style="font-size: 12px;  border-collapse: collapse; ">
+        <thead>
+        <tr style="background-color: #dddddd">
+            <th>站点</th>
+            <th>描述</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="(station, index) in stationList">
+            <td><a :href="'/example/home.html#'+station.id+''" @click="goStation(station.id )">{{ station.id }}</a></td>
+            <!--  :href="'/example/home.html#'+station.id+''" <td>{{ marker.lnglat.lng }}<br>{{ marker.lnglat.lat }}</td>-->
+            <td>{{ station.address }}</td>
+        </tr>
+        <tr v-if="stationList.length<=0">
+            <td colspan="2" style="color: firebrick;text-align: center">暂无附近全景站点</td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="header">质检工具</div>
+
+    <!--   <button>
+           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 41 41" height="12">
+               <path d="M40.5 14.1c-.1-.1-1.2-.5-2.899-1-.101 0-.2-.1-.2-.2C34.5 6.5 28 2 20.5 2S6.6 6.5 3.7 12.9c0 .1-.1.1-.2.2-1.7.6-2.8 1-2.9 1l-.6.3v12.1l.6.2c.1 0 1.1.4 2.7.9.1 0 .2.1.2.199C6.3 34.4 12.9 39 20.5 39c7.601 0 14.101-4.6 16.9-11.1 0-.101.1-.101.2-.2 1.699-.6 2.699-1 2.8-1l.6-.3V14.3l-.5-.2zM20.5 4c5.8 0 10.9 3 13.8 7.5.2.3-.1.6-.399.5-3.8-1-8.8-2-13.6-2-4.7 0-9.5 1-13.2 2-.3.1-.5-.2-.4-.5C9.7 7 14.8 4 20.5 4zm0 33c-5.9 0-11.1-3.1-14-7.899-.2-.301.1-.601.4-.5 3.9 1 8.9 2.1 13.6 2.1 5 0 9.9-1 13.601-2 .3-.1.5.2.399.5A16.422 16.422 0 0 1 20.5 37zm18.601-12.1c0 .1-.101.3-.2.3-2.5.9-10.4 3.6-18.4 3.6-7.1 0-15.6-2.699-18.3-3.6C2.1 25.2 2 25 2 24.9V16c0-.1.1-.3.2-.3 2.6-.9 10.6-3.6 18.2-3.6 7.5 0 15.899 2.7 18.5 3.6.1 0 .2.2.2.3v8.9z"/>
+               <path d="M18.7 24l6.4-3.7c.3-.2.3-.7 0-.8l-6.4-3.8c-.3-.2-.7 0-.7.4v7.4c0 .5.4.7.7.5z"/>
+               &lt;!&ndash;Created by Nick Bluth from the Noun Project&ndash;&gt;</svg>
+           全景自动预览
+       </button>
+       <br>-->
+
+    <div class="panolist">
+        <table width="100%" style="font-size: 12px;  border-collapse: collapse; ">
+            <thead>
+            <tr style="background-color: #dddddd">
+                <th>站点</th>
+                <th>标记</th>
+                <th width="50px">检查时间</th>
+                <th width="100px">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(marker, index) in makerList">
+                <td><a :href="'/example/home.html#'+marker.stationid+''" @click="goStation(marker.stationid )">{{
+                    marker.stationid }}</a></td>
+                <td>{{ marker.lnglat.lng }}<br>{{ marker.lnglat.lat }}</td>
+                <td>{{ marker.datatime }}</td>
+                <td>
+                    <button @click="removeMarker()" :key="index" :index="index">删除</button>
+                </td>
+            </tr>
+            <tr v-if="makerList.length==0">
+                <td colspan="4" style="color: firebrick;text-align: center">暂无检查记录</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <button @click="addMerker()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" height="12">
+            <path d="M24 0C13.8 0 5.5 8.3 5.5 18.5c0 10.07 17.57 28.64 18.32 29.42a.25.25 0 0 0 .36 0c.75-.78 18.32-19.35 18.32-29.42C42.5 8.3 34.2 0 24 0zm0 7.14a10.35 10.35 0 0 1 0 20.68 10.35 10.35 0 0 1 0-20.68z"/>
+            <!--Created by Daniele Marucci from the Noun Project--></svg>
+        <!--Created by Nick Bluth from the Noun Project--></svg>
+        添加异常标记
+    </button>
+    <button @click="exportCsv()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" height="12">
+            <path d="M83.3 35.6h-17V3H32.2v32.6H16.6l33.6 32.7 33-32.7z"/>
+            <path d="M83.3 64.2v16.3H16.6V64.2H-.1v32.6H100V64.2H83.3z"/>
+            <!--Created by Michael Zenaty from the Noun Project--></svg>
+        质检记录下载
+    </button>
+</div>
+<!--<div id="edit">
+
+    <div title="视野功能">
+        <h4> 视野操作</h4>
+        <a href="#" id="setAnimateAngle">视野飞行到坐标</a>
+        <a href="#" id="rotate">设置视野坐标</a>
+        <a href="#" id="getSize">容器大小</a>
+        <a href="#" id="toggleAutoRotate">开启/关闭漫游</a>
+        <a href="#" id="getViewPosition">获取当前坐标</a>
+        <a href="#" id="toggleFullScreen">开启/关闭全屏</a>
+        <a href="#" id="getZoom">获取视野等级</a>
+        <a href="#" id="setZoom">设置视野等级</a>
+
+    </div>
+
+    <div title="标记功能">
+        <h4> 标记操作</h4>
+        <a href="#" id="addMarker" title="addMarker">添加</a>
+        <a href="#" id="updateMarker">更新</a>
+        <a href="#" id="removeMarker">删除</a>
+        <a href="#" id="clearMarker">清空</a>
+        <a href="#" id="gotoMarker">将该标记显示在视野内</a>
+    </div>
+
+    <div title="全景服务">
+        <h4> 全景服务</h4>
+        <a href="#">根据坐标加载全景</a>
+        <a href="#">根据站点加载全景</a>
+        <a href="#" id="pointA2PointB">从 A 导航到 B </a>
+    </div>
+
+    <div title="控件">
+        <h4> 控件</h4>
+        <a href="#" id="toggleArrow">隐藏/显示方向箭头</a>
+    </div>
+
+</div>-->
+
+
+<script>
+
+    var pano = new IShowPanorama('container', {
+        stationID: '000288-0-200907090302540932',
+        linksControl: true,
+        masureTool: true,
+        mapTool: true,
+        copyrightControl: true,
+        fullscreenControl: true,
+        navigationControl: false,
+        testBackground: false,
+        useHash: true
+    })
+
+    function mapGoPano(lnglat) {
+        if(lnglat){
+            pano.getPanoByCoord(lnglat)
+        }
+
+    }
+
+
+    var vm = new Vue({
+        el: '#panel',
+        data: function () {
+            return {
+                makerList: this.getMarkerList(),
+                header: ["站点(StationID)", "标记位置X", "标记位置Y", "标记时间"],
+                stationList: []
+
+            }
+        },
+        mounted: function () {
+            this.pano = this.initPano();
+            //延迟获取全景站点列表
+            this.getStationList()
+        },
+        methods: {
+            initPano: function () {
+                /*  const pano = new IShowPanorama('container', {
+                 stationID: '000288-0-200907090302540932',
+                 linksControl: true,
+                 masureTool: true,
+                 mapTool: true,
+                 copyrightControl: true,
+                 fullscreenControl: true,
+                 navigationControl: false,
+                 testBackground: false,
+                 useHash: true
+                 })
+
+                 return pano;*/
+            },
+            addMerker: function () {
+                const _this = this;
+                this.pano.once('click', function (e) {
+                    _this.drawMarker(e)
+                })
+            },
+            getMarkerList: function () {
+                // console.log("load   " + JSON.parse(window.localStorage.getItem("markerlist_key")))
+                return JSON.parse(window.localStorage.getItem("markerlist_key")) || []
+            },
+            setMarker: function (marker) {
+                return this.makerList.unshift(marker)
+            },
+            removeMarker: function (index) {
+                this.pano.message("删除成功!", 2000)
+                return this.makerList.splice(index, 1)
+            },
+            drawMarker: function (e) {
+                var rad = {lng: e.longitude, lat: e.latitude}
+                this.pano.addMarker({
+                    content: "../example/assets/pin-red.png",
+                    latitude: rad.lat,
+                    longitude: rad.lng,
+                    poptext: "标记为异常影像"
+                })
+                var radtolnglat = {
+                    lng: (180 / Math.PI) * rad.lng,
+                    lat: (180 / Math.PI) * rad.lat
+                }
+                let datatime = new Date();
+                this.setMarker({
+                    stationid: this.pano.getStationInfo().StationID,
+                    lnglat: {lng: radtolnglat.lng.toFixed(2), lat: radtolnglat.lat.toFixed(2)},
+                    datatime: datatime.toLocaleDateString() + " " + datatime.getHours() + ":" + datatime.getMinutes() + ":" + datatime.getSeconds()
+                })
+            },
+            exportCsv: function () {
+                let datatime = new Date();
+                var nameCsv = "质检记录_" + window.location.hostname + "_" + (datatime.toLocaleDateString() + "_" + datatime.getHours())
+                csvExportor.downloadCsv(this.makerList, {header: this.header}, nameCsv + '.csv');
+            },
+            goStation: function (id) {
+                this.getStationList()
+                //window.location.href="/example/home.html#"+ t
+                this.pano.OPTIONS.stationID = id;
+                this.pano.loadPanoByID()
+            },
+            getStationList: function () {
+                const _this = this;
+                setTimeout(function () {
+                    var station = _this.pano.getStationInfo();
+                    console.log(station.Previous, station.Next)
+                    _this.stationList = [];
+                    station.Previous && _this.stationList.push({id: station.Previous, address: '上一站'})
+                    station.Next && _this.stationList.push({id: station.Next, address: '下一站'})
+                    for (var i in station.JunctionItems) {
+                        _this.stationList.push({
+                            id: station.JunctionItems[i].StationID,
+                            address: station.Address
+                        })
+                    }
+                }, 600)
+            }
+        },
+        watch: {
+            makerList: {
+                handler(newMarkerList, oldMarkerList) {
+                    window.localStorage.setItem("markerlist_key", JSON.stringify(newMarkerList))
+                },
+                immediate: true,
+                // deep: true
+            }
+        }
+    })
+
+    var pano, rotate_ = true, map, marker;
+    /*  map = new LD.Map("map", {
+     minZoom: 4,
+     zoom: 17,//设置地图初始化级别
+     center: new LD.LngLat(116.384561551, 39.895301197)//116.384561551, Y: 39.895301197
+     })
+
+
+     function addNetworkLayer() {
+     tileLayer = new LD.TileLayer({
+     maxZoom: 18,
+     minZoom: 1,
+     tileSize: 256,
+     baseUrl: ['http://{s}/v3/tile/{z}/{x}/{y}.png', ['websv1.ishowchina.com']]
+     });
+     map.addLayer(tileLayer);
+     }
+     function toggleVectorMarker(lnglat) {
+     if (map) {
+     toggleRemoveMarker();
+     var opts = new IMAP.MarkerOptions();
+     opts.anchor = IMAP["Constants"]["BOTTOM_CENTER"];
+     opts.markerColor = "red";//边框色
+     opts.shadow = true;//是否有阴影
+     opts.pointType = IMAP.Constants.OVERLAY_MARKER_POINT;//矢量图形样式类型选择。1：气泡，2：正方形，3：圆形
+     opts.pointStrokeColor = "#000000";//边框色
+     opts.pointAlpha = "0.9";//填充透明度
+     opts.pointLineWidth = 3;//边框宽度
+     opts.pointFillColor = "red";//填充色
+
+     var lnglat = new IMAP.LngLat(lnglat.lng, lnglat.lat);
+     if (lnglat) {
+     marker = new IMAP.Marker(lnglat, opts);
+     map.getOverlayLayer().addOverlay(marker, true);
+     }
+     }
+     }
+     //删除矢量点
+     function toggleRemoveMarker() {
+     if (marker) {
+     map.getOverlayLayer().removeOverlay(marker);
+     marker = null;
+     }
+     }
+
+     addNetworkLayer();
+     map.addEventListener('click', function (data) {
+     //console.log(data);
+     toggleVectorMarker(data.lnglat);
+     pano.getPanoByCoord({lng: data.lnglat.lng, lat: data.lnglat.lat})
+     })
+     */
+    // 全景初始化
+    /*
+     pano = new IShowPanorama('container', {
+     stationID: '000288-0-200907090148215932',
+     linksControl: true,
+     masureTool: true,
+     mapTool: true,
+     copyrightControl: true,
+     fullscreenControl: true,
+     navigationControl: true,
+     testBackground: false,
+     useHash: true
+     });
+     */
+
+
+    /*    var eles = document.getElementById('edit');
+     var addPanoBugMarker = document.getElementById("addPanoBugMarker");
+     addPanoBugMarker.addEventListener("click", function () {
+     pano.once('click', function (e) {
+     var lnglat = [e.longitude, e.latitude]
+     pano.addMarker({
+     content: "../example/assets/pin-red.png",
+     latitude: lnglat[1],
+     longitude: lnglat[0],
+     poptext: "标记为异常影像"
+     })
+
+     addCsvTable()
+     })
+     })*/
+
+    /*eles.addEventListener('click', function (e) {
+     switch (e.target.id) {
+     case "toggleAutoRotate":
+     pano.toggleAutoRotate(rotate_)
+     if (rotate_) {
+     rotate_ = false;
+     } else {
+     rotate_ = true;
+     }
+     break;
+     case "getViewPosition":
+     var wh = pano.getViewPosition()
+     pano.message('longitude:' + wh.longitude + ",latitude:" + wh.latitude, 3000)
+     break;
+     case "rotate":
+     pano.setAngle({longitude: Math.random() * 10, latitude: Math.random()})
+     break;
+     case "setAnimateAngle":
+     pano.setAnimateAngle({longitude: Math.random() * 10, latitude: Math.random()}, 3000)
+     break;
+     case "getSize":
+     var wh = pano.getViewSize()
+     pano.message('height:' + wh.height + ",width:" + wh.width, 3000)
+     break;
+     case "toggleFullScreen":
+     pano.toggleFullScreen();
+     break;
+     case "getZoom":
+     pano.message('level:' + pano.getZoom(), 3000)
+     break;
+     case "setZoom":
+     pano.setZoom(Math.random() * 100);
+     break;
+     case  "toggleArrow":
+     pano.toggleArrow();
+     break;
+     case  "addMarker":
+     var but = document.getElementById('container')
+     var onceAddMarker=  pano.on('click', function (e) {
+     pano.addMarker({
+     content: "assets/pin-red.png",
+     latitude: e.latitude,
+     longitude: e.longitude
+     })
+     pano.unbind(onceAddMarker)
+     })
+     break;
+     }
+
+     /// pano.setAddressControl(true)
+
+     //  pano.setFullScreenControl(true)
+     })*/
+</script>
+</div>
+</body>
+
+</html>
+
+
+
+

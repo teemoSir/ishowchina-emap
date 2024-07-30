@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>我秀地图-高精地图</title>
+    <meta charset="utf-8"/>
+    <link href="" rel="shortcut icon" type="image/x-icon"/>
+    <link href="../css/imap-gl.css" rel="stylesheet"/>
+    <script src="../js/imap-gl.js"></script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            z-index: 0;
+        }
+
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+    var map = new imapgl.Map({
+        container: 'map',
+        center: [116.44108700044706, 39.948871568714225],
+        zoom: 16,
+        minZoom: 3,
+        maxZoom: 20,
+        localIdeographFontFamily: "微软雅黑, 'Microsoft Sans Serif', sans-serif,宋体",
+        style: "../styles/v1/light-v10-gcj02.json"
+    });
+
+	
+	var APP_DOMAIN_ROOT = 'https://minedata.cn';
+var APP_DATA_DOMAIN_ROOT = ['https://datahive.minedata.cn'];
+var APP_API_BASE_URL = 'https://minedata.cn/minemapapi/v2.1.0';
+var APP_OLD_API_BASE_URL = 'https://minedata.cn/minemapapi/v2.0.0'; //这个是给特定的几个示例用的老版本JS，他们必须用2.0.0
+var APP_SERVICE_ROOT = 'https://mineservice.minedata.cn/service/';
+var APP_SERVER_DOMAIN_ROOT = 'https://minedata.cn';
+var FILE_TIME_VERSION = 'e1711fe9';
+
+    var LayerZooms = {
+    far: { trafficMaxZoom: 15.25, trafficMinZoom: 9 },
+    middle: { spriteMinZoom: 15.25, spriteMaxZoom: 17 },
+    near: { minZoom: 17 }
+};
+	
+	var LayerManager = {
+    addLayers: function addLayers(map) {
+
+        //建筑物 从中景开始
+
+        map.addLayer({
+            id: 'test',
+            type: "fill-extrusion",
+            source: 'Merge_1',
+            'source-layer': "Buildingmore",
+            paint: {
+                "fill-extrusion-color": "#30948f",
+               // "fill-extrusion-height": { "property": "levels", "type": "identity" }
+               // "fill-extrusion-pattern": "building"
+            },
+            'minzoom': 20
+        });
+
+        //添加高架桥
+
+        map.addSource('source3d', {
+            type: 'vector',
+            'tiles': Array.isArray(APP_DATA_DOMAIN_ROOT) ? APP_DATA_DOMAIN_ROOT.map(function (d) {
+                return d + '/test/roadpolygon/{z}/{x}/{y}';
+            }) : [APP_DATA_DOMAIN_ROOT + '/test/roadpolygon/{z}/{x}/{y}']
+        });
+
+		return;
+        map.addLayer({
+            type: 'fill-extrusion',
+            id: '3d_no_shihua',
+            source: 'source3d',
+            'source-layer': 'RoadPolygon',
+            paint: {
+                'extrusion-color': 'rgb(68,79,93)',
+                'render-road': true
+            },
+            minzoom: 20
+        });
+
+        //道路标线
+        var types = ['车道中心线_黄虚线', '车行道分界线_白色虚线69线', '停止线_30CM停止线', '车行道分界线_白色实线', '车行道边缘线_白色实线'];
+
+        var colors = ['rgb(251,201,10)', 'white', 'white', 'white', 'white'];
+
+        var dashes = [[10, 10], [12, 18], null, null, null];
+
+        map.addSource('lineSource', {
+            type: 'vector',
+            'tiles': Array.isArray(APP_DATA_DOMAIN_ROOT) ? APP_DATA_DOMAIN_ROOT.map(function (d) {
+                return d + '/test/roadline/{z}/{x}/{y}';
+            }) : [APP_DATA_DOMAIN_ROOT + '/test/roadline/{z}/{x}/{y}']
+        });
+
+        for (var i = 0; i < types.length; i++) {
+
+            var layer = {
+                "id": "road_line_" + i,
+                "type": "line",
+                "source": "lineSource",
+                "source-layer": "RoadLine",
+                "layout": {
+                    "line-join": "round",
+                    "line-cap": "round",
+                    "visibility": "visible"
+                },
+                "paint": {
+                    "render-3d": true,
+                    "line-opacity": 1,
+                    "line-color": colors[i],
+                    "line-width": { stops: [[10, 1], [17, 1.4]], base: 1.2 },
+                    "line-dasharray": dashes[i]
+                },
+             //   'minzoom': LayerZooms.middle.spriteMinZoom,
+                filter: ['==', 'type', types[i]]
+            };
+
+            if (!dashes[i]) {
+                delete layer.paint['line-dasharray'];
+            }
+
+            map.addLayer(layer);
+        }
+
+        //道路标牌
+
+        var arrows = ['导向箭头_左转箭头', '导向箭头_左右转箭头', '导向箭头_直行及左转箭头', '导向箭头_掉头箭头', '导向箭头_右转箭头', '导向箭头_直行及右转箭头', '导向箭头_直行及调头', '导向箭头_直行箭头'];
+
+        var icons = ['zuozhuan', 'zuozhuan_youzhuan', 'zhixing_zuozhuan', 'diaotou', 'youzhuan', 'zhixing_youzhuan', 'zhixing_diaotou', 'zhixing'];
+
+        map.addSource("roadMark", {
+            "type": "geojson",
+            "data": 'https://minedata.cn/application/static/data/map/func/fr-outarrow.json'
+        });
+        for (var j = 0; j < arrows.length; j++) {
+
+            var ico = icons[j];
+            var arro = arrows[j];
+
+            map.addLayer({
+                "id": "roadMark" + ico,
+                "type": "symbol",
+                "source": "roadMark",
+                "layout": {
+                    //"symbol-placement": "line",
+                    "icon-image": ico,
+                    "text-offset": [0, 0.6],
+                    "icon-rotation-alignment": "map",
+                    "text-anchor": "top",
+                    "icon-allow-overlap": true //图标允许压盖
+                },
+                "paint": {
+                    "render-3d": true, //目前这个切换成2d渲染的话，此不起效，先这样吧
+                    "render-road-mark": true,
+                    "symbol-height-offset": 0
+                },
+                "filter": ["==", "type", arro],
+                'minzoom': 10
+            });
+        }
+        //添加斑马线
+
+        map.addSource('polygonSource', {
+            'type': 'geojson',
+            'data': "https://minedata.cn/application/static/data/map/func/fr-outbanma.json"
+        });
+
+        map.addLayer({
+            'id': 'banmaPolygon',
+            'type': 'fill-extrusion',
+            'source': 'polygonSource',
+            'layout': {},
+            'paint': {
+                'fill-color': '#f18',
+                'fill-opacity': 0.8,
+                "fill-pattern": "banma",
+                "render-3d": true
+            },
+            'minzoom': 16
+        });
+    }
+};
+
+var _downloadList = {
+    "diaotou": { url: "https://minedata.cn/application//static/img/roadmark/diaotou.png", ratio: 1 },
+    "youqianfang": { url: "https://minedata.cn/application//static/img/roadmark/youqianfang.png", ratio: 1 },
+    "youzhuan": { url: "https://minedata.cn/application//static/img/roadmark/youzhuan.png", ratio: 1 },
+    "zhixing": { url: "https://minedata.cn/application//static/img/roadmark/zhixing.png", ratio: 1 },
+    "zhixing_diaotou": { url: "https://minedata.cn/application//static/img/roadmark/zhixing_diaotou.png", ratio: 1 },
+    "zhixing_youzhuan": { url: "https://minedata.cn/application//static/img/roadmark/zhixing_youzhuan.png", ratio: 1 },
+    "zhixing_zuozhuan": { url: "https://minedata.cn/application//static/img/roadmark/zhixing_zuozhuan.png", ratio: 1 },
+    "zuoqianfang": { url: "https://minedata.cn/application//static/img/roadmark/zuoqianfang.png", ratio: 1 },
+    "zuozhuan": { url: "https://minedata.cn/application//static/img/roadmark/zuozhuan.png", ratio: 1 },
+    "zuozhuan_diaotou": { url: "https://minedata.cn/application//static/img/roadmark/zuozhuan_diaotou.png", ratio: 1 },
+    "zuozhuan_youzhuan": { url: "https://minedata.cn/application//static/img/roadmark/zuozhuan_youzhuan.png", ratio: 1 },
+    "banma": { url: "https://minedata.cn/application//static/img/roadmark/out2.png", ratio: 1 },
+    "building": { url: "https://minedata.cn/application//static/img/roadmark/building.png", ratio: 1 }
+};
+var ImageDownloader = {
+    beginDownload: function beginDownload(map) {
+        for (var key in _downloadList) {
+            (function (name, path, map) {
+                map.loadImage(path.url, function (error, image) {
+                    if (error) throw error;
+                    map.addImage(name, image, { pixelRatio: path.ratio });
+                });
+            })(key, _downloadList[key], map);
+        }
+    }
+};
+
+map.on('load', function () {
+
+    //先下载图片
+    ImageDownloader.beginDownload(map);
+
+    LayerManager.addLayers(map);
+});
+
+</script>
+</body>
+</html>

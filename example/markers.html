@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>我秀地图-添加dom标签</title>
+    <meta charset="utf-8"/>
+    <link href="" rel="shortcut icon" type="image/x-icon"/>
+    <link href="../css/imap-gl.css" rel="stylesheet"/>
+    <script src="../js/imap-gl.js"></script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            z-index: 0;
+        }
+
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+    var map = new imapgl.Map({
+        container: 'map',
+        center: [116.27771321722543, 39.952128183377255],
+        zoom: 3,
+        minZoom: 3,
+        hash: true,
+        maxZoom: 20,
+        localIdeographFontFamily: "微软雅黑, 'Microsoft Sans Serif', sans-serif,宋体",
+        antialias: false,
+        style: "../styles/v1/light-v10-gcj02.json"
+    });
+
+    var array_ms = []
+    for (var i = 0; i < 1000; i++) {
+        var marker_blue = document.createElement("div")
+        marker_blue.style.cssText = "width:30px;height:30px";
+        marker_blue.innerHTML = "<svg t='1594346569381' class='icon' viewBox='0 0 1024 1024' version='1.1' xmlns='http://www.w3.org/2000/svg' p-id='6357' width='32' height='32' xmlns:xlink='http://www.w3.org/1999/xlink'><defs><style type='text/css'></style></defs><path d='M512 0C345.975467 0 152.234667 101.444267 152.234667 359.765333c0 175.3088 276.753067 562.7904 359.765333 664.234667 73.796267-101.444267 359.765333-479.709867 359.765333-664.234667C871.765333 101.512533 678.024533 0 512 0z' p-id='6358' fill='#398CF3'></path></svg><div style='position: absolute;position: absolute;left: 9.3px;top: 3px;font-size: 14px;color: #ffffff;'>车</div>"
+        //  drag,dragend,dragstart
+        marker_blue.onclick = function (e) {
+            alert(JSON.stringify(e))
+        }
+        var marker1 = new imapgl.Marker(marker_blue)
+                .setLngLat([116.277713 + Math.random(), 39.95212 + Math.random()])
+                .setPopup(new imapgl.Popup().setHTML("<h1>这是一个气泡!</h1>")) // add popup
+                .addTo(this.map);
+
+        array_ms.push(marker1)
+    }
+    console.log(array_ms[0].getLngLat())
+    //marker1.remove(map)   删除标记
+</script>
+</body>
+</html>

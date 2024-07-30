@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>我秀地图</title>
+    <meta charset="utf-8"/>
+    <link  href=""  rel="shortcut icon" type="image/x-icon" />
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            z-index: 0;
+        }
+
+    </style>
+    <script>
+
+    </script>
+</head>
+<body>
+<div id='map'></div>
+<link href="../css/imap-gl.css" rel="stylesheet"/>
+<script src="../js/imap-gl.js"></script>
+
+<script>
+
+    //设置convert_coord_server为本地坐标转换服务IP地址
+    imapgl.convert_coord_server = "http://172.192.100.30:8080"
+
+    var map = new imapgl.Map({
+        container: 'map',
+        center: [105.39780155113226, 35.89970880443798],
+        zoom: 3,
+        minZoom: 3,
+        hash: false,
+        maxZoom: 20,
+        localIdeographFontFamily: "微软雅黑, 'Microsoft Sans Serif', sans-serif,宋体",
+        antialias: false,
+        style: "../styles/v1/light-v10-gcj02.json"
+    });
+
+
+    //坐标转换实例
+    var CcC = new imapgl.CoordConvertControl()
+
+    //2000国家大地坐标系转国家测绘局02
+    CcC.CGCS20002GCJ02("403173.0977880215,3141244.3441219702;403122.0977880215, 3141334.3441219702", function (data) {
+        if (data.status == "0") {
+            console.log("2000国家大地坐标系===>>国家测绘局02")
+            console.log(data.result)
+        }
+    })
+
+    //2000国家大地坐标系转World Geodetic System 1984
+    CcC.CGCS20002GCJ02("403173.0977880215,3141244.3441219702;403122.0977880215, 3141334.3441219702", function (data) {
+        if (data.status == "0") {
+            console.log("2000国家大地坐标系===>>World Geodetic System 1984")
+            console.log(data.result)
+        }
+    })
+
+    //国家测绘局02转2000国家大地坐标系
+    CcC.GCJ022CGCS2000("112,32;112,34", function (data) {
+        if (data.status == "0") {
+            console.log("国家测绘局02===>>2000国家大地坐标系")
+            console.log(data.result)
+        }
+    })
+
+    //国家测绘局02转World Geodetic System 1984
+    CcC.GCJ022WGS84("112,32;112,34", function (data) {
+        if (data.status == "0") {
+            console.log("国家测绘局02===>>World Geodetic System 1984")
+            console.log(data.result)
+        }
+    })
+
+    //World Geodetic System 1984转2000国家大地坐标系
+    CcC.WGS842CGCS2000("112,32;112,34", function (data) {
+        if (data.status == "0") {
+            console.log("World Geodetic System 1984===>>2000国家大地坐标系")
+            console.log(data.result)
+        }
+    })
+    //World Geodetic System 1984转国家测绘局02
+    CcC.WGS842GCJ02("112,32;112,34", function (data) {
+        if (data.status == "0") {
+            console.log("World Geodetic System 1984===>>国家测绘局02")
+            console.log(data.result)
+        }
+    })
+</script>
+
+</body>
+</html>

@@ -1,0 +1,75 @@
+<html>
+<head>
+    <title>deck.gl + Mapbox Integration</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no'/>
+    <script src="../js/dist.min.js"></script>
+    <!-- optional if mapbox base map is needed -->
+    <link href="../css/imap-gl.css" rel="stylesheet"/>
+    <script src="../js/imap-gl.js"></script>
+
+</head>
+<body>
+<div id="map" style="width: 100vw; height: 100vh"></div>
+</body>
+<script type="text/javascript">
+    import {Tiles3DLoader} from '@loaders.gl/3d-tiles';
+    import { Tile3DLayer } from '@deck.gl/geo-layers';
+
+    import { CesiumIonLoader } from '@loaders.gl/3d-tiles';
+
+    var url = 'http://172.192.100.51:50001/potree/pointcloud/_converted/cloud.js';
+    //http://172.192.100.51:50001/potree/pointcloud/_converted/sources.json
+
+    const {MapboxLayer, ScatterplotLayer} = deck;
+
+    // Initialize mapbox map
+    var map = new imapgl.Map({
+        container: 'map',
+        center: [116.27771321722543, 39.952128183377255],
+        zoom: 3,
+        style: "../styles/v1/light-v10-gcj02.json"
+    });
+
+    /*  new deck.DeckGL({
+     mapStyle: "../styles/v1/light-v10-gcj02.json",
+     initialViewState: {
+     longitude: -122.45,
+     latitude: 37.8,
+     zoom: 15
+     },
+     controller: true,
+     layers: [
+     new deck.ScatterplotLayer({
+     data: [
+     {position: [-122.45, 37.8], color: [255, 0, 0], radius: 100}
+     ],
+     getColor: d => d.color,
+     getRadius: d => d.radius
+     })
+     ]
+     });*/
+
+    function addTile3DLayer() {
+        const ION_ASSET_ID = 43978;
+        const TILESET_URL = `https://assets.cesium.com/43978/tileset.json`;//http://172.192.100.51:50001/potree/pointcloud/_converted/sources.json';
+        const ION_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJlYWMxMzcyYy0zZjJkLTQwODctODNlNi01MDRkZmMzMjIxOWIiLCJpZCI6OTYyMCwic2NvcGVzIjpbImFzbCIsImFzciIsImdjIl0sImlhdCI6MTU2Mjg2NjI3M30.1FNiClUyk00YH_nWfSGpiQAjR5V2OvREDq1PJ5QMjWQ';
+        const tile3dLayer = new MapboxLayer({
+            type: Tile3DLayer,
+            id: 'tile-3d-layer',
+            pointSize: 2,
+            data: TILESET_URL,
+            loader: CesiumIonLoader,
+            loadOptions: {
+                tileset: {
+                    throttleRequests: false,
+
+                },
+                'cesium-ion': {accessToken: ION_TOKEN}
+            },
+        });
+        map.addLayer(tile3dLayer);
+    }
+
+
+</script>
+</html>

@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>我秀地图-手绘覆盖物</title>
+    <meta charset="utf-8"/>
+    <link href="" rel="shortcut icon" type="image/x-icon"/>
+    <link href="../css/imap-gl.css" rel="stylesheet"/>
+    <script src="../js/imap-gl.js"></script>
+    <script src="../js/imap-gl-draw.js"></script>
+
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            z-index: 0;
+        }
+
+
+    </style>
+</head>
+<body>
+<div id='map'></div>
+
+<script>
+    //设置msp_server为本地msp服务IP地址
+    var map = new imapgl.Map({
+        container: 'map',
+        center: [116.38504400000001, 39.890383],
+        zoom: 3,
+        minZoom: 3,
+        hash: true,
+        maxZoom: 20,
+        localIdeographFontFamily: "微软雅黑, 'Microsoft Sans Serif', sans-serif,宋体",
+        // antialias: false,
+        style: "../styles/v1/light-v10-gcj02.json"
+    });
+
+	var draw = new IMapDraw({
+        userProperties: true,
+        controls: {
+            point: true,//绘制点
+            line_string: true,//绘制线段
+            polygon: true,//绘制多边形
+            circle: true,//绘制圆形
+            trash: true,//删除
+            combine_features: false,//合并
+            uncombine_features: false//分离
+        },
+        displayControlsDefault: true
+    });
+	
+		  //绑定绘制控件到页面 位置参数有 'top-left' , 'top-right' , 'bottom-left' , and 'bottom-right' . Defaults to 'top-right' .
+    map.addControl(draw, "top-right");
+	
+	
+	var codeDraw = function () {
+        this.plane = "imapgl-ctrl-group imapgl-ctrl";
+        this.btn = "imap-gl-draw_ctrl-draw-btn ";
+        this.ele = {
+            line: "imap-gl-draw_line",
+            polygon: "imap-gl-draw_polygon",
+            point: " imap-gl-draw_point",
+            circle: " imap-gl-draw_circle",
+            trash: "imap-gl-draw_trash"
+        }
+
+        document.getElementsByClassName(this.plane)[0].style.opacity = 0;
+
+    }
+
+    //点的绘制
+    codeDraw.prototype.point = function () {
+        var p = document.getElementsByClassName(this.btn + this.ele.point)[0]
+        p.click();
+    }
+
+    //线段的绘制
+    codeDraw.prototype.line = function () {
+        var p = document.getElementsByClassName(this.btn + this.ele.line)[0]
+        p.click();
+    }
+
+    //多边形的绘制
+    codeDraw.prototype.polygon = function () {
+        var p = document.getElementsByClassName(this.btn + this.ele.polygon)[0]
+        p.click();
+    }
+
+    //圆的绘制
+    codeDraw.prototype.circle = function () {
+        var p = document.getElementsByClassName(this.btn + this.ele.circle)[0]
+        p.click();
+    }
+
+    codeDraw.prototype.trash = function () {
+        var p = document.getElementsByClassName(this.btn + this.ele.trash)[0]
+        p.click();
+    }
+	
+	map.on("load",function(){
+		initDraw();
+	})
+	
+	function initDraw(){
+		//代码新增 与删除，返回值 查看draw.create draw.update  draw.delete事件监控
+		var draws = new codeDraw();
+		//draws.point();
+		//draws.line()
+		//draws.polygon();
+		draws.circle();
+	}
+	
+    var type = 0;
+    map.on("contextmenu", function () {
+        //右击切换绘制模式
+        switch (type) {
+            case 0:
+                draws.point();
+                break;
+            case 1:
+                draws.line();
+                break;
+            case 2:
+                draws.polygon();
+                break;
+            case 3:
+                draws.circle();
+                break;
+        }
+        type++;
+        if (type == 4)type = 0;
+    });
+
+    //创建时事件
+    map.on('draw.create', create);
+    //删除事件
+    //map.on('draw.delete', updateArea);
+    //更新事件
+    map.on('draw.update', function (e) {
+        console.log("更新了")
+    });
+
+    function create(e) {
+        if (!e.features[0])return;
+
+        //通过id获得当前图形，临时保存手绘图形
+        var saveFeatures = e.features[0];//draw.get(e.features[0].id);
+
+        //删除手绘图形后添加新的图形
+        if (draw.delete(saveFeatures.id)) {
+            switch (saveFeatures.geometry.type) {
+                case "Point":
+                    //geojson格式中没有圆形的描述，圆形通过点数据传输，此处需要特殊判断是否是圆
+                    if (saveFeatures.properties.type == "circle") {
+                        addCircle(saveFeatures);
+                    } else {
+                        addPoint(saveFeatures);
+                    }
+                    break;
+                case "LineString":
+                    addLineString(saveFeatures);
+                    break;
+                case "Polygon":
+                    addPolygon(saveFeatures);
+                    break;
+            }
+        }
+    }
+
+    function addCircle(feature) {
+        //为图形添加label
+        feature.properties.label = "这是一个圆";
+
+        function metersToPixelsAtMaxZoom(meters, latitude) {
+            return meters / 0.075 / Math.cos(latitude * Math.PI / 180)
+        }
+
+        function rad(d) {
+            return d * Math.PI / 180.0;
+        }
+
+        function getDistance(lng1, lat1, lng2, lat2) {
+            var radLat1 = rad(lat1);
+            var radLat2 = rad(lat2);
+            var a = radLat1 - radLat2;
+            var b = rad(lng1) - rad(lng2);
+            var s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2) +
+                            Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)));
+            s = s * 6378.137;
+            s = Math.round(s * 10000) / 10000 * 1000;
+            return s;
+        }
+
+        //距离推算
+        var distance = getDistance(feature.geometry.coordinates[0], feature.geometry.coordinates[1], feature.geometry.coordinatesb[0], feature.geometry.coordinatesb[1]);
+        //半径推算
+        var radius = metersToPixelsAtMaxZoom(distance, feature.geometry.coordinates[1]);
+
+        map.addSource("circle_" + feature.id, {
+            "type": "geojson",
+            "data": feature
+        });
+
+        //添加圆的图层
+        map.addLayer({
+            "id": "circle_" + feature.id,
+            "type": "circle",
+            "source": "circle_" + feature.id,
+            "paint": {
+                //关键处，设置圆的半径随地图缩放而变化
+                "circle-radius": {
+                    stops: [
+                        [0, 0],
+                        [20, radius]],
+                    base: 2
+                },
+                //设置圆的其他属性
+                "circle-opacity": 0.5,
+                "circle-stroke-width": 1,
+                "circle-stroke-color": "#F5F5F5",
+                "circle-color": "#0080ff",
+                "circle-pitch-alignment": "map"
+            }
+        });
+
+
+        //添加geojson绘制图形label样式
+        map.addLayer({
+            'id': 'label_' + feature.id,
+            'type': 'symbol',
+            'source': "circle_" + feature.id,
+            'layout': {
+                "symbol-avoid-edges": true,
+                "text-pitch-alignment": "viewport",
+                "visibility": "visible",
+                "text-max-width": 8,
+                "text-field": "{label}",
+                "text-offset": [
+                    0,
+                    1
+                ],
+                "text-rotation-alignment": "viewport",
+                "text-size": 12,
+                "text-font": [
+                    "Microsoft YaHei"
+                ],
+                "text-anchor": "center",
+                "text-padding": 8,
+                "symbol-placement": "point"
+            },
+            'paint': {
+                "text-halo-color": "#569FE3",
+                "text-translate-anchor": "viewport",
+                "icon-color": "#4d98dd",
+                "text-color": "#ffffff",
+                "text-halo-width": 2,
+                "text-opacity": 1,
+                "text-translate": [
+                    0,
+                    0
+                ]
+            }
+        });
+    }
+
+    function addPoint(feature) {
+        //为图形添加label
+        feature.properties.label = "这是一个点";
+        //添加数据源
+        map.addSource(feature.id, {
+            "type": "geojson",
+            "data": feature
+        });
+
+
+        //添加geojson绘制图形点样式
+        map.addLayer({
+            id: 'point_' + feature.id,
+            type: 'circle',
+            source: feature.id,
+            paint: {
+                'circle-color': '#11b4da',
+                'circle-radius': 4,
+                'circle-stroke-width': 1,
+                'circle-stroke-color': '#fff'
+            }
+        });
+
+        //添加geojson绘制图形label样式
+        map.addLayer({
+            'id': 'label_' + feature.id,
+            'type': 'symbol',
+            'source': feature.id,
+            'layout': {
+                "symbol-avoid-edges": true,
+                "text-pitch-alignment": "viewport",
+                "visibility": "visible",
+                "text-max-width": 8,
+                "text-field": "{label}",
+                "text-offset": [
+                    0,
+                    1
+                ],
+                "text-rotation-alignment": "viewport",
+                "text-size": 12,
+                "text-font": [
+                    "Microsoft YaHei"
+                ],
+                "text-anchor": "center",
+                "text-padding": 8,
+                "symbol-placement": "point"
+            },
+            'paint': {
+                "text-halo-color": "#569FE3",
+                "text-translate-anchor": "viewport",
+                "icon-color": "#4d98dd",
+                "text-color": "#ffffff",
+                "text-halo-width": 2,
+                "text-opacity": 1,
+                "text-translate": [
+                    0,
+                    0
+                ]
+            }
+        });
+
+    }
+
+    function addPolygon(feature) {
+        //为图形添加label
+        feature.properties.label = "这是块多边形";
+        //添加数据源
+        map.addSource("polygon_" + feature.id, {
+            "type": "geojson",
+            "data": feature
+        });
+
+
+        // 添加多边形样式
+        map.addLayer({
+            'id': feature.id,
+            'type': 'fill',
+            'source': "polygon_" + feature.id,
+            'layout': {},
+            'paint': {
+                'fill-color': '#0080ff', // blue color fill
+                'fill-opacity': 0.5
+            }
+        });
+
+        //添加geojson绘制图形label样式
+        map.addLayer({
+            'id': 'label_' + feature.id,
+            'type': 'symbol',
+            'source': "polygon_" + feature.id,
+            'layout': {
+                "symbol-avoid-edges": true,
+                "text-pitch-alignment": "viewport",
+                "visibility": "visible",
+                "text-max-width": 8,
+                "text-field": "{label}",
+                "text-offset": [
+                    0,
+                    1
+                ],
+                "text-rotation-alignment": "viewport",
+                "text-size": 12,
+                "text-font": [
+                    "Microsoft YaHei"
+                ],
+                "text-anchor": "center",
+                "text-padding": 8,
+                "symbol-placement": "point"
+            },
+            'paint': {
+                "text-halo-color": "#569FE3",
+                "text-translate-anchor": "viewport",
+                "icon-color": "#4d98dd",
+                "text-color": "#ffffff",
+                "text-halo-width": 2,
+                "text-opacity": 1,
+                "text-translate": [
+                    0,
+                    0
+                ]
+            }
+        });
+
+    }
+
+    function addLineString(feature) {
+        //为图形添加label
+        feature.properties.label = "这是条线段";
+        //添加数据源
+        map.addSource(feature.id, {
+            "type": "geojson",
+            "data": feature
+        });
+
+
+        // 添加线的样式
+        map.addLayer({
+            'id': 'line_' + feature.id,
+            'type': 'line',
+            'source': feature.id,
+            'layout': {},
+            'paint': {
+                'line-color': '#569FE3',
+                'line-width': 2
+            }
+        });
+
+        //添加geojson绘制图形label样式
+        map.addLayer({
+            'id': 'label_' + feature.id,
+            'type': 'symbol',
+            'source': feature.id,
+            'layout': {
+                "symbol-avoid-edges": true,
+                "text-pitch-alignment": "viewport",
+                "visibility": "visible",
+                "text-max-width": 8,
+                "text-field": "{label}",
+                "text-offset": [
+                    0,
+                    1
+                ],
+                "text-rotation-alignment": "viewport",
+                "text-size": 12,
+                "text-font": [
+                    "Microsoft YaHei"
+                ],
+                "text-anchor": "center",
+                "text-padding": 8,
+                "symbol-placement": "point"
+            },
+            'paint': {
+                "text-halo-color": "#569FE3",
+                "text-translate-anchor": "viewport",
+                "icon-color": "#4d98dd",
+                "text-color": "#ffffff",
+                "text-halo-width": 2,
+                "text-opacity": 1,
+                "text-translate": [
+                    0,
+                    0
+                ]
+            }
+        });
+    }
+	
+	
+
+   
+
+
+</script>
+
+</body>
+</html>

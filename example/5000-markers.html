@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>我秀地图-添加dom标签</title>
+    <meta charset="utf-8"/>
+    <link href="" rel="shortcut icon" type="image/x-icon"/>
+    <link href="../css/imap-gl.css" rel="stylesheet"/>
+    <script src="../js/imap-gl.js"></script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            z-index: 0;
+        }
+
+    </style>
+</head>
+<body>
+<div id="map"></div>
+
+<script>
+    var map = new imapgl.Map({
+        container: 'map',
+        center: [116.27771321722543, 39.952128183377255],
+        zoom: 3,
+        minZoom: 3,
+        hash: true,
+        maxZoom: 20,
+        localIdeographFontFamily: "微软雅黑, 'Microsoft Sans Serif', sans-serif,宋体",
+        style: "../styles/v1/light-v10-gcj02.json"
+    });
+
+	function addArrs(){
+	var array_ms = [];
+    for (var i = 0; i < 7000; i++) {
+        var marker_blue = document.createElement("div");
+        marker_blue.style.width = "4px";
+		marker_blue.style.height="4px";
+		marker_blue.style.backgroundColor="red";
+		//marker_blue.style.borderRadius="2px 2px 2px 2px";
+	
+        var marker = new imapgl.Marker(marker_blue)
+                .setLngLat([116.277713 + Math.random(), 39.95212 + Math.random()])
+                .addTo(this.map);
+
+        array_ms.push(marker);
+		
+		delete marker;
+		delete marker_blue;
+    }
+	}
+	addArrs()
+    //console.log(array_ms[0].getLngLat())
+    //marker1.remove(map)   删除标记
+	
+    
+</script>
+</body>
+</html>

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>我秀地图-覆盖物绘制与csv下载</title>
+    <meta charset="utf-8"/>
+    <link href="" rel="shortcut icon" type="image/x-icon"/>
+    <link href="../css/imap-gl.css" rel="stylesheet"/>
+    <script src="../js/imap-gl.js"></script>
+    <script src="../js/imap-gl-draw.js"></script>
+    <script src="../js/csv.min.js"></script>
+    <script src="../js/csv-exportor.min.js"></script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            z-index: 0;
+        }
+
+        .calculation-box {
+            font-size: 13px;
+            width: 100%;
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+            background-color: rgba(255, 255, 255, 0.9);
+
+            max-height: 200px;
+            overflow-y: scroll;
+
+        }
+
+        .tbc {
+            width: 100%;
+            font-size: 13px;
+        }
+
+
+    </style>
+</head>
+<body>
+<div id='map'></div>
+<div class="calculation-box">
+    <p>使用绘图工具绘制图形。绘制多段线与多边形：单击绘制节点，双击结束绘制。</p>
+    <table class="tbc" id="tbc">
+        <caption>图形列表</caption>
+        <thead style="background-color: #e5f1ea">
+        <tr>
+            <th>编号</th>
+            <th>类型</th>
+            <th>坐标</th>
+        </tr>
+        </thead>
+        <tbody id="calculated-area" style="background-color: #e5f1ea"></tbody>
+    </table>
+
+</div>
+<script>
+    //设置msp_server为本地msp服务IP地址
+    var map = new imapgl.Map({
+        container: 'map',
+        center: [116.38504400000001, 39.890383],
+        zoom: 3,
+        minZoom: 3,
+        hash: true,
+        maxZoom: 20,
+        localIdeographFontFamily: "微软雅黑, 'Microsoft Sans Serif', sans-serif,宋体",
+        antialias: false,
+        style: "../styles/v1/light-v10-gcj02.json"
+    });
+
+
+    var draw = new IMapDraw({
+		userProperties:true,
+        controls: {
+            point: true,
+            line_string: true,
+            polygon: true,
+            trash: true,
+            combine_features: false,
+            uncombine_features: false
+        },
+        displayControlsDefault: true
+    });
+
+    //绑定绘制控件到页面 位置参数有 'top-left' , 'top-right' , 'bottom-left' , and 'bottom-right' . Defaults to 'top-right' .
+    map.addControl(draw, "top-right");
+	
+	
+
+
+
+    //创建时事件
+    map.on('draw.create', updateArea);
+    //删除事件
+    map.on('draw.delete', updateArea);
+    //更新事件
+    map.on('draw.update', updateArea);
+	
+	
+
+
+    function updateArea(e) {
+	if(e.type=="update" || e.type=="create")
+	if(!e.features)return;
+
+		//查看图形
+		console.log("id "+e.features[0].type);
+		console.log("id "+e.features[0].id);//根据绘制结束回调，提取绘制ID
+        
+		
+		
+		var data = draw.getAll();
+        var answer = document.getElementById('calculated-area');
+        answer.innerHTML = "";
+
+        for (var i in data.features) {
+            var ntr = document.createElement("tr");
+            ntr.innerHTML = "<td>{0}</td><td>{1}</td><td>{2}</td>"
+                    .replace("{0}", data.features[i].id)
+                    .replace("{1}", data.features[i].geometry.type)
+                    .replace("{2}", data.features[i].geometry.coordinates.join(";"))
+            answer.appendChild(ntr)
+        }
+		
+		//测试代码20210916添加
+		//draw.delete(e.features[0].id);//移除指定ID图形
+		
+		
+		var thisTX=e.features[0];
+		//判断图形是否存在
+		if(!thisTX)return;
+		//图形增加新的属性值(图形id,key,value)
+			draw.setFeatureProperty(thisTX.id,"label","精河巴尔盖提物探区");
+		
+			//绘制完成后显示效果
+			//text-field获取key值需要以{user_?}形式追加,追加方法 draw.setFeatureProperty(thisTX.id,"label","edg");
+			let labelcold= {
+				'id': 'label-cold',
+				'type': 'symbol',
+				'source': 'imap-gl-draw-cold',
+				'layout': {
+					'text-field': "{user_label}",
+					'text-font': ["Microsoft YaHei"],
+					'text-size': 20,
+					'text-justify':'center',
+					'text-padding':100
+				},
+				'paint': {
+					'text-color': 'blue',
+				}
+			}
+			
+		//绘制前显示效果
+		//此处获取key值需要以{user_?}形式追加,追加方法 draw.setFeatureProperty(thisTX.id,"label","edg");
+			let labelhot= {
+				'id': 'label-hot',
+				'type': 'symbol',
+				'source': 'imap-gl-draw-hot',
+				'layout': { 
+					'text-field': "{user_label}",
+					'text-font': ["Microsoft YaHei"],
+					'text-size': 20,
+					'text-justify':'center',
+					'text-padding':100
+				},
+				'paint': {
+					'text-color': 'blue',
+				}
+			}
+			
+			//判断label渲染层是否存在
+			if(!map.getLayer("label-cold")){
+				map.addLayer(labelcold);
+				map.addLayer(labelhot);
+			}
+			
+			
+			
+			
+			//视野自适应
+			const bounds = map.getBounds();
+			
+			var aa=[];
+			var bb=[];
+			bounds.toArray().map(function(a){
+				aa.push(a[0])
+				bb.push(a[1])
+			})
+			
+			var aaa=aa.sort(function(a,b){
+			return a-b;
+			})
+			
+			var bbb=bb.sort(function(a,b){
+			return a-b;
+			})
+			
+			
+			var bbox = [[aaa[0], bbb[0]], [aaa[aaa.length-1], bbb[aaa.length-1]]];
+				map.fitBounds(bbox, {
+				  padding: {top: 50, bottom:50, left: 50, right: 50}
+			});
+			
+	
+    }
+
+	//导出绘图所有点信息
+    function exportCSV() {
+        let datatime = new Date();
+        var data = draw.getAll();
+        var ndata = []
+        for (var i in data.features) {
+            ndata.push({
+                "id": data.features[i].id,
+                "type": data.features[i].geometry.type,
+                "coord": data.features[i].geometry.coordinates.join(";")
+            })
+        }
+        var nameCsv = "覆盖物导出_" + window.location.hostname + "_" + (datatime.toLocaleDateString() + "_" + datatime.getHours())
+        csvExportor.downloadCsv(ndata, {header: ["编号", "类型", "坐标"]}, nameCsv + '.csv');
+    }
+
+
+
+    var codeDraw = function () {
+        this.plane = "imapgl-ctrl-group imapgl-ctrl";
+        this.btn = "imap-gl-draw_ctrl-draw-btn ";
+        this.ele = {
+            line: "imap-gl-draw_line",
+            polygon: "imap-gl-draw_polygon",
+            point: " imap-gl-draw_point",
+            trash: "imap-gl-draw_trash"
+        }
+        document.getElementsByClassName(this.plane)[0].style.opacity = 0;
+
+    }
+
+    //点的绘制
+    codeDraw.prototype.point = function () {
+        var p = document.getElementsByClassName(this.btn + this.ele.point)[0]
+        p.click();
+    }
+
+    //线段的绘制
+    codeDraw.prototype.line = function () {
+        var p = document.getElementsByClassName(this.btn + this.ele.line)[0]
+        p.click();
+    }
+
+    //多边形的绘制
+    codeDraw.prototype.polygon = function () {
+        var p = document.getElementsByClassName(this.btn + this.ele.polygon)[0]
+        p.click();
+    }
+
+    codeDraw.prototype.trash = function () {
+        var p = document.getElementsByClassName(this.btn + this.ele.trash)[0]
+        p.click();
+    }
+
+    //代码新增 与删除，返回值 查看draw.create draw.update  draw.delete事件监控
+    var draws = new codeDraw();
+    //draws.point();
+	
+	//draws.line()
+	
+	map.on("contextmenu",function()
+	{
+		//draws.trash();//中断绘画、删除事件
+		exportCSV()
+	});
+	
+	
+	map.on("click",function(e){
+		
+		console.log(e.lngLat.lng);//注意lngLat中Lat首字母大写
+	});
+
+    draws.polygon();
+
+    //图形删除，按住shift 选中多个图形可以批量删除
+    //draws.trash();
+
+
+</script>
+
+</body>
+</html>

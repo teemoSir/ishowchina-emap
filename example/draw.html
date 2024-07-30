@@ -1,0 +1,167 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>我秀地图-覆盖物绘制与csv下载</title>
+    <meta charset="utf-8"/>
+    <link  href=""  rel="shortcut icon" type="image/x-icon" />
+    <link href="../css/imap-gl.css" rel="stylesheet"/>
+    <script src="../js/imap-gl.js"></script>
+    <script src="../js/imap-gl-draw.js"></script>
+    <script src="../js/csv.min.js"></script>
+    <script src="../js/csv-exportor.min.js"></script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            z-index: 0;
+        }
+
+        .calculation-box {
+            font-size: 13px;
+            width: 100%;
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+            background-color: rgba(255, 255, 255, 0.9);
+
+            max-height: 200px;
+            overflow-y: scroll;
+
+        }
+
+        .tbc {
+            width: 100%;
+            font-size: 13px;
+        }
+
+
+    </style>
+</head>
+<body>
+<div id='map'></div>
+<div class="calculation-box">
+    <p>使用绘图工具绘制图形。绘制多段线与多边形：单击绘制节点，双击结束绘制。</p>
+    <table class="tbc" id="tbc">
+        <caption>图形列表</caption>
+        <thead style="background-color: #e5f1ea">
+        <tr>
+            <th>编号</th>
+            <th>类型</th>
+            <th>坐标</th>
+        </tr>
+        </thead>
+        <tbody id="calculated-area" style="background-color: #e5f1ea"></tbody>
+    </table>
+
+</div>
+<script>
+    //设置msp_server为本地msp服务IP地址
+    var map = new imapgl.Map({
+        container: 'map',
+        center: [116.38504400000001, 39.890383],
+        zoom: 3,
+        minZoom: 3,
+        hash: true,
+        maxZoom: 20,
+        localIdeographFontFamily: "微软雅黑, 'Microsoft Sans Serif', sans-serif,宋体",
+        antialias: false,
+        style: "../styles/v1/light-v10-gcj02.json"
+    });
+
+
+    var draw = new IMapDraw({
+        displayControlsDefault: true,
+        controls: {
+            point: true,
+            line_string: true,
+            polygon: true,
+            trash: true,
+            combine_features: true,
+            uncombine_features: true
+        },
+        displayControlsDefault: false
+    });
+
+    //绑定绘制控件到页面 位置参数有 'top-left' , 'top-right' , 'bottom-left' , and 'bottom-right' . Defaults to 'top-right' .
+    map.addControl(draw, "top-right");
+
+    //创建时事件
+    map.on('draw.create', updateArea);
+    //删除事件
+    map.on('draw.delete', updateArea);
+    //更新事件
+    map.on('draw.update', updateArea);
+
+    function updateArea(e) {
+
+        var data = draw.getAll();
+        var answer = document.getElementById('calculated-area');
+        answer.innerHTML = "";
+
+        for (var i in data.features) {
+            var ntr = document.createElement("tr");
+            ntr.innerHTML = "<td>{0}</td><td>{1}</td><td>{2}</td>"
+                    .replace("{0}", data.features[i].id)
+                    .replace("{1}", data.features[i].geometry.type)
+                    .replace("{2}", data.features[i].geometry.coordinates.join(";"))
+            answer.appendChild(ntr)
+        }
+    }
+
+    function exportCSV() {
+        let datatime = new Date();
+        var data = draw.getAll();
+        var ndata = []
+        for (var i in data.features) {
+            ndata.push({
+                "id": data.features[i].id,
+                "type": data.features[i].geometry.type,
+                "coord": data.features[i].geometry.coordinates.join(";")
+            })
+        }
+        var nameCsv = "覆盖物导出_" + window.location.hostname + "_" + (datatime.toLocaleDateString() + "_" + datatime.getHours())
+        csvExportor.downloadCsv(ndata, {header: ["编号", "类型", "坐标"]}, nameCsv + '.csv');
+    }
+
+    function csvDownloadControl() {
+    }
+
+    csvDownloadControl.prototype.onAdd = function (map) {
+        this._map = map;
+        this._container = document.createElement('div');
+        this._container.className = 'imapgl-ctrl imapgl-ctrl-group';
+
+        var but = document.createElement("button");
+        but.className = "imapgl-ctrl-icon"
+        but.id = "csvDownloadControl"
+        but.title = "保存到本地"
+        but.style.cssText = "font-weight: 900;color:#333333"
+        but.innerHTML = "<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' height='12px'><path d='M83.3 35.6h-17V3H32.2v32.6H16.6l33.6 32.7 33-32.7z'/><path d='M83.3 64.2v16.3H16.6V64.2H-.1v32.6H100V64.2H83.3z'/></svg>";
+        this._container.appendChild(but);
+        but.onclick = function () {
+            exportCSV()
+        }
+
+        return this._container;
+    };
+
+    csvDownloadControl.prototype.onRemove = function () {
+        this._container.parentNode.removeChild(this._container);
+        this._map = undefined;
+    };
+
+    //绑定下载控件
+    map.addControl(new csvDownloadControl(), "top-right")
+
+
+</script>
+
+</body>
+</html>

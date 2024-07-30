@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>我秀地图-animate-marker</title>
+    <meta charset="utf-8"/>
+    <link href="" rel="shortcut icon" type="image/x-icon"/>
+    <link href="../css/imap-gl.css" rel="stylesheet"/>
+    <script src="../js/imap-gl.js"></script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            z-index: 0;
+        }
+
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+    var map = new imapgl.Map({
+        container: 'map',
+        center: [116.27771321722543, 39.952128183377255],
+        zoom: 3,
+        minZoom: 3,
+        hash: true,
+        maxZoom: 20,
+        localIdeographFontFamily: "微软雅黑, 'Microsoft Sans Serif', sans-serif,宋体",
+        style: "../styles/v1/light-v10-gcj02.json"
+    });
+    // Add a new Marker.
+    const marker = new imapgl.Marker();
+    marker.isStart = function () {
+        marker.animate = true;
+        requestAnimationFrame(animateMarker);
+
+    };
+    marker.isStop = function () {
+        marker.animate = false;
+        requestAnimationFrame(animateMarker);
+    };
+
+    function animateMarker(timestamp) {
+        if (!marker.animate) {
+            return false;
+        }
+        const speed = 100;
+        let bu = map.getBounds();
+
+        const height = (bu.toArray()[1][0] - bu.toArray()[0][0]) / 500;
+        let jump = Math.sin(timestamp / speed) * height;
+        marker.setLngLat([
+            116.151,
+            40.55 + jump
+        ]);
+        marker.addTo(map);
+
+        requestAnimationFrame(animateMarker);
+    }
+
+    //开启跳动
+    marker.isStart();
+
+    //关闭跳动
+    //marker.isStop()
+
+</script>
+</body>
+</html>

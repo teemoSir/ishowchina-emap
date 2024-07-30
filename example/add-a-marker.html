@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>我秀地图</title>
+    <meta charset="utf-8"/>
+    <link  href=""  rel="shortcut icon" type="image/x-icon" />
+    <link href="../css/imap-gl.css" rel="stylesheet"/>
+    <script src="../js/imap-gl.js"></script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            z-index: 0;
+        }
+
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+    var map = new imapgl.Map({
+        container: 'map',
+        center: [116.27771321722543, 39.952128183377255],
+        zoom: 3,
+        minZoom: 3,
+        hash: true,
+        maxZoom: 20,
+        localIdeographFontFamily: "微软雅黑, 'Microsoft Sans Serif', sans-serif,宋体",
+        antialias: false,
+        style: "../styles/v1/light-v10-gcj02.json"
+    });
+
+    // Create a default Marker and add it to the map.
+    var marker1 = new imapgl.Marker()
+            .setLngLat([116.27771321722543, 39.952128183377255])
+            .setPopup(new imapgl.Popup().setHTML("<h1>Hello World!</h1>")) // add popup
+            .addTo(map);
+
+    //marker1.remove(map)   删除标记
+</script>
+</body>
+</html>

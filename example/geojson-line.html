@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>我秀地图-线段</title>
+    <meta charset="utf-8"/>
+    <link  href=""  rel="shortcut icon" type="image/x-icon" />
+    <link href="../css/imap-gl.css" rel="stylesheet"/>
+    <script src="../js/imap-gl.js"></script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            z-index: 0;
+        }
+
+    </style>
+</head>
+<body>
+<div id='map'></div>
+<script>
+    //设置msp_server为本地msp服务IP地址
+    var map = new imapgl.Map({
+        container: 'map',
+        center: [116.38504400000001,39.890383],
+        zoom: 3,
+        minZoom: 3,
+        hash: true,
+        maxZoom: 20,
+        localIdeographFontFamily: "微软雅黑, 'Microsoft Sans Serif', sans-serif,宋体",
+        antialias: false,
+        style: "../styles/v1/light-v10-gcj02.json"
+    });
+
+
+    map.on('load', function () {
+        map.addSource('line1', {
+            'type': 'geojson',
+            'data': {
+                'type': 'Feature',
+                'properties': {},
+                'geometry': {
+                    'type': 'LineString',
+                    'coordinates': [
+                        [116.38504400000001,39.890383],
+                        [116.398262,39.878136000000005],
+                        [116.403411,39.889461000000004]
+                    ]
+                }
+            }
+        });
+        map.addLayer({
+            'id': 'line1',
+            'type': 'line',
+            'source': 'line1',
+            'layout': {
+                'line-join': 'round',
+                'line-cap': 'round'
+            },
+            'paint': {
+                'line-color': 'green',
+                'line-opacity': 0.5,
+                'line-width': 10
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

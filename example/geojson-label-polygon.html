@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>我秀地图-图形label</title>
+    <meta charset="utf-8"/>
+    <link  href=""  rel="shortcut icon" type="image/x-icon" />
+    <link href="../css/imap-gl.css" rel="stylesheet"/>
+    <script src="../js/imap-gl.js"></script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            z-index: 0;
+        }
+
+    </style>
+</head>
+<body>
+<div id='map'></div>
+<script>
+    //设置msp_server为本地msp服务IP地址
+    var map = new imapgl.Map({
+        container: 'map',
+        center: [116.385044, 39.890383],
+        zoom: 3,
+        minZoom: 3,
+        hash: true,
+        maxZoom: 20,
+        localIdeographFontFamily: "微软雅黑, 'Microsoft Sans Serif', sans-serif,宋体",
+        antialias: false,
+        style: "../styles/v1/light-v10-gcj02.json"
+    });
+    map.on('load', function () {
+        //绘制多边形切记首尾坐标相同完成图形闭合
+        map.addSource("maine", {
+            "type": "geojson",
+            "data": {
+                "type": "Feature",
+                "properties": { "name":"求芭比木捏你"},
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [116.41946200000001, 39.897215],
+                            [116.426843, 39.874515],
+                            [116.405986, 39.868325000000006],
+                            [116.41946200000001, 39.897215]
+                        ]
+                    ]
+                }
+            }
+        });
+        // Add a new layer to visualize the polygon.
+        map.addLayer({
+            'id': 'maine',
+            'type': 'fill',
+            'source': 'maine', // reference the data source
+            'layout': {},
+            'paint': {
+                'fill-color': '#0080ff', // blue color fill
+                'fill-opacity': 0.5
+            }
+        });
+        // Add a black outline around the polygon.
+        map.addLayer({
+            'id': 'outline',
+            'type': 'line',
+            'source': 'maine',
+            'layout': {},
+            'paint': {
+                'line-color': '#000',
+                'line-width': 3
+            }
+        });
+		
+		//Text-field is name
+		map.addLayer({
+			'id': 'label',
+			'type': 'symbol',
+            'source': 'maine',
+			'layout': {
+                'text-field': "{name}",
+                'text-font': ["Microsoft YaHei"],
+			'text-size': 20,
+			'text-justify':'center',
+			'text-padding':10
+			//'text-variable-anchor':'center'
+			},
+			'paint': {
+                'text-color': 'white',
+				
+			}
+			});
+    });
+</script>
+</body>
+</html>

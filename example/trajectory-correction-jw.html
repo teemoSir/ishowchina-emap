@@ -1,0 +1,96 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>我秀地图-轨迹纠偏</title>
+    <meta charset="utf-8"/>
+    <link  href=""  rel="shortcut icon" type="image/x-icon" />
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            z-index: 0;
+        }
+
+    </style>
+</head>
+<body>
+<div id='map'></div>
+<link href="../css/imap-gl.css" rel="stylesheet"/>
+<script src="../js/imap-gl.js"></script>
+
+<script>
+
+    //设置msp_server为本地msp服务IP地址
+    imapgl.msp_server = "http://172.192.100.39:25001"
+    //imapgl.msp_server = "http://api.ishowchina.com"
+    var map = new imapgl.Map({
+        container: 'map',
+        center: [105.39780155113226, 35.89970880443798],
+        zoom: 3,
+        minZoom: 3,
+        hash: false,
+        maxZoom: 20,
+        localIdeographFontFamily: "微软雅黑, 'Microsoft Sans Serif', sans-serif,宋体",
+        antialias: false,
+        style: "../styles/v1/light-v10-gcj02.json"
+    });
+
+    //坐标轨迹纠偏
+    var msp = new imapgl.MspControl()
+    var options = {
+        coords: "119.0086757,31.81666189;119.0085757,31.81665189",
+        speed: "0,0",
+        direction: "1,1",
+        coord_type: "wgs84",
+        out_coord_type: "wgs84",
+        showPoly: 0
+
+    }
+
+    /*
+     * options                          入参
+     * options.coords string            用于匹配的地理坐标点集合，格式为：经度,纬度; 经度,纬度.......;必填参数
+     * options.speed string             车辆行驶速度，与参数xys指定的坐标点对应，速度值个数与坐标点数量一致，单位：千米/小时。浮点型，多个速度值之间使用半角逗号“，”分隔。;必填参数
+     * options.direction string         辆的方位角，与参数xys指定的坐标点对应，方位角个数与坐标点数量一致。以正北方向为0度，沿顺时针方向为正值，弧度制，取值范围[0,2π]。浮点型，多个方位角之间使用半角逗号“，”分隔。;必填参数
+     * options.coord_type string        输入坐标类型，默认为gcj02。允许的值为：gcj02： 国测局坐标wgs84： gps设备获取的坐标baidu : 百度坐标;可选参数
+     * options.out_coord_type string    输出坐标类型，默认为gcj02。允许的值为：gcj02： 国测局坐标wgs84： gps设备获取的坐标baidu : 百度坐标;可选参数
+     * options.showPoly int             是否显示纠偏后组成道路的坐标点。默认0 不显示道路坐标串 其他显示0：不显示。其他：显示。默认值为0。;可选参数
+     *
+     * return
+     * data                             返回值
+     * data.status	                    状态，0为成功，其他为失败。
+     * data.message	                    状态说明。
+     * data.successCount	            检索到的类型记录总数。
+     * data.result	                    多坐标入参情况下只返回成功抓取的。
+     * data.result.nearestPoint	        最近的交叉路口点对象。
+     * data.result.nearestPoint.lng	    经度。
+     * data.result.nearestPoint.lat	    纬度。
+     * data.result.level	            道路级别名称。
+     * data.result.roadName	            道路名称。
+     * data.result.heightLimit	        道路限高。
+     * data.result.widthLimit	        道路限宽。
+     * data.result.weightLimit	        道路限重。
+     * data.result.maxSpeed	            速度上限。
+     * data.result.minSpeed	            速度下限。
+     * data.result.polyline	            路坐标串格式 ，形如：经度,纬度;经度,纬度...
+     * data.result.originPoint	        路坐标串格式 ，形如：经度,纬度;经度,纬度...。说明：坐标5位以后可能会被四舍五入。
+     * data.result.originPoint.lng	    纬度。
+     * data.result.originPoint.lat	    纬度。
+     * data.result.pointCount           道路坐标数量
+     * */
+    msp.TrajectoryCorrection(options, function (data) {
+        console.log(data)
+        alert(JSON.stringify(data))
+    })
+
+</script>
+
+</body>
+</html>

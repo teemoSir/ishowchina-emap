@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>我秀地图-正向地理编码</title>
+    <meta charset="utf-8"/>
+    <link  href=""  rel="shortcut icon" type="image/x-icon" />
+    <link href="../css/imap-gl.css" rel="stylesheet"/>
+    <script src="../js/imap-gl.js"></script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            z-index: 0;
+        }
+
+    </style>
+</head>
+<body>
+<div id='map'></div>
+
+<script>
+
+    //设置msp_server为本地msp服务IP地址
+    //imapgl.msp_server = "http://172.192.100.30:25001"
+    imapgl.msp_server = "http://api.ishowchina.com"
+    var map = new imapgl.Map({
+        container: 'map',
+        center: [119.39780155113226, 31.89970880443798],
+        zoom: 3,
+        minZoom: 3,
+        hash: true,
+        maxZoom: 20,
+        localIdeographFontFamily: "微软雅黑, 'Microsoft Sans Serif', sans-serif,宋体",
+        antialias: false,
+        style: "../styles/v1/light-v10-gcj02.json"
+    });
+
+    //坐标msp服务实例
+    var msp = new imapgl.MspControl()
+
+
+    var options = {
+        address: "海淀区中关村军民产业园",
+        city: "",
+        out_coord_type: ""
+    }
+    /* 正向地理编码
+     * options                          入参对象
+     * options.address string           完整的地址描述。标准的地址信息，如上海市长宁区空港三路92号；名胜古迹、标志性建筑物，如东方明珠塔。多地址用“,”分开 如：颐和园,圆明园；必填参数
+     * options.city string              地址所在的城市名。;可选参数
+     * options.out_coord_type string    坐标类型，默认为gcj02。允许的值为： gcj02： 国测局坐标 wgs84： gps设备获取的坐标 baidu : 百度坐标;可选参数
+     *
+     * return
+     * data                             返回值对象
+     * data.status	                    状态，0为成功，其他为失败。
+     * data.message	                    状态说明。
+     * data.total	                    检索到的类型记录总数。
+     * data.results	                    检索结果。
+     * */
+    msp.Geocoder(options, function (data) {
+        console.log(data)
+        alert(JSON.stringify(data))
+    })
+</script>
+
+</body>
+</html>

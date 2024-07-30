@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>我秀地图-绘制圆</title>
+    <meta charset="utf-8"/>
+    <link href="" rel="shortcut icon" type="image/x-icon"/>
+    <link href="../css/imap-gl.css" rel="stylesheet"/>
+    <script src="../js/imap-gl.js"></script>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            z-index: 0;
+        }
+
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+    var map = new imapgl.Map({
+        container: 'map',
+        center: [116.27771321722543, 39.952128183377255],
+        zoom: 3,
+        minZoom: 3,
+        hash: true,
+        maxZoom: 20,
+        localIdeographFontFamily: "微软雅黑, 'Microsoft Sans Serif', sans-serif,宋体",
+        antialias: false,
+        style: "../styles/v1/light-v10-gcj02-lc.json"
+    });
+    function metersToPixelsAtMaxZoom(meters, latitude) {
+        return meters / 0.075 / Math.cos(latitude * Math.PI / 180)
+    }
+
+    map.on("load", function () {
+
+        //圆心坐标
+        var coordinates = [116.27771321722543, 39.95212818337725]
+        //半径
+        var radius = metersToPixelsAtMaxZoom(1000, coordinates[1])
+
+        map.addSource("circle_500", {
+            "type": "geojson",
+            "data": {
+                "type": "FeatureCollection",
+                "features": [{
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": coordinates
+                    }
+                }]
+            }
+        });
+
+        //添加圆的图层
+        map.addLayer({
+            "id": "circle_layer",
+            "type": "circle",
+            "source": "circle_500",
+            "paint": {
+                //关键处，设置圆的半径随地图缩放而变化
+                "circle-radius": {
+                    stops: [
+                        [0, 0],
+                        [20, radius]],
+                    base: 2
+                },
+                //设置圆的其他属性
+                "circle-opacity": 0.5,
+                "circle-stroke-width": 1,
+                "circle-color": "#00f",
+                "circle-pitch-alignment": "map"
+            }
+        });
+    })
+
+</script>
+</body>
+</html>

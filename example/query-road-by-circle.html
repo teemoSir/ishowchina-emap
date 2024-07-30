@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>我秀地图-抓路服务</title>
+    <meta charset="utf-8"/>
+    <link  href=""  rel="shortcut icon" type="image/x-icon" />
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            z-index: 0;
+        }
+
+    </style>
+</head>
+<body>
+<div id='map'></div>
+<link href="../css/imap-gl.css" rel="stylesheet"/>
+<script src="../js/imap-gl.js"></script>
+
+<script>
+
+    //设置msp_server为本地msp服务IP地址
+    imapgl.msp_server = "http://172.192.100.30:25001"
+
+    var map = new imapgl.Map({
+        container: 'map',
+        center: [105.39780155113226, 35.89970880443798],
+        zoom: 3,
+        minZoom: 3,
+        hash: false,
+        maxZoom: 20,
+        localIdeographFontFamily: "微软雅黑, 'Microsoft Sans Serif', sans-serif,宋体",
+        antialias: false,
+        style: "../styles/v1/light-v10-gcj02.json"
+    });
+
+    //坐标抓路服务实例
+    var msp = new imapgl.MspControl()
+    var options = {
+        center: "119.0086757,31.81666189",
+        radius: 1000,
+        coorretrn: 0,
+        coord_type: "",
+        out_coord_type: ""
+    }
+    /*
+     * options
+     * options.center 圆型中心点坐标，格式如，经度,纬度;必填参数
+     * options.radius 圆型区域半径，单位：米，最大半径为2000米;必填参数
+     * options.coorretrn 0表示不返回结果中的road_coors;1表示返回road_coors; <road_coors>子节点用于描述与道路名称匹配的道路的坐标集合;默认值为0;可选参数
+     * options.coord_type 输入坐标类型，默认为gcj02。允许的值为：gcj02： 国测局坐标wgs84： gps设备获取的坐标baidu : 百度坐标;可选参数
+     * options.out_coord_type 输出坐标类型，默认为gcj02。允许的值为：gcj02： 国测局坐标wgs84： gps设备获取的坐标baidu : 百度坐标;可选参数
+     *
+     * return
+     * data
+     * data.status	状态，0为成功，其他为失败。
+     * data.message	状态说明。
+     * data.total	检索到的类型记录总数。
+     * data.results	关键字检索结果。
+     * */
+    msp.QueryRoadByCircle(options, function (data) {
+        console.log(data)
+    })
+
+
+    map.on("click", function (e) {
+
+        var options = {
+            center: e.lngLat.lng + "," + e.lngLat.lat,
+            radius: 1000,
+            coorretrn: 0,
+            coord_type: "wgs84",
+            out_coord_type: "wgs84"
+        }
+        msp.QueryRoadByCircle(options, function (data) {
+            console.log(data)
+        })
+    })
+</script>
+
+</body>
+</html>

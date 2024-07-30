@@ -1,0 +1,6715 @@
+﻿{
+  "version": 8,
+  "sprite": "http://localhost:8000/emap/sprites/sprite",
+  "glyphs": "http://localhost:8000/emap/fonts/{fontstack}/{range}.pbf",
+  "light": {
+    "anchor": "map",
+    "color": "#F5F5F5",
+    "intensity": 0.2
+  },
+  "sources": {
+
+    "emap_tile": {
+        "type": "raster",
+        "url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+        "tileSize": 256,
+        "scheme":"xyz"
+    },
+    "province_city_county": {
+      "description": "省、市、县边界线",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/province_city_county/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 14
+    },
+    "china_city_name": {
+      "description": "省、市、自治区、直辖市",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/china_city_name/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 14
+    },
+    "china_county_name": {
+      "description": "县、区、村、组、乡、镇图层",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/china_county_name/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 14
+    },
+    "china_way": {
+      "description": "道路线",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/china_way/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 14
+    },
+    "china_subway_all": {
+      "description": "全国地铁线",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/china_subway_all/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 14
+    },
+    "china_railway": {
+      "description": "铁路线",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/china_railway/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 14
+    },
+    "china_landuseline": {
+      "description": "背景线条数据",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/china_landuseline/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 14
+    },
+    "china_settlementline": {
+      "description": "背景线条数据",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/china_settlementline/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 14
+    },
+    "china_landusearea": {
+      "description": "背景多边形-绿地水系",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/china_landusearea/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 14
+    },
+    "china_settlementarea": {
+      "description": "建筑物多边形",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/china_settlementarea/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 14
+    },
+
+    "china_poi_10": {
+      "description": "兴趣标记10",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/china_poi_10/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 10
+    },
+    "china_poi_11": {
+      "description": "兴趣标记11",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/china_poi_11/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 11
+    },
+    "china_poi_12": {
+      "description": "兴趣标记12",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/china_poi_12/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 12
+    },
+    "china_poi_13": {
+      "description": "兴趣标记13",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/china_poi_13/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 13
+    },
+    "china_poi_14": {
+      "description": "兴趣标记14",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/china_poi_14/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 14
+    },
+    "china_poi_15": {
+      "description": "兴趣标记15",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/china_poi_15/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 15
+    },
+    "china_poi_16": {
+      "description": "兴趣标记16",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/china_poi_16/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 16
+    },
+    "china_poi_17": {
+      "description": "兴趣标记17",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/china_poi_17/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 17
+    },
+    "china_poi_18": {
+      "description": "兴趣标记18",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/china_poi_18/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 18
+    },
+    "world_poi": {
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/world_poi/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 14
+    },
+    "world_area": {
+      "description": "世界大陆板块",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/world_area/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 10
+    },
+    "world_adminarea": {
+      "description": "中国大陆板块",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/world_adminarea/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 10
+    },
+    "china_subway": {
+      "description": "地铁线路-废弃",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/china_subway/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 14
+    },
+    "world_wocean": {
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/world_wocean/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 14
+    },
+    "china_traffic": {
+      "description": "路况-底色绿段",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/china_traffic/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 14
+    },
+    "china_trc": {
+      "description": "路况-黄红段",
+      "tiles": [
+        "http://172.192.100.59:8081/trc/file/{z}/{x}/{y}"
+      ],
+      "type": "vector",
+      "maxzoom": 16
+    },
+    "110000_BEIJING_ROADSEGMENT": {
+      "description": "北京路况图层",
+      "tiles": [
+        "http://172.192.100.7:50004/geoserver/gwc/service/tms/1.0.0/cite:roadsegment@EPSG:900913@pbf/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "scheme": "tms",
+      "maxzoom": 14
+    },
+ "cross_radiuscp": {
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/cross_radiuscp/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 14
+    },
+    "road_furniturejy": {
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/road_furniturejy/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector",
+      "maxzoom": 14
+    },
+    "blue_way": {
+      "description": "蓝色路网",
+      "tiles": [
+        "http://172.192.100.7:10000/tilejw/blue_way/{z}/{x}/{y}.pbf"
+      ],
+      "type": "vector"
+    }
+  },
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "layout": {},
+      "paint": {
+        "background-color": "#f5f5f5"
+      },
+      "interactive": true
+    },
+
+    {"id": "emaptile", "type": "raster", "source": "emap_tile", "source-layer": "emap_tile"},
+    {
+      "id": "world_wocean",
+      "type": "fill",
+      "minzoom": 3.0,
+      "maxzoom": 8.0,
+      "source": "world_wocean",
+      "source-layer": "world_wocean",
+      "paint": {
+        "fill-outline-color": "#f5f5f5",
+        "fill-color": "#9FD7FC",
+        "fill-antialias": true,
+        "fill-translate-anchor": "viewport"
+      },
+      "layout": {
+        "visibility": "visible"
+      }
+    },
+    {
+      "id": "world_area",
+      "type": "fill",
+      "source": "world_area",
+      "source-layer": "world_area",
+      "paint": {
+        "fill-color": "#f5f5f5",
+        "fill-antialias": true,
+        "fill-translate-anchor": "viewport"
+      }
+    },
+    {
+      "id": "world_adminarea",
+      "type": "fill",
+      "source": "world_adminarea",
+      "source-layer": "world_adminarea",
+      "minzoom": 6,
+      "paint": {
+        "fill-outline-color": "#f5f5f5",
+        "fill-color": "#f5f5f5",
+        "fill-opacity": 1,
+        "fill-antialias": true,
+        "fill-translate-anchor": "viewport"
+      }
+    },
+    {
+      "id": "china_landuseline",
+      "type": "line",
+      "name": "全国简易背景数据",
+      "describe": "小比例级别下河流",
+      "source": "china_landuseline",
+      "source-layer": "china_landuseline",
+      "minzoom": 14,
+      "maxzoom": 20,
+      "filter": [
+        "all",
+        [
+          "in",
+          "LUL_TYPE",
+          1000
+        ]
+      ],
+      "layout": {
+        "visibility": "none",
+        "line-join": "round",
+        "line-cap": "butt"
+      },
+      "paint": {
+        "line-translate-anchor": "viewport",
+        "line-width": 3.5,
+        "line-color": "#AADAFF"
+      },
+      "interactive": true
+    },
+    {
+      "id": "settlement_line",
+      "type": "line",
+      "name": "运动场",
+      "describe": "运动场",
+      "source": "china_settlementline",
+      "source-layer": "china_settlementline",
+      "minzoom": 6,
+      "layout": {
+        "visibility": "visible",
+        "line-join": "round",
+        "line-cap": "butt"
+      },
+      "paint": {
+        "line-translate-anchor": "viewport",
+        "line-width": 2.5,
+        "line-color": "#EEC9BA"
+      },
+      "interactive": true
+    },
+    {
+      "id": "water-0",
+      "type": "fill",
+      "source": "china_landusearea",
+      "source-layer": "china_landusearea",
+      "filter": [
+        "all",
+        [
+          "in",
+          "LUA_TYPE",
+          1000,
+          1010,
+          1020,
+          1030,
+          1040,
+          1050,
+          1060,
+          1080
+        ],
+        [
+          "in",
+          "DISP_CLASS",
+          1,
+          2,
+          3
+        ]
+      ],
+      "minzoom": 6,
+      "maxzoom": 13.99,
+      "layout": {},
+      "paint": {
+        "fill-color": "#AADAFF",
+        "fill-translate": [
+          "interpolate",
+          [
+            "exponential",
+            1.2
+          ],
+          [
+            "zoom"
+          ],
+          7,
+          [
+            "literal",
+            [
+              0,
+              0
+            ]
+          ],
+          16,
+          [
+            "literal",
+            [
+              -1,
+              -1
+            ]
+          ]
+        ],
+        "fill-translate-anchor": "viewport"
+      }
+    },
+    {
+      "id": "water-1",
+      "type": "fill",
+      "source": "china_landusearea",
+      "source-layer": "china_landusearea",
+      "filter": [
+        "all",
+        [
+          "in",
+          "LUA_TYPE",
+          1000,
+          1060,
+          1030,
+          1040,
+          1020,
+          1050
+        ]
+      ],
+      "minzoom": 14,
+      "layout": {},
+      "paint": {
+        "fill-color": "#AADAFF",
+        "fill-translate": [
+          "interpolate",
+          [
+            "exponential",
+            1.2
+          ],
+          [
+            "zoom"
+          ],
+          7,
+          [
+            "literal",
+            [
+              0,
+              0
+            ]
+          ],
+          16,
+          [
+            "literal",
+            [
+              -1,
+              -1
+            ]
+          ]
+        ],
+        "fill-translate-anchor": "viewport"
+      }
+    },
+    {
+      "id": "landusearea-land",
+      "name": "绿地",
+      "describe": "绿地",
+      "source": "china_landusearea",
+      "source-layer": "china_landusearea",
+      "type": "fill",
+      "filter": [
+        "all",
+        [
+          "in",
+          "LUA_TYPE",
+          2050
+        ],
+        [
+          "in",
+          "DISP_CLASS",
+          1
+        ]
+      ],
+      "minzoom": 8,
+      "maxzoom": 13.99,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "#B4EBAF",
+        "fill-antialias": true,
+        "fill-translate-anchor": "viewport"
+      }
+    },
+    {
+      "id": "landusearea-land-0",
+      "name": "绿地",
+      "describe": "绿地-小区域",
+      "source": "china_landusearea",
+      "source-layer": "china_landusearea",
+      "type": "fill",
+      "minzoom": 14,
+      "maxzoom": 20,
+      "filter": [
+        "all",
+        [
+          "in",
+          "LUA_TYPE",
+          2000,
+          2010,
+          2020,
+          2030,
+          2040,
+          2050,
+          2060,
+          3401
+        ]
+      ],
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "#B4EBAF",
+        "fill-antialias": true,
+        "fill-translate-anchor": "viewport"
+      }
+    },
+    {
+      "id": "yundongchang",
+      "name": "运动场",
+      "describe": "运动场",
+      "source": "china_settlementarea",
+      "source-layer": "china_settlementarea",
+      "type": "fill",
+      "minzoom": 14.99,
+      "filter": [
+        "all",
+        [
+          "in",
+          "SETT_TYPE",
+          "3201"
+        ]
+      ],
+      "paint": {
+        "fill-color": [
+          "match",
+          [
+            "get",
+            "SETT_TYPE"
+          ],
+          [
+            "3201"
+          ],
+          "#F6E0D7",
+          "RED"
+        ]
+      }
+    },
+    {
+      "id": "railway-outline",
+      "type": "line",
+      "name": "铁路_边框",
+      "describe": "铁路",
+      "source": "china_railway",
+      "source-layer": "china_railway",
+      "filter": [
+        "all",
+        [
+          "in",
+          "DISP_CLASS",
+          1,
+          2
+        ],
+        [
+          "in",
+          "RAIL_TYPE",
+          5100,
+          5300
+        ]
+      ],
+      "minzoom": 8,
+      "layout": {
+        "visibility": "visible",
+        "line-join": "round",
+        "line-cap": "butt"
+      },
+      "paint": {
+        "line-translate-anchor": "viewport",
+        "line-width": {
+          "stops": [
+            [
+              3,
+              2.5
+            ],
+            [
+              20,
+              6
+            ]
+          ],
+          "base": 2.5
+        },
+        "line-color": "#d5d8db"
+      },
+      "interactive": true
+    },
+    {
+      "id": "railway",
+      "type": "line",
+      "name": "铁路_线",
+      "describe": "铁路",
+      "source": "china_railway",
+      "source-layer": "china_railway",
+      "filter": [
+        "all",
+        [
+          "in",
+          "DISP_CLASS",
+          1,
+          2
+        ],
+        [
+          "in",
+          "RAIL_TYPE",
+          5100,
+          5300
+        ]
+      ],
+      "minzoom": 8,
+      "layout": {
+        "visibility": "visible",
+        "line-join": "round",
+        "line-cap": "butt"
+      },
+      "paint": {
+        "line-translate-anchor": "viewport",
+        "line-width": {
+          "stops": [
+            [
+              3,
+              1.5
+            ],
+            [
+              18,
+              4.6
+            ]
+          ],
+          "base": 1.5
+        },
+        "line-dasharray": [
+          9,
+          9
+        ],
+        "line-color": "#ffffff"
+      },
+      "interactive": true
+    },
+
+
+    {
+      "id": "road-outline-6",
+      "name": "道路",
+      "describe": "低等级内部道路",
+      "type": "line",
+      "source": "china_way",
+      "source-layer": "china_way",
+      "minzoom": 14.99,
+      "layout": {
+        "line-join": [
+          "step",
+          [
+            "zoom"
+          ],
+          "miter",
+          13,
+          "round"
+        ],
+        "line-cap": [
+          "step",
+          [
+            "zoom"
+          ],
+          "butt",
+          13,
+          "round"
+        ]
+      },
+      "paint": {
+        "line-translate-anchor": "viewport",
+        "line-gap-width": 0.5,
+        "line-color": "#E5E5E5"
+      },
+      "interactive": true
+    },
+    {
+      "id": "road-6",
+      "name": "道路",
+      "describe": "低等级内部道路",
+      "type": "line",
+      "source": "china_way",
+      "source-layer": "china_way",
+      "minzoom": 14.99,
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-translate-anchor": "viewport",
+        "line-width": {
+          "stops": [
+            [
+              9,
+              0.8
+            ],
+            [
+              10,
+              1
+            ],
+            [
+              11,
+              1
+            ],
+            [
+              12,
+              1
+            ],
+            [
+              13,
+              1
+            ],
+            [
+              14,
+              1
+            ],
+            [
+              15,
+              4
+            ],
+            [
+              16,
+              6
+            ],
+            [
+              17,
+              10
+            ],
+            [
+              18,
+              10
+            ],
+            [
+              19,
+              10
+            ]
+          ],
+          "base": 1.2
+        },
+        "line-color": "#ffffff"
+      },
+      "interactive": true
+    },
+    {
+      "id": "road-outline-5",
+      "name": "道路",
+      "describe": "低等级内部道路",
+      "type": "line",
+      "source": "china_way",
+      "source-layer": "china_way",
+      "filter": [
+        "all",
+        [
+          "in",
+          "FC",
+          5
+        ]
+      ],
+      "minzoom": 13,
+      "layout": {
+        "line-join": [
+          "step",
+          [
+            "zoom"
+          ],
+          "miter",
+          14,
+          "round"
+        ],
+        "line-cap": [
+          "step",
+          [
+            "zoom"
+          ],
+          "butt",
+          14,
+          "round"
+        ]
+      },
+      "paint": {
+        "line-translate-anchor": "viewport",
+        "line-gap-width": {
+          "stops": [
+            [
+              14,
+              2
+            ],
+            [
+              15,
+              4
+            ],
+            [
+              16,
+              6
+            ],
+            [
+              17,
+              10
+            ],
+            [
+              18,
+              10
+            ],
+            [
+              19,
+              10
+            ]
+          ],
+          "base": 1.2
+        },
+        "line-color": "#E5E5E5"
+      },
+      "interactive": true
+    },
+    {
+      "id": "road-5",
+      "name": "道路",
+      "describe": "低等级内部道路",
+      "type": "line",
+      "source": "china_way",
+      "source-layer": "china_way",
+      "minzoom": 13,
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-translate-anchor": "viewport",
+        "line-width": {
+          "stops": [
+            [
+              14,
+              2
+            ],
+            [
+              15,
+              4
+            ],
+            [
+              16,
+              6
+            ],
+            [
+              17,
+              10
+            ],
+            [
+              18,
+              10
+            ],
+            [
+              19,
+              10
+            ]
+          ],
+          "base": 1.2
+        },
+        "line-color": "#ffffff"
+      },
+      "filter": [
+        "all",
+        [
+          "in",
+          "FC",
+          5
+        ]
+      ],
+      "interactive": true
+    },
+    {
+      "id": "way-outline-3-11",
+      "name": "国道/省道",
+      "describe": "Zoom:3-11级别",
+      "type": "line",
+      "source": "china_way",
+      "source-layer": "china_way",
+      "minzoom": 8.5,
+      "maxzoom": 11.99,
+      "filter": [
+        "all",
+        [
+          "in",
+          "FC",
+          1,
+          2
+        ]
+      ],
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-translate-anchor": "viewport",
+        "line-gap-width": [
+          "interpolate",
+          [
+            "exponential",
+            1.5
+          ],
+          [
+            "zoom"
+          ],
+          4,
+          0.5,
+          10,
+          1
+        ],
+        "line-color": "#FEB562"
+      },
+      "interactive": true
+    },
+    {
+      "id": "way-3-11",
+      "name": "国道/省道",
+      "describe": "Zoom:3-11级别",
+      "type": "line",
+      "source": "china_way",
+      "source-layer": "china_way",
+      "minzoom": 4,
+      "maxzoom": 11.99,
+      "filter": [
+        "all",
+        [
+          "in",
+          "FC",
+          1,
+          2
+        ]
+      ],
+      "layout": {
+        "line-cap": [
+          "step",
+          [
+            "zoom"
+          ],
+          "butt",
+          1,
+          "round"
+        ],
+        "line-join": [
+          "step",
+          [
+            "zoom"
+          ],
+          "miter",
+          1,
+          "round"
+        ]
+      },
+      "paint": {
+        "line-translate-anchor": "viewport",
+        "line-width": [
+          "interpolate",
+          [
+            "exponential",
+            1.5
+          ],
+          [
+            "zoom"
+          ],
+          4,
+          0.5,
+          10,
+          2
+        ],
+        "line-color": "#FEB562"
+      },
+      "interactive": true
+    },
+    {
+      "id": "road-outline-1234",
+      "name": "国道/省道12-17.5",
+      "describe": "道路",
+      "type": "line",
+      "source": "china_way",
+      "source-layer": "china_way",
+      "minzoom": 11,
+      "layout": {
+        "line-cap": "round",
+        "line-join": "round"
+      },
+      "paint": {
+        "line-translate-anchor": "viewport",
+        "line-gap-width": [
+          "interpolate",
+          [
+            "exponential",
+            1.5
+          ],
+          [
+            "zoom"
+          ],
+          10,
+          1.125,
+          18,
+          32,
+          22,
+          225
+        ],
+        "line-color": "#F7D169"
+      },
+      "filter": [
+        "all",
+        [
+          "in",
+          "FC",
+          1,
+          2,
+          3,
+          4
+        ]
+      ],
+      "interactive": true
+    },
+    {
+      "id": "road-1234",
+      "name": "国道/省道",
+      "describe": "道路",
+      "type": "line",
+      "source": "china_way",
+      "source-layer": "china_way",
+      "minzoom": 11,
+      "maxzoom": 20,
+      "layout": {
+        "line-cap": [
+          "step",
+          [
+            "zoom"
+          ],
+          "butt",
+          11,
+          "round"
+        ],
+        "line-join": [
+          "step",
+          [
+            "zoom"
+          ],
+          "miter",
+          11,
+          "round"
+        ]
+      },
+      "paint": {
+        "line-translate-anchor": "viewport",
+        "line-width": [
+          "interpolate",
+          [
+            "exponential",
+            1.5
+          ],
+          [
+            "zoom"
+          ],
+          10,
+          1.125,
+          18,
+          32,
+          22,
+          225
+        ],
+        "line-color": "#FFEBA1"
+      },
+      "filter": [
+        "all",
+        [
+          "in",
+          "FC",
+          1,
+          2,
+          3,
+          4
+        ]
+      ],
+      "interactive": true
+    },
+    {
+      "id": "road-label",
+      "name": "",
+      "describe": "道路名",
+      "type": "symbol",
+      "source": "china_way",
+      "source-layer": "china_way",
+      "minzoom": 10,
+      "maxzoom": 20,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "visibility": "visible",
+        "text-field": "{NAME_CHN}",
+        "text-rotation-alignment": "map",
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-size": [
+          "match",
+          [
+            "get",
+            "FC"
+          ],
+          [
+            1
+          ],
+          12,
+          [
+            2
+          ],
+          12,
+          [
+            3
+          ],
+          11,
+          [
+            4
+          ],
+          11,
+          [
+            5
+          ],
+          11,
+          [
+            6
+          ],
+          10,
+          [
+            7
+          ],
+          10,
+          11
+        ],
+        "icon-size": 1,
+        "symbol-placement": "line"
+      },
+      "paint": {
+        "text-halo-color": "#ffffff",
+        "text-translate-anchor": "viewport",
+        "text-color": [
+          "match",
+          [
+            "get",
+            "FC"
+          ],
+          [
+            1
+          ],
+          "#7F431A",
+          [
+            2
+          ],
+          "#7F431A",
+          [
+            3
+          ],
+          "#7F431A",
+          [
+            4
+          ],
+          "#B38949",
+          [
+            5
+          ],
+          "#7F431A",
+          [
+            6
+          ],
+          "#000000",
+          [
+            7
+          ],
+          "#eeeeee",
+          "#7F431A"
+        ],
+        "text-halo-width": 1
+      }
+    },
+
+    {
+      "id": "blue_way",
+      "name": "道路",
+      "describe": "低等级内部道路",
+      "type": "line",
+      "source": "blue_way",
+      "source-layer": "blue_way",
+      "layout": {
+	   "visibility": "none",
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-translate-anchor": "viewport",
+        "line-width": {
+          "stops": [
+            [
+              3,
+              1
+            ],
+            [
+              15,
+              4
+            ],
+            [
+              16,
+              6
+            ],
+            [
+              17,
+              10
+            ],
+            [
+              18,
+              10
+            ],
+            [
+              19,
+              10
+            ]
+          ],
+          "base": 1.2
+        },
+        "line-color": "rgba(0,16,253,0.6)"
+      },
+      "interactive": true
+    },
+    {
+      "id": "building",
+      "source": "china_settlementarea",
+      "source-layer": "china_settlementarea",
+      "type": "fill-extrusion",
+      "minzoom": 16,
+      "filter": [
+        "all",
+        [
+          "in",
+          "SETT_TYPE",
+          "3000",
+          "3010",
+          "3011",
+          "3012",
+          "3013",
+          "3014",
+          "3015",
+          "3016",
+          "3017",
+          "3100",
+          "3101",
+          "3102"
+        ]
+      ],
+      "paint": {
+        "fill-extrusion-color": [
+          "match",
+          [
+            "get",
+            "MESH"
+          ],
+          "1",
+          "blue",
+          "#cccccc"
+        ],
+        "fill-extrusion-height": [
+          "+",
+          5,
+          [
+            "*",
+            5,
+            [
+              "to-number",
+              [
+                "get",
+                "GRADE_LEVE"
+              ]
+            ]
+          ]
+        ],
+        "fill-extrusion-base": 0,
+        "fill-extrusion-opacity": 0.4
+      }
+    },
+    {
+      "id": "railway-label",
+      "name": "铁路名",
+      "describe": "铁路名",
+      "type": "symbol",
+      "source": "china_railway",
+      "source-layer": "china_railway",
+      "minzoom": 10,
+      "maxzoom": 20,
+      "filter": [
+        "all",
+        [
+          "in",
+          "RAIL_TYPE",
+          5100,
+          5300
+        ]
+      ],
+      "layout": {
+        "symbol-avoid-edges": false,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "visibility": "visible",
+        "text-field": "{NAME_CHN}",
+        "text-rotation-alignment": "map",
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-size": {
+          "stops": [
+            [
+              9,
+              10
+            ],
+            [
+              10,
+              10
+            ],
+            [
+              11,
+              11
+            ],
+            [
+              12,
+              12
+            ],
+            [
+              13,
+              12
+            ],
+            [
+              14,
+              12
+            ],
+            [
+              15,
+              12
+            ],
+            [
+              16,
+              12
+            ],
+            [
+              17,
+              13
+            ],
+            [
+              18,
+              14
+            ],
+            [
+              19,
+              15
+            ]
+          ],
+          "base": 1
+        },
+        "icon-size": 1,
+        "symbol-placement": "line"
+      },
+      "paint": {
+        "text-halo-color": "#fefdfc",
+        "text-translate-anchor": "viewport",
+        "icon-color": "#ff0000",
+        "text-color": "#76767b",
+        "text-halo-width": 1
+      }
+    },
+    {
+      "id": "subway-china_subway_all",
+      "type": "line",
+      "name": "地铁线路",
+      "describe": "地铁线路",
+      "source": "china_subway_all",
+      "source-layer": "line",
+      "minzoom": 10,
+      "maxzoom": 20,
+    "filter": [
+        "all",
+        [
+          "in",
+          "Rail_line",
+          "0",0
+        ]
+      ],
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-translate-anchor": "viewport",
+        "line-width": {
+          "stops": [
+            [
+              12,
+              2
+            ],
+            [
+              19,
+              4
+            ]
+          ],
+          "base": 2
+        },
+        "line-opacity": 0.5,
+        "line-color": [
+          "match",
+          [
+            "get",
+            "Name_chn"
+          ],
+          [
+            "7号线"
+          ],
+          "#F9BE58",
+          [
+            "6号线"
+          ],
+          "#D0970A",
+          [
+            "9号线"
+          ],
+          "#F9BE58",
+          [
+            "5号线"
+          ],
+          "#A61D7F",
+          [
+            "机场快轨"
+          ],
+          "#A49ABD",
+          [
+            "地铁西郊线"
+          ],
+          "#FC0601",
+          [
+            "16号线"
+          ],
+          "#6CB46B",
+          [
+            "8号线"
+          ],
+          "#018237",
+          [
+            "地铁燕房线支线"
+          ],
+          "#B35A1F",
+          [
+            "昌平线"
+          ],
+          "#41A9C1",
+          [
+            "13号线"
+          ],
+          "#FCD600",
+          [
+            "地铁燕房线"
+          ],
+          "#B35A1F",
+          [
+            "4号线"
+          ],
+          "#008187",
+          [
+            "亦庄线"
+          ],
+          "#41A9C1",
+          [
+            "地铁八通线"
+          ],
+          "#CC0000",
+          [
+            "房山线"
+          ],
+          "#EB81B9",
+          [
+            "10号线"
+          ],
+          "#019AC3",
+          [
+            "2号线"
+          ],
+          "#0065B3",
+          [
+            "15号线"
+          ],
+          "#793E8C",
+          [
+            "14号线"
+          ],
+          "#E4A8A3",
+          [
+            "北京站——北京西站接驳线"
+          ],
+          "#41A9C1",
+          [
+            "1号线"
+          ],
+          "#CC0000",
+          [
+            "大兴线"
+          ],
+          "#008187",
+          "#41A9C1"
+        ]
+      },
+      "interactive": true
+    },
+    {
+      "id": "subway",
+      "type": "line",
+      "name": "地铁线路",
+      "describe": "地铁线路",
+      "source": "china_railway",
+      "source-layer": "china_railway",
+      "minzoom": 10,
+      "maxzoom": 20,
+      "filter": [
+        "all",
+        [
+          "in",
+          "RAIL_TYPE",
+          5000,
+          5200,
+          5210,
+          5220,
+          5230,
+          5240,
+          5250,
+          5300
+        ]
+      ],
+      "layout": {
+        "visibility": "visible",
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "paint": {
+        "line-translate-anchor": "viewport",
+        "line-width": {
+          "stops": [
+            [
+              10,
+              1
+            ],
+            [
+              19,
+              2
+            ]
+          ],
+          "base": 1
+        },
+        "line-opacity": 0.6,
+        "line-color": [
+          "match",
+          [
+            "get",
+            "NAME_ENG"
+          ],
+          [
+            "Subway Line 7"
+          ],
+          "#F9BE58",
+          [
+            "Subway Line 6"
+          ],
+          "#D0970A",
+          [
+            "Subway Line 9"
+          ],
+          "#F9BE58",
+          [
+            "Subway Line 5"
+          ],
+          "#A61D7F",
+          [
+            "机场快轨"
+          ],
+          "#A49ABD",
+          [
+            "地铁西郊线"
+          ],
+          "#FC0601",
+          [
+            "Subway Line 16"
+          ],
+          "#6CB46B",
+          [
+            "Subway Line 8"
+          ],
+          "#018237",
+          [
+            "地铁燕房线支线"
+          ],
+          "#B35A1F",
+          [
+            "昌平线"
+          ],
+          "#41A9C1",
+          [
+            "Subway Line 13"
+          ],
+          "#FCD600",
+          [
+            "地铁燕房线"
+          ],
+          "#B35A1F",
+          [
+            "Subway Line 4"
+          ],
+          "#008187",
+          [
+            "亦庄线"
+          ],
+          "#41A9C1",
+          [
+            "地铁八通线"
+          ],
+          "#CC0000",
+          [
+            "房山线"
+          ],
+          "#EB81B9",
+          [
+            "Subway Line 10"
+          ],
+          "#019AC3",
+          [
+            "Subway Line 2"
+          ],
+          "#0065B3",
+          [
+            "Subway Line 15"
+          ],
+          "#793E8C",
+          [
+            "Subway Line 14"
+          ],
+          "#E4A8A3",
+          [
+            "北京站——北京西站接驳线"
+          ],
+          "#41A9C1",
+          [
+            "Subway Line 1"
+          ],
+          "#CC0000",
+          [
+            "大兴线"
+          ],
+          "#008187",
+          "#41A9C1"
+        ]
+      },
+      "interactive": true
+    },
+    {
+      "id": "subway-label",
+      "name": "地铁线路名",
+      "describe": "地铁线路名",
+      "type": "symbol",
+      "source": "china_railway",
+      "source-layer": "china_railway",
+      "filter": [
+        "all",
+        [
+          "in",
+          "RAIL_TYPE",
+          5000,
+          5200,
+          5210,
+          5220,
+          5230,
+          5240,
+          5250,
+          5300
+        ]
+      ],
+      "minzoom": 10,
+      "maxzoom": 20,
+      "layout": {
+        "symbol-avoid-edges": false,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "visibility": "visible",
+        "text-field": "{NAME_CHN}",
+        "text-rotation-alignment": "map",
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-size": {
+          "stops": [
+            [
+              10,
+              10
+            ],
+            [
+              19,
+              15
+            ]
+          ],
+          "base": 1
+        },
+        "symbol-placement": "line"
+      },
+      "paint": {
+        "text-halo-color": "#fefdfc",
+        "text-translate-anchor": "viewport",
+        "text-color": [
+          "match",
+          [
+            "get",
+            "NAME_ENG"
+          ],
+          [
+            "Subway Line 7"
+          ],
+          "#F9BE58",
+          [
+            "Subway Line 6"
+          ],
+          "#D0970A",
+          [
+            "Subway Line 9"
+          ],
+          "#F9BE58",
+          [
+            "Subway Line 5"
+          ],
+          "#A61D7F",
+          [
+            "机场快轨"
+          ],
+          "#A49ABD",
+          [
+            "地铁西郊线"
+          ],
+          "#FC0601",
+          [
+            "Subway Line 16"
+          ],
+          "#6CB46B",
+          [
+            "Subway Line 8"
+          ],
+          "#018237",
+          [
+            "地铁燕房线支线"
+          ],
+          "#B35A1F",
+          [
+            "昌平线"
+          ],
+          "#41A9C1",
+          [
+            "Subway Line 13"
+          ],
+          "#FCD600",
+          [
+            "地铁燕房线"
+          ],
+          "#B35A1F",
+          [
+            "Subway Line 4"
+          ],
+          "#008187",
+          [
+            "亦庄线"
+          ],
+          "#41A9C1",
+          [
+            "地铁八通线"
+          ],
+          "#CC0000",
+          [
+            "房山线"
+          ],
+          "#EB81B9",
+          [
+            "Subway Line 10"
+          ],
+          "#019AC3",
+          [
+            "Subway Line 2"
+          ],
+          "#0065B3",
+          [
+            "Subway Line 15"
+          ],
+          "#793E8C",
+          [
+            "Subway Line 14"
+          ],
+          "#E4A8A3",
+          [
+            "北京站——北京西站接驳线"
+          ],
+          "#41A9C1",
+          [
+            "Subway Line 1"
+          ],
+          "#CC0000",
+          [
+            "大兴线"
+          ],
+          "#008187",
+          "#41A9C1"
+        ],
+        "text-halo-width": 1
+      }
+    },
+    {
+      "id": "subway-area",
+      "name": "地铁站点进出口",
+      "describe": "地铁站点进出口",
+      "type": "fill",
+      "source": "china_subway_all",
+      "source-layer": "Subway_station_area",
+      "minzoom": 13,
+      "maxzoom": 20,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": [
+          "match",
+          [
+            "get",
+            "SubwayName"
+          ],
+          [
+            "7号线"
+          ],
+          "#F9BE58",
+          [
+            "6号线"
+          ],
+          "#D0970A",
+          [
+            "9号线"
+          ],
+          "#F9BE58",
+          [
+            "5号线"
+          ],
+          "#A61D7F",
+          [
+            "机场快轨"
+          ],
+          "#A49ABD",
+          [
+            "地铁西郊线"
+          ],
+          "#FC0601",
+          [
+            "16号线"
+          ],
+          "#6CB46B",
+          [
+            "8号线"
+          ],
+          "#018237",
+          [
+            "地铁燕房线支线"
+          ],
+          "#B35A1F",
+          [
+            "昌平线"
+          ],
+          "#41A9C1",
+          [
+            "13号线"
+          ],
+          "#FCD600",
+          [
+            "地铁燕房线"
+          ],
+          "#B35A1F",
+          [
+            "4号线"
+          ],
+          "#008187",
+          [
+            "亦庄线"
+          ],
+          "#41A9C1",
+          [
+            "地铁八通线"
+          ],
+          "#CC0000",
+          [
+            "房山线"
+          ],
+          "#EB81B9",
+          [
+            "10号线"
+          ],
+          "#019AC3",
+          [
+            "2号线"
+          ],
+          "#0065B3",
+          [
+            "15号线"
+          ],
+          "#793E8C",
+          [
+            "14号线"
+          ],
+          "#E4A8A3",
+          [
+            "北京站——北京西站接驳线"
+          ],
+          "#41A9C1",
+          [
+            "1号线"
+          ],
+          "#CC0000",
+          [
+            "大兴线"
+          ],
+          "#008187",
+          "#f5f5f5"
+        ],
+        "fill-opacity": 0.5,
+        "fill-antialias": true
+      }
+    },
+    {
+      "id": "subway-point",
+      "name": "地铁站点进出口",
+      "describe": "地铁站点进出口",
+      "type": "symbol",
+      "source": "china_subway_all",
+      "source-layer": "Subway_station_point",
+      "minzoom": 13,
+      "maxzoom": 20,
+      "layout": {
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "symbol-avoid-edges": true,
+        "text-pitch-alignment": "viewport",
+        "visibility": "visible",
+        "text-field": "{SimpleName}",
+        "text-rotation-alignment": "viewport",
+        "text-size": 11,
+        "text-anchor": "center",
+        "text-offset": [
+          0,
+          0
+        ],
+        "symbol-placement": "point",
+        "icon-image": "375",
+        "icon-size": 1
+      },
+      "paint": {
+        "text-translate-anchor": "viewport",
+        "text-halo-color": "#ffffff",
+        "text-color": "#724E1A",
+        "icon-translate-anchor": "viewport",
+        "text-halo-width": 1
+      }
+    },
+    {
+      "id": "subway-marker",
+      "name": "地铁站点名称",
+      "describe": "地铁站点名称",
+      "type": "symbol",
+      "source": "china_subway_all",
+      "source-layer": "Subway_Station_Mark",
+      "minzoom": 13,
+      "maxzoom": 20,
+      "layout": {
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "symbol-avoid-edges": true,
+        "text-pitch-alignment": "viewport",
+        "visibility": "visible",
+        "text-field": "{Name}",
+        "text-rotation-alignment": "viewport",
+        "text-size": 12,
+        "text-anchor": "left",
+        "text-offset": [
+          0.8,
+          0
+        ],
+        "symbol-placement": "point",
+        "icon-image": "335",
+        "icon-size": 1
+      },
+      "paint": {
+        "text-translate-anchor": "viewport",
+        "text-halo-color": "#ffffff",
+        "text-color": "#000000",
+        "icon-translate-anchor": "viewport",
+        "text-halo-width": 1
+      }
+    },
+    {
+      "id": "china_county_name",
+      "type": "symbol",
+      "name": "行政区域名称",
+      "describe": "区县",
+      "source": "china_county_name",
+      "source-layer": "china_county_name",
+      "minzoom": 8,
+      "maxzoom": 12.99,
+      "filter": [
+        "all",
+        [
+          "in",
+          "Type",
+          "290105"
+        ]
+      ],
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-pitch-alignment": "viewport",
+        "visibility": "visible",
+        "text-max-width": 8,
+        "text-field": "{Name_chn}",
+        "text-offset": [
+          0,
+          0
+        ],
+        "text-rotation-alignment": "viewport",
+        "text-size": 12,
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-anchor": "center",
+        "text-padding": 8,
+        "symbol-placement": "point"
+      },
+      "paint": {
+        "text-halo-color": "#569FE3",
+        "text-translate-anchor": "viewport",
+        "icon-color": "#4d98dd",
+        "text-color": "#ffffff",
+        "text-halo-width": 2,
+        "text-opacity": 1,
+        "text-translate": [
+          0,
+          0
+        ]
+      },
+      "interactive": true
+    },
+    {
+      "id": "china_street_name",
+      "type": "symbol",
+      "name": "行政区域名称",
+      "describe": "社区街道、村、组",
+      "source": "china_county_name",
+      "source-layer": "china_county_name",
+      "minzoom": 14,
+      "maxzoom": 20,
+      "filter": [
+        "all",
+        [
+          "in",
+          "Type",
+          "290100",
+          "290106",
+          "290107",
+          "290108",
+          "290109",
+          "290203",
+          "290204",
+          "290205",
+          "290103",
+          "290104",
+          "290105"
+        ]
+      ],
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-pitch-alignment": "viewport",
+        "visibility": "visible",
+        "text-max-width": 8,
+        "text-field": "{Name_chn}",
+        "text-offset": [
+          0,
+          0
+        ],
+        "text-rotation-alignment": "viewport",
+        "text-size": 13,
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-anchor": "center",
+        "text-padding": 0,
+        "symbol-placement": "point"
+      },
+      "paint": {
+        "text-halo-color": "#f6f5f4",
+        "text-translate-anchor": "viewport",
+        "icon-color": "#4d98dd",
+        "text-color": "#677686",
+        "text-halo-width": 1,
+        "icon-opacity": 1,
+        "text-opacity": 1,
+        "text-translate": [
+          0,
+          0
+        ]
+      },
+      "interactive": true
+    },
+    {
+      "id": "province",
+      "source": "province_city_county",
+      "source-layer": "province_city_county",
+      "type": "line",
+      "layout": {
+        "line-join": "round",
+        "line-cap": "round"
+      },
+      "minzoom": 3,
+      "maxzoom": 20,
+      "paint": {
+        "line-width": 1,
+        "line-opacity": 1,
+        "line-color": {
+          "base": 1,
+          "stops": [
+            [
+              1,
+              "hsl(230, 14%, 77%)"
+            ],
+            [
+              20,
+              "hsl(230, 8%, 62%)"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "road-traffic",
+      "name": "路况",
+      "describe": "路况默认绿色",
+      "type": "line",
+      "source": "china_traffic",
+      "source-layer": "china_traffic",
+      "minzoom": 10,
+      "filter": [
+        "all",
+        [
+          "!in",
+          "FC",
+          6
+        ]
+      ],
+      "layout": {
+        "visibility": "none",
+        "line-join": "round",
+        "line-cap": "butt"
+      },
+      "paint": {
+        "line-translate-anchor": "viewport",
+        "line-width": {
+          "stops": [
+            [
+              4,
+              1.5
+            ],
+            [
+              10,
+              2.5
+            ],
+            [
+              11,
+              2.8
+            ],
+            [
+              12,
+              3
+            ],
+            [
+              13,
+              3.5
+            ],
+            [
+              14,
+              3.5
+            ],
+            [
+              15,
+              3.5
+            ],
+            [
+              16,
+              3.5
+            ],
+            [
+              17,
+              5
+            ],
+            [
+              18,
+              5
+            ],
+            [
+              19,
+              5
+            ]
+          ],
+          "base": 2.5
+        },
+        "line-color": "#4FD27D"
+      },
+      "interactive": true
+    },
+    {
+      "id": "way-traffic-beijing",
+      "name": "路况",
+      "describe": "后台实时获取黄色红色路况",
+      "type": "line",
+      "source": "china_trc",
+      "source-layer": "link",
+      "layout": {
+        "visibility": "none",
+        "line-join": "round",
+        "line-cap": "butt"
+      },
+      "paint": {
+        "line-translate-anchor": "viewport",
+        "line-width": {
+          "stops": [
+            [
+              10,
+              2.5
+            ],
+            [
+              11,
+              2.8
+            ],
+            [
+              12,
+              3
+            ],
+            [
+              13,
+              3.5
+            ],
+            [
+              14,
+              3.5
+            ],
+            [
+              15,
+              3.5
+            ],
+            [
+              16,
+              3.5
+            ],
+            [
+              17,
+              5
+            ],
+            [
+              18,
+              5
+            ],
+            [
+              19,
+              5
+            ]
+          ],
+          "base": 2.5
+        },
+        "line-color": [
+          "match",
+          [
+            "get",
+            "traffic_type"
+          ],
+          "1",
+          "#4FD27D",
+          "2",
+          "#FFD045",
+          "3",
+          "#E80E0E",
+          "#E80E0E"
+        ]
+      },
+      "minzoom": 4,
+      "maxzoom": 20,
+      "interactive": true
+    },
+    {
+      "id": "poi-zoom-10-01",
+      "name": "10飞机场",
+      "type": "symbol",
+      "source": "china_poi_10",
+      "source-layer": "china_poi",
+      "filter": [
+        "all",
+        [
+          "in",
+          "Level",
+          "00",
+          "01",
+          "02"
+        ]
+      ],
+      "minzoom": 10,
+      "maxzoom": 14.99,
+      "layout": {
+        "icon-image": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "250102"
+          ],
+          "322",
+          ""
+        ],
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0,
+          2
+        ],
+        "text-anchor": "center",
+        "text-field": "{Name_chn}",
+        "text-max-width": 8,
+        "symbol-placement": "point",
+        "text-rotation-alignment": "viewport",
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "icon-size": 1.2,
+        "text-size": 12
+      },
+      "paint": {
+        "icon-color": "#ff0000",
+        "text-color": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "290200"
+          ],
+          "RGB(77,76,77)",
+          [
+            "290201"
+          ],
+          "RGB(77,76,77)",
+          [
+            "290202"
+          ],
+          "RGB(56,56,56)",
+          [
+            "250102"
+          ],
+          "RGB(77,76,77)",
+          "RGB(68,66,62)"
+        ],
+        "text-halo-color": "RGB(253,252,249)",
+        "text-halo-width": 1
+      },
+      "interactive": true
+    },
+    {
+      "id": "poi-zoom-10-02",
+      "name": "10飞机场",
+      "type": "symbol",
+      "source": "china_poi_10",
+      "source-layer": "china_poi",
+      "minzoom": 15,
+      "maxzoom": 20,
+      "layout": {
+        "icon-image": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "250102"
+          ],
+          "322",
+          ""
+        ],
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0,
+          2
+        ],
+        "text-anchor": "center",
+        "text-field": "{Name_chn}",
+        "text-max-width": 8,
+        "symbol-placement": "point",
+        "text-rotation-alignment": "viewport",
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "icon-size": 1.2,
+        "text-size": 12
+      },
+      "paint": {
+        "icon-color": "#ff0000",
+        "text-color": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "290200"
+          ],
+          "RGB(77,76,77)",
+          [
+            "290201"
+          ],
+          "RGB(77,76,77)",
+          [
+            "290202"
+          ],
+          "RGB(56,56,56)",
+          [
+            "250102"
+          ],
+          "RGB(77,76,77)",
+          "RGB(68,66,62)"
+        ],
+        "text-halo-color": "RGB(253,252,249)",
+        "text-halo-width": 1
+      },
+      "interactive": true
+    },
+    {
+      "id": "poi-zoom-11-01",
+      "name": "风景名胜，学校，火车站",
+      "type": "symbol",
+      "source": "china_poi_11",
+      "source-layer": "china_poi",
+      "filter": [
+        "all",
+        [
+          "in",
+          "Level",
+          "00"
+        ]
+      ],
+      "minzoom": 11,
+      "maxzoom": 12.99,
+      "layout": {
+        "icon-image": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "250200"
+          ],
+          "325",
+          [
+            "241201"
+          ],
+          "308",
+          ""
+        ],
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0,
+          1.2
+        ],
+        "text-anchor": "center",
+        "text-field": "{Name_chn}",
+        "text-max-width": 8,
+        "symbol-placement": "point",
+        "text-rotation-alignment": "viewport",
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "text-size": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "250200"
+          ],
+          12,
+          11
+        ],
+        "icon-size": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "250200"
+          ],
+          1.2,
+          0.9
+        ]
+      },
+      "paint": {
+        "icon-color": "#ff0000",
+        "text-color": "RGB(68,66,62)",
+        "text-halo-color": "RGB(253,252,249)",
+        "text-halo-width": 2
+      },
+      "interactive": true
+    },
+    {
+      "id": "poi-zoom-11-02",
+      "name": "风景名胜，学校，火车站",
+      "type": "symbol",
+      "source": "china_poi_11",
+      "source-layer": "china_poi",
+      "filter": [
+        "all",
+        [
+          "in",
+          "Level",
+          "00",
+          "01",
+          "02"
+        ]
+      ],
+      "minzoom": 13,
+      "maxzoom": 15.99,
+      "layout": {
+        "icon-image": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "250200"
+          ],
+          "325",
+          [
+            "241201"
+          ],
+          "308",
+          ""
+        ],
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0,
+          1.2
+        ],
+        "text-anchor": "center",
+        "text-field": "{Name_chn}",
+        "text-max-width": 8,
+        "symbol-placement": "point",
+        "text-rotation-alignment": "viewport",
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "text-size": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "250200"
+          ],
+          12,
+          11
+        ],
+        "icon-size": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "250200"
+          ],
+          1.2,
+          0.9
+        ]
+      },
+      "paint": {
+        "icon-color": "#ff0000",
+        "text-color": "RGB(68,66,62)",
+        "text-halo-color": "RGB(253,252,249)",
+        "text-halo-width": 2
+      },
+      "interactive": true
+    },
+    {
+      "id": "poi-zoom-11-03",
+      "name": "风景名胜，学校，火车站",
+      "type": "symbol",
+      "source": "china_poi_11",
+      "source-layer": "china_poi",
+      "minzoom": 16,
+      "maxzoom": 20,
+      "layout": {
+        "icon-image": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "250200"
+          ],
+          "325",
+          [
+            "241201"
+          ],
+          "308",
+          ""
+        ],
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0,
+          1.2
+        ],
+        "text-anchor": "center",
+        "text-field": "{Name_chn}",
+        "text-max-width": 8,
+        "symbol-placement": "point",
+        "text-rotation-alignment": "viewport",
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "text-size": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "250200"
+          ],
+          12,
+          11
+        ],
+        "icon-size": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "250200"
+          ],
+          1.2,
+          0.9
+        ]
+      },
+      "paint": {
+        "icon-color": "#ff0000",
+        "text-color": "RGB(68,66,62)",
+        "text-halo-color": "RGB(253,252,249)",
+        "text-halo-width": 2
+      },
+      "interactive": true
+    },
+    {
+      "id": "poi-zoom-12-01",
+      "name": "运动场馆，风景名胜，公园广场，普通地名",
+      "type": "symbol",
+      "source": "china_poi_12",
+      "source-layer": "china_poi",
+      "minzoom": 12,
+      "maxzoom": 14.99,
+      "filter": [
+        "all",
+        [
+          "in",
+          "Level",
+          "00",
+          "01",
+          "02",
+          "03"
+        ]
+      ],
+      "layout": {
+        "icon-image": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "210203"
+          ],
+          "310",
+          [
+            "180101"
+          ],
+          "314",
+          [
+            "210102"
+          ],
+          "383",
+          [
+            "210103"
+          ],
+          "312",
+          [
+            "210104"
+          ],
+          "382",
+          ""
+        ],
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0.8,
+          0
+        ],
+        "text-anchor": "left",
+        "text-field": "{Name_chn}",
+        "text-max-width": 8,
+        "symbol-placement": "point",
+        "text-rotation-alignment": "viewport",
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "text-size": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "290107"
+          ],
+          12,
+          [
+            "290106"
+          ],
+          12,
+          11
+        ]
+      },
+      "paint": {
+        "icon-color": "#ff0000",
+        "text-color": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "290106"
+          ],
+          "RGB(73,87,96)",
+          [
+            "210203"
+          ],
+          "RGB(68,95,11)",
+          [
+            "290107"
+          ],
+          "RGB(73,87,96)",
+          [
+            "210103"
+          ],
+          "RGB(68,95,11)",
+          [
+            "210102"
+          ],
+          "RGB(73,87,96)",
+          [
+            "210104"
+          ],
+          "RGB(73,87,96)",
+          "RGB(77,76,77)"
+        ],
+        "text-halo-color": "RGB(253,252,249)",
+        "text-halo-width": 1
+      },
+      "interactive": true
+    },
+    {
+      "id": "poi-zoom-12-02",
+      "name": "运动场馆，风景名胜，公园广场，普通地名",
+      "type": "symbol",
+      "source": "china_poi_12",
+      "source-layer": "china_poi",
+      "minzoom": 15,
+      "maxzoom": 20,
+      "layout": {
+        "icon-image": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "210203"
+          ],
+          "310",
+          [
+            "180101"
+          ],
+          "314",
+          [
+            "210102"
+          ],
+          "383",
+          [
+            "210103"
+          ],
+          "312",
+          [
+            "210104"
+          ],
+          "382",
+          ""
+        ],
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0.8,
+          0
+        ],
+        "text-anchor": "left",
+        "text-field": "{Name_chn}",
+        "text-max-width": 8,
+        "symbol-placement": "point",
+        "text-rotation-alignment": "viewport",
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "text-size": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "290107"
+          ],
+          12,
+          [
+            "290106"
+          ],
+          12,
+          11
+        ]
+      },
+      "paint": {
+        "icon-color": "#ff0000",
+        "text-color": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "290106"
+          ],
+          "RGB(73,87,96)",
+          [
+            "210203"
+          ],
+          "RGB(68,95,11)",
+          [
+            "290107"
+          ],
+          "RGB(73,87,96)",
+          [
+            "210103"
+          ],
+          "RGB(68,95,11)",
+          [
+            "210102"
+          ],
+          "RGB(73,87,96)",
+          [
+            "210104"
+          ],
+          "RGB(73,87,96)",
+          "RGB(77,76,77)"
+        ],
+        "text-halo-color": "RGB(253,252,249)",
+        "text-halo-width": 1
+      },
+      "interactive": true
+    },
+    {
+      "id": "poi-zoom-13-01",
+      "name": "综合医院，楼宇，港口码头，长途汽车站，自然地名",
+      "type": "symbol",
+      "source": "china_poi_13",
+      "source-layer": "china_poi",
+      "minzoom": 13,
+      "maxzoom": 14,
+      "filter": [
+        "all",
+        [
+          "in",
+          "Level",
+          "01",
+          "02"
+        ]
+      ],
+      "layout": {
+        "icon-image": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "220201"
+          ],
+          "303",
+          [
+            "190101"
+          ],
+          "377",
+          [
+            "250300"
+          ],
+          "381",
+          [
+            "250400"
+          ],
+          "324",
+          [
+            "290203"
+          ],
+          "317",
+          "500"
+        ],
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0.8,
+          0
+        ],
+        "text-anchor": "left",
+        "text-field": "{Name_chn}",
+        "text-max-width": 8,
+        "symbol-placement": "point",
+        "text-rotation-alignment": "viewport",
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "text-size": 11
+      },
+      "paint": {
+        "icon-color": "#ff0000",
+        "text-color": "#575957",
+        "text-halo-color": "#FFFFFF",
+        "text-halo-width": 0.5
+      },
+      "interactive": true
+    },
+    {
+      "id": "poi-zoom-13-02",
+      "name": "综合医院，楼宇，港口码头，长途汽车站，自然地名",
+      "type": "symbol",
+      "source": "china_poi_13",
+      "source-layer": "china_poi",
+      "minzoom": 15,
+      "maxzoom": 20,
+      "layout": {
+        "icon-image": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "220201"
+          ],
+          "303",
+          [
+            "190101"
+          ],
+          "377",
+          [
+            "250300"
+          ],
+          "381",
+          [
+            "250400"
+          ],
+          "324",
+          [
+            "290203"
+          ],
+          "317",
+          "500"
+        ],
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0.8,
+          0
+        ],
+        "text-anchor": "left",
+        "text-field": "{Name_chn}",
+        "text-max-width": 8,
+        "symbol-placement": "point",
+        "text-rotation-alignment": "viewport",
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "text-size": 11
+      },
+      "paint": {
+        "icon-color": "#ff0000",
+        "text-color": "#575957",
+        "text-halo-color": "#FFFFFF",
+        "text-halo-width": 0.5
+      },
+      "interactive": true
+    },
+    {
+      "id": "poi-zoom-14-01",
+      "name": "宾馆酒店、高尔夫相关、综合医院、公园广场、楼宇、政府机关、科研机构、学校",
+      "type": "symbol",
+      "source": "china_poi_14",
+      "source-layer": "china_poi",
+      "minzoom": 14,
+      "maxzoom": 15,
+      "filter": [
+        "all",
+        [
+          "in",
+          "Level",
+          "01",
+          "02",
+          "03"
+        ]
+      ],
+      "layout": {
+        "icon-image": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "241202"
+          ],
+          "309",
+          [
+            "230101"
+          ],
+          "379",
+          [
+            "210100"
+          ],
+          "312",
+          [
+            "190100"
+          ],
+          "377",
+          [
+            "180200"
+          ],
+          "315",
+          ""
+        ],
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0.8,
+          0
+        ],
+        "text-anchor": "left",
+        "text-field": "{Name_chn}",
+        "text-max-width": 8,
+        "symbol-placement": "point",
+        "text-rotation-alignment": "viewport",
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "text-size": 11
+      },
+      "paint": {
+        "icon-color": "#ff0000",
+        "text-color": "#575957",
+        "text-halo-color": "#FFFFFF",
+        "text-halo-width": 0.5
+      },
+      "interactive": true
+    },
+    {
+      "id": "poi-zoom-14-02",
+      "name": "宾馆酒店、高尔夫相关、综合医院、公园广场、楼宇、政府机关、科研机构、学校",
+      "type": "symbol",
+      "source": "china_poi_14",
+      "source-layer": "china_poi",
+      "minzoom": 16,
+      "maxzoom": 20,
+      "layout": {
+        "icon-image": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "241202"
+          ],
+          "309",
+          [
+            "230101"
+          ],
+          "379",
+          [
+            "210100"
+          ],
+          "312",
+          [
+            "190100"
+          ],
+          "377",
+          [
+            "180200"
+          ],
+          "315",
+          ""
+        ],
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0.8,
+          0
+        ],
+        "text-anchor": "left",
+        "text-field": "{Name_chn}",
+        "text-max-width": 8,
+        "symbol-placement": "point",
+        "text-rotation-alignment": "viewport",
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "text-size": 11
+      },
+      "paint": {
+        "icon-color": "#ff0000",
+        "text-color": "#575957",
+        "text-halo-color": "#FFFFFF",
+        "text-halo-width": 0.5
+      },
+      "interactive": true
+    },
+    {
+      "id": "poi-zoom-15-01",
+      "name": "宾馆酒店、高尔夫相关、综合医院、公园广场、楼宇、政府机关、科研机构、学校",
+      "type": "symbol",
+      "source": "china_poi_15",
+      "source-layer": "china_poi",
+      "minzoom": 15,
+      "maxzoom": 15,
+      "filter": [
+        "all",
+        [
+          "in",
+          "Level",
+          "01",
+          "02",
+          "03"
+        ]
+      ],
+      "layout": {
+        "icon-image": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "100105"
+          ],
+          "307",
+          [
+            "160100"
+          ],
+          "305",
+          [
+            "160301"
+          ],
+          "305",
+          [
+            "180202"
+          ],
+          "310",
+          [
+            "180601"
+          ],
+          "421",
+          [
+            "180602"
+          ],
+          "421",
+          [
+            "180603"
+          ],
+          "421",
+          [
+            "220300"
+          ],
+          "304",
+          [
+            "220301"
+          ],
+          "304",
+          [
+            "230103"
+          ],
+          "379",
+          [
+            "230104"
+          ],
+          "379",
+          [
+            "240600"
+          ],
+          "311",
+          [
+            "240700"
+          ],
+          "311",
+          [
+            "241203"
+          ],
+          "309",
+          [
+            "290108"
+          ],
+          "500",
+          ""
+        ],
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0.8,
+          0
+        ],
+        "text-anchor": "left",
+        "text-field": "{Name_chn}",
+        "text-max-width": 8,
+        "symbol-placement": "point",
+        "text-rotation-alignment": "viewport",
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "text-size": 11
+      },
+      "paint": {
+        "icon-color": "#ff0000",
+        "text-color": "#575957",
+        "text-halo-color": "#FFFFFF",
+        "text-halo-width": 0.5
+      },
+      "interactive": true
+    },
+    {
+      "id": "poi-zoom-15-02",
+      "name": "宾馆酒店、高尔夫相关、综合医院、公园广场、楼宇、政府机关、科研机构、学校",
+      "type": "symbol",
+      "source": "china_poi_15",
+      "source-layer": "china_poi",
+      "minzoom": 16,
+      "maxzoom": 20,
+      "layout": {
+        "icon-image": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "100105"
+          ],
+          "307",
+          [
+            "160100"
+          ],
+          "305",
+          [
+            "160301"
+          ],
+          "305",
+          [
+            "180202"
+          ],
+          "310",
+          [
+            "180601"
+          ],
+          "421",
+          [
+            "180602"
+          ],
+          "421",
+          [
+            "180603"
+          ],
+          "421",
+          [
+            "220300"
+          ],
+          "304",
+          [
+            "220301"
+          ],
+          "304",
+          [
+            "230103"
+          ],
+          "379",
+          [
+            "230104"
+          ],
+          "379",
+          [
+            "240600"
+          ],
+          "311",
+          [
+            "240700"
+          ],
+          "311",
+          [
+            "241203"
+          ],
+          "309",
+          [
+            "290108"
+          ],
+          "500",
+          ""
+        ],
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0.8,
+          0
+        ],
+        "text-anchor": "left",
+        "text-field": "{Name_chn}",
+        "text-max-width": 8,
+        "symbol-placement": "point",
+        "text-rotation-alignment": "viewport",
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "text-size": 11
+      },
+      "paint": {
+        "icon-color": "#ff0000",
+        "text-color": "#575957",
+        "text-halo-color": "#FFFFFF",
+        "text-halo-width": 0.5
+      },
+      "interactive": true
+    },
+    {
+      "id": "poi-zoom-16-01",
+      "name": "",
+      "type": "symbol",
+      "source": "china_poi_16",
+      "source-layer": "china_poi",
+      "minzoom": 16,
+      "maxzoom": 20,
+      "filter": [
+        "all",
+        [
+          "in",
+          "Level",
+          "01",
+          "02",
+          "03"
+        ]
+      ],
+      "layout": {
+        "icon-image": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "100100"
+          ],
+          "307",
+          [
+            "110100"
+          ],
+          "387",
+          [
+            "110200"
+          ],
+          "387",
+          [
+            "110300"
+          ],
+          "387",
+          [
+            "111200"
+          ],
+          "387",
+          [
+            "160700"
+          ],
+          "500",
+          [
+            "161205"
+          ],
+          "500",
+          [
+            "160101"
+          ],
+          "305",
+          [
+            "160302"
+          ],
+          "305",
+          [
+            "170400"
+          ],
+          "424",
+          [
+            "170401"
+          ],
+          "424",
+          [
+            "170402"
+          ],
+          "424",
+          [
+            "180600"
+          ],
+          "421",
+          [
+            "190200"
+          ],
+          "377",
+          [
+            "190201"
+          ],
+          "377",
+          [
+            "190202"
+          ],
+          "377",
+          [
+            "190203"
+          ],
+          "377",
+          [
+            "190204"
+          ],
+          "377",
+          [
+            "190205"
+          ],
+          "377",
+          [
+            "190206"
+          ],
+          "377",
+          [
+            "190207"
+          ],
+          "377",
+          [
+            "190208"
+          ],
+          "377",
+          [
+            "190209"
+          ],
+          "377",
+          [
+            "190210"
+          ],
+          "377",
+          [
+            "190211"
+          ],
+          "377",
+          [
+            "190300"
+          ],
+          "377",
+          [
+            "190400"
+          ],
+          "377",
+          [
+            "190600"
+          ],
+          "377",
+          [
+            "190601"
+          ],
+          "377",
+          [
+            "190602"
+          ],
+          "377",
+          [
+            "230500"
+          ],
+          "379",
+          [
+            "230502"
+          ],
+          "379",
+          [
+            "230503"
+          ],
+          "379",
+          [
+            "230700"
+          ],
+          "379",
+          [
+            "230200"
+          ],
+          "500",
+          [
+            "230201"
+          ],
+          "500",
+          [
+            "230202"
+          ],
+          "500",
+          [
+            "230501"
+          ],
+          "389",
+          [
+            "240100"
+          ],
+          "311",
+          [
+            "240200"
+          ],
+          "311",
+          [
+            "240300"
+          ],
+          "311",
+          [
+            "240400"
+          ],
+          "311",
+          [
+            "240800"
+          ],
+          "311",
+          [
+            "240500"
+          ],
+          "380",
+          [
+            "241205"
+          ],
+          "500",
+          [
+            "241206"
+          ],
+          "500",
+          [
+            "241500"
+          ],
+          "500",
+          [
+            "241204"
+          ],
+          "309",
+          [
+            "270402"
+          ],
+          "500",
+          [
+            "270403"
+          ],
+          "500",
+          ""
+        ],
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0.8,
+          0
+        ],
+        "text-anchor": "left",
+        "text-field": "{Name_chn}",
+        "text-max-width": 8,
+        "symbol-placement": "point",
+        "text-rotation-alignment": "viewport",
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "text-size": 11
+      },
+      "paint": {
+        "icon-color": "#ff0000",
+        "text-color": "#575957",
+        "text-halo-color": "#FFFFFF",
+        "text-halo-width": 0.5
+      },
+      "interactive": true
+    },
+    {
+      "id": "poi-zoom-16-02",
+      "name": "",
+      "type": "symbol",
+      "source": "china_poi_16",
+      "source-layer": "china_poi",
+      "minzoom": 16,
+      "maxzoom": 20,
+      "layout": {
+        "icon-image": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "100100"
+          ],
+          "307",
+          [
+            "110100"
+          ],
+          "387",
+          [
+            "110200"
+          ],
+          "387",
+          [
+            "110300"
+          ],
+          "387",
+          [
+            "111200"
+          ],
+          "387",
+          [
+            "160700"
+          ],
+          "500",
+          [
+            "161205"
+          ],
+          "500",
+          [
+            "160101"
+          ],
+          "305",
+          [
+            "160302"
+          ],
+          "305",
+          [
+            "170400"
+          ],
+          "424",
+          [
+            "170401"
+          ],
+          "424",
+          [
+            "170402"
+          ],
+          "424",
+          [
+            "180600"
+          ],
+          "421",
+          [
+            "190200"
+          ],
+          "377",
+          [
+            "190201"
+          ],
+          "377",
+          [
+            "190202"
+          ],
+          "377",
+          [
+            "190203"
+          ],
+          "377",
+          [
+            "190204"
+          ],
+          "377",
+          [
+            "190205"
+          ],
+          "377",
+          [
+            "190206"
+          ],
+          "377",
+          [
+            "190207"
+          ],
+          "377",
+          [
+            "190208"
+          ],
+          "377",
+          [
+            "190209"
+          ],
+          "377",
+          [
+            "190210"
+          ],
+          "377",
+          [
+            "190211"
+          ],
+          "377",
+          [
+            "190300"
+          ],
+          "377",
+          [
+            "190400"
+          ],
+          "377",
+          [
+            "190600"
+          ],
+          "377",
+          [
+            "190601"
+          ],
+          "377",
+          [
+            "190602"
+          ],
+          "377",
+          [
+            "230500"
+          ],
+          "379",
+          [
+            "230502"
+          ],
+          "379",
+          [
+            "230503"
+          ],
+          "379",
+          [
+            "230700"
+          ],
+          "379",
+          [
+            "230200"
+          ],
+          "500",
+          [
+            "230201"
+          ],
+          "500",
+          [
+            "230202"
+          ],
+          "500",
+          [
+            "230501"
+          ],
+          "389",
+          [
+            "240100"
+          ],
+          "311",
+          [
+            "240200"
+          ],
+          "311",
+          [
+            "240300"
+          ],
+          "311",
+          [
+            "240400"
+          ],
+          "311",
+          [
+            "240800"
+          ],
+          "311",
+          [
+            "240500"
+          ],
+          "380",
+          [
+            "241205"
+          ],
+          "500",
+          [
+            "241206"
+          ],
+          "500",
+          [
+            "241500"
+          ],
+          "500",
+          [
+            "241204"
+          ],
+          "309",
+          [
+            "270402"
+          ],
+          "500",
+          [
+            "270403"
+          ],
+          "500",
+          ""
+        ],
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0.8,
+          0
+        ],
+        "text-anchor": "left",
+        "text-field": "{Name_chn}",
+        "text-max-width": 8,
+        "symbol-placement": "point",
+        "text-rotation-alignment": "viewport",
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "text-size": 11
+      },
+      "paint": {
+        "icon-color": "#ff0000",
+        "text-color": "#575957",
+        "text-halo-color": "#FFFFFF",
+        "text-halo-width": 0.5
+      },
+      "interactive": true
+    },
+    {
+      "id": "poi-zoom-17-01",
+      "name": "",
+      "type": "symbol",
+      "source": "china_poi_17",
+      "source-layer": "china_poi",
+      "minzoom": 17,
+      "maxzoom": 17.99,
+      "filter": [
+        "all",
+        [
+          "in",
+          "Level",
+          "00",
+          "01",
+          "02",
+          "03",
+          "04",
+          "05"
+        ]
+      ],
+      "layout": {
+        "icon-image": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "120000"
+          ],
+          "384",
+          [
+            "120100"
+          ],
+          "384",
+          [
+            "120400"
+          ],
+          "384",
+          [
+            "120200"
+          ],
+          "384",
+          [
+            "120300"
+          ],
+          "386",
+          [
+            "120500"
+          ],
+          "386",
+          [
+            "150700"
+          ],
+          "500",
+          [
+            "150800"
+          ],
+          "500",
+          [
+            "150900"
+          ],
+          "500",
+          [
+            "160500"
+          ],
+          "500",
+          [
+            "160501"
+          ],
+          "500",
+          [
+            "160502"
+          ],
+          "500",
+          [
+            "160600"
+          ],
+          "500",
+          [
+            "160601"
+          ],
+          "500",
+          [
+            "160602"
+          ],
+          "500",
+          [
+            "160603"
+          ],
+          "500",
+          [
+            "160604"
+          ],
+          "500",
+          [
+            "160605"
+          ],
+          "500",
+          [
+            "160606"
+          ],
+          "500",
+          [
+            "160701"
+          ],
+          "500",
+          [
+            "160702"
+          ],
+          "500",
+          [
+            "160703"
+          ],
+          "500",
+          [
+            "160704"
+          ],
+          "500",
+          [
+            "160705"
+          ],
+          "500",
+          [
+            "160706"
+          ],
+          "500",
+          [
+            "161000"
+          ],
+          "500",
+          [
+            "161001"
+          ],
+          "500",
+          [
+            "160000"
+          ],
+          "00000",
+          [
+            "160300"
+          ],
+          "500",
+          [
+            "160303"
+          ],
+          "305",
+          [
+            "160200"
+          ],
+          "306",
+          [
+            "160400"
+          ],
+          "306",
+          [
+            "171300"
+          ],
+          "417",
+          [
+            "180100"
+          ],
+          "314",
+          [
+            "180102"
+          ],
+          "314",
+          [
+            "180103"
+          ],
+          "314",
+          [
+            "180104"
+          ],
+          "314",
+          [
+            "180105"
+          ],
+          "314",
+          [
+            "180106"
+          ],
+          "316",
+          [
+            "180107"
+          ],
+          "316",
+          [
+            "180108"
+          ],
+          "500",
+          [
+            "180109"
+          ],
+          "500",
+          [
+            "180110"
+          ],
+          "500",
+          [
+            "180112"
+          ],
+          "500",
+          [
+            "180113"
+          ],
+          "500",
+          [
+            "180114"
+          ],
+          "500",
+          [
+            "180115"
+          ],
+          "500",
+          [
+            "180116"
+          ],
+          "500",
+          [
+            "180117"
+          ],
+          "500",
+          [
+            "180118"
+          ],
+          "500",
+          [
+            "180119"
+          ],
+          "500",
+          [
+            "180111"
+          ],
+          "414",
+          [
+            "180304"
+          ],
+          "423",
+          [
+            "190102"
+          ],
+          "377",
+          [
+            "220304"
+          ],
+          "500",
+          [
+            "230107"
+          ],
+          "379",
+          [
+            "230000"
+          ],
+          "500",
+          [
+            "230100"
+          ],
+          "500",
+          [
+            "230105"
+          ],
+          "500",
+          [
+            "230106"
+          ],
+          "500",
+          [
+            "250900"
+          ],
+          "376",
+          [
+            "250904"
+          ],
+          "376",
+          [
+            "250905"
+          ],
+          "376",
+          [
+            "260100"
+          ],
+          "388",
+          [
+            "280200"
+          ],
+          "333",
+          [
+            "290109"
+          ],
+          "",
+          ""
+        ],
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0.8,
+          0
+        ],
+        "text-anchor": "left",
+        "text-field": "{Name_chn}",
+        "text-max-width": 8,
+        "symbol-placement": "point",
+        "text-rotation-alignment": "viewport",
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "text-size": 11
+      },
+      "paint": {
+        "icon-color": "#ff0000",
+        "text-color": "#575957",
+        "text-opacity": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "250900"
+          ],
+          0,
+          [
+            "250904"
+          ],
+          0,
+          [
+            "250905"
+          ],
+          0,
+          1
+        ],
+        "text-halo-color": "#FFFFFF",
+        "text-halo-width": 0.5
+      },
+      "interactive": true
+    },
+    {
+      "id": "poi-zoom-17-02",
+      "name": "",
+      "type": "symbol",
+      "source": "china_poi_17",
+      "source-layer": "china_poi",
+      "minzoom": 18,
+      "maxzoom": 20,
+      "layout": {
+        "icon-image": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "120000"
+          ],
+          "384",
+          [
+            "120100"
+          ],
+          "384",
+          [
+            "120400"
+          ],
+          "384",
+          [
+            "120200"
+          ],
+          "384",
+          [
+            "120300"
+          ],
+          "386",
+          [
+            "120500"
+          ],
+          "386",
+          [
+            "150700"
+          ],
+          "500",
+          [
+            "150800"
+          ],
+          "500",
+          [
+            "150900"
+          ],
+          "500",
+          [
+            "160500"
+          ],
+          "500",
+          [
+            "160501"
+          ],
+          "500",
+          [
+            "160502"
+          ],
+          "500",
+          [
+            "160600"
+          ],
+          "500",
+          [
+            "160601"
+          ],
+          "500",
+          [
+            "160602"
+          ],
+          "500",
+          [
+            "160603"
+          ],
+          "500",
+          [
+            "160604"
+          ],
+          "500",
+          [
+            "160605"
+          ],
+          "500",
+          [
+            "160606"
+          ],
+          "500",
+          [
+            "160701"
+          ],
+          "500",
+          [
+            "160702"
+          ],
+          "500",
+          [
+            "160703"
+          ],
+          "500",
+          [
+            "160704"
+          ],
+          "500",
+          [
+            "160705"
+          ],
+          "500",
+          [
+            "160706"
+          ],
+          "500",
+          [
+            "161000"
+          ],
+          "500",
+          [
+            "161001"
+          ],
+          "500",
+          [
+            "160000"
+          ],
+          "00000",
+          [
+            "160300"
+          ],
+          "500",
+          [
+            "160303"
+          ],
+          "305",
+          [
+            "160200"
+          ],
+          "306",
+          [
+            "160400"
+          ],
+          "306",
+          [
+            "171300"
+          ],
+          "417",
+          [
+            "180100"
+          ],
+          "314",
+          [
+            "180102"
+          ],
+          "314",
+          [
+            "180103"
+          ],
+          "314",
+          [
+            "180104"
+          ],
+          "314",
+          [
+            "180105"
+          ],
+          "314",
+          [
+            "180106"
+          ],
+          "316",
+          [
+            "180107"
+          ],
+          "316",
+          [
+            "180108"
+          ],
+          "500",
+          [
+            "180109"
+          ],
+          "500",
+          [
+            "180110"
+          ],
+          "500",
+          [
+            "180112"
+          ],
+          "500",
+          [
+            "180113"
+          ],
+          "500",
+          [
+            "180114"
+          ],
+          "500",
+          [
+            "180115"
+          ],
+          "500",
+          [
+            "180116"
+          ],
+          "500",
+          [
+            "180117"
+          ],
+          "500",
+          [
+            "180118"
+          ],
+          "500",
+          [
+            "180119"
+          ],
+          "500",
+          [
+            "180111"
+          ],
+          "414",
+          [
+            "180304"
+          ],
+          "423",
+          [
+            "190102"
+          ],
+          "377",
+          [
+            "220304"
+          ],
+          "500",
+          [
+            "230107"
+          ],
+          "379",
+          [
+            "230000"
+          ],
+          "500",
+          [
+            "230100"
+          ],
+          "500",
+          [
+            "230105"
+          ],
+          "500",
+          [
+            "230106"
+          ],
+          "500",
+          [
+            "250900"
+          ],
+          "376",
+          [
+            "250904"
+          ],
+          "376",
+          [
+            "250905"
+          ],
+          "376",
+          [
+            "260100"
+          ],
+          "388",
+          [
+            "280200"
+          ],
+          "333",
+          [
+            "290109"
+          ],
+          "",
+          ""
+        ],
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0.8,
+          0
+        ],
+        "text-anchor": "left",
+        "text-field": "{Name_chn}",
+        "text-max-width": 8,
+        "symbol-placement": "point",
+        "text-rotation-alignment": "viewport",
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "text-size": 11
+      },
+      "paint": {
+        "icon-color": "#ff0000",
+        "text-color": "#575957",
+        "text-opacity": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "250900"
+          ],
+          0,
+          [
+            "250904"
+          ],
+          0,
+          [
+            "250905"
+          ],
+          0,
+          1
+        ],
+        "text-halo-color": "#FFFFFF",
+        "text-halo-width": 0.5
+      },
+      "interactive": true
+    },
+    {
+      "id": "poi-zoom-18-01",
+      "name": "宾馆酒店、高尔夫相关、综合医院、公园广场、楼宇、政府机关、科研机构、学校",
+      "type": "symbol",
+      "source": "china_poi_18",
+      "source-layer": "china_poi",
+      "minzoom": 18,
+      "maxzoom": 18.49,
+      "filter": [
+        "all",
+        [
+          "in",
+          "Level",
+          "00",
+          "01",
+          "02",
+          "03",
+          "04",
+          "05"
+        ]
+      ],
+      "layout": {
+        "icon-image": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "100000"
+          ],
+          "307",
+          [
+            "100200"
+          ],
+          "307",
+          [
+            "100201"
+          ],
+          "307",
+          [
+            "110000"
+          ],
+          "384",
+          [
+            "110400"
+          ],
+          "384",
+          [
+            "110500"
+          ],
+          "384",
+          [
+            "110600"
+          ],
+          "384",
+          [
+            "110700"
+          ],
+          "384",
+          [
+            "110800"
+          ],
+          "384",
+          [
+            "110900"
+          ],
+          "384",
+          [
+            "110901"
+          ],
+          "384",
+          [
+            "111000"
+          ],
+          "384",
+          [
+            "150000"
+          ],
+          "318",
+          [
+            "150100"
+          ],
+          "318",
+          [
+            "150101"
+          ],
+          "318",
+          [
+            "150104"
+          ],
+          "318",
+          [
+            "150105"
+          ],
+          "318",
+          [
+            "150107"
+          ],
+          "318",
+          [
+            "150109"
+          ],
+          "318",
+          [
+            "150110"
+          ],
+          "318",
+          [
+            "150112"
+          ],
+          "318",
+          [
+            "150116"
+          ],
+          "318",
+          [
+            "150117"
+          ],
+          "318",
+          [
+            "150118"
+          ],
+          "318",
+          [
+            "150119"
+          ],
+          "318",
+          [
+            "150120"
+          ],
+          "318",
+          [
+            "150121"
+          ],
+          "318",
+          [
+            "150122"
+          ],
+          "318",
+          [
+            "150123"
+          ],
+          "318",
+          [
+            "150200"
+          ],
+          "318",
+          [
+            "150201"
+          ],
+          "318",
+          [
+            "150202"
+          ],
+          "318",
+          [
+            "150203"
+          ],
+          "318",
+          [
+            "150204"
+          ],
+          "318",
+          [
+            "150205"
+          ],
+          "318",
+          [
+            "150206"
+          ],
+          "318",
+          [
+            "150207"
+          ],
+          "318",
+          [
+            "150208"
+          ],
+          "318",
+          [
+            "150209"
+          ],
+          "318",
+          [
+            "150210"
+          ],
+          "318",
+          [
+            "150211"
+          ],
+          "318",
+          [
+            "150212"
+          ],
+          "318",
+          [
+            "150213"
+          ],
+          "318",
+          [
+            "150214"
+          ],
+          "318",
+          [
+            "150215"
+          ],
+          "318",
+          [
+            "150216"
+          ],
+          "318",
+          [
+            "150217"
+          ],
+          "318",
+          [
+            "150300"
+          ],
+          "318",
+          [
+            "150301"
+          ],
+          "318",
+          [
+            "150302"
+          ],
+          "318",
+          [
+            "150303"
+          ],
+          "318",
+          [
+            "150400"
+          ],
+          "318",
+          [
+            "150500"
+          ],
+          "321",
+          [
+            "150600"
+          ],
+          "321",
+          [
+            "160800"
+          ],
+          "500",
+          [
+            "160900"
+          ],
+          "500",
+          [
+            "160901"
+          ],
+          "500",
+          [
+            "160902"
+          ],
+          "500",
+          [
+            "161100"
+          ],
+          "500",
+          [
+            "161101"
+          ],
+          "500",
+          [
+            "161102"
+          ],
+          "500",
+          [
+            "161103"
+          ],
+          "500",
+          [
+            "161104"
+          ],
+          "500",
+          [
+            "161200"
+          ],
+          "500",
+          [
+            "161201"
+          ],
+          "500",
+          [
+            "161202"
+          ],
+          "00000",
+          [
+            "161203"
+          ],
+          "500",
+          [
+            "161204"
+          ],
+          "500",
+          [
+            "161206"
+          ],
+          "500",
+          [
+            "161207"
+          ],
+          "500",
+          [
+            "161208"
+          ],
+          "500",
+          [
+            "161209"
+          ],
+          "500",
+          [
+            "161210"
+          ],
+          "500",
+          [
+            "161211"
+          ],
+          "500",
+          [
+            "161212"
+          ],
+          "500",
+          [
+            "161216"
+          ],
+          "500",
+          [
+            "161300"
+          ],
+          "500",
+          [
+            "161301"
+          ],
+          "500",
+          [
+            "161302"
+          ],
+          "500",
+          [
+            "161400"
+          ],
+          "500",
+          [
+            "170000"
+          ],
+          "500",
+          [
+            "170100"
+          ],
+          "500",
+          [
+            "170300"
+          ],
+          "500",
+          [
+            "170306"
+          ],
+          "500",
+          [
+            "170500"
+          ],
+          "500",
+          [
+            "170602"
+          ],
+          "500",
+          [
+            "170603"
+          ],
+          "500",
+          [
+            "170700"
+          ],
+          "500",
+          [
+            "170701"
+          ],
+          "500",
+          [
+            "170702"
+          ],
+          "500",
+          [
+            "170703"
+          ],
+          "500",
+          [
+            "170704"
+          ],
+          "500",
+          [
+            "170705"
+          ],
+          "500",
+          [
+            "170706"
+          ],
+          "500",
+          [
+            "170800"
+          ],
+          "500",
+          [
+            "170900"
+          ],
+          "500",
+          [
+            "171000"
+          ],
+          "500",
+          [
+            "171100"
+          ],
+          "500",
+          [
+            "171500"
+          ],
+          "500",
+          [
+            "171700"
+          ],
+          "500",
+          [
+            "171701"
+          ],
+          "500",
+          [
+            "171702"
+          ],
+          "500",
+          [
+            "171703"
+          ],
+          "500",
+          [
+            "171800"
+          ],
+          "500",
+          [
+            "171801"
+          ],
+          "500",
+          [
+            "180000"
+          ],
+          "500",
+          [
+            "160102"
+          ],
+          "305",
+          [
+            "160103"
+          ],
+          "305",
+          [
+            "170600"
+          ],
+          "425",
+          [
+            "170601"
+          ],
+          "425",
+          [
+            "180300"
+          ],
+          "422",
+          [
+            "180301"
+          ],
+          "422",
+          [
+            "180302"
+          ],
+          "422",
+          [
+            "180303"
+          ],
+          "422",
+          [
+            "180305"
+          ],
+          "500",
+          [
+            "180306"
+          ],
+          "500",
+          [
+            "180307"
+          ],
+          "500",
+          [
+            "180308"
+          ],
+          "500",
+          [
+            "180400"
+          ],
+          "500",
+          [
+            "180401"
+          ],
+          "500",
+          [
+            "180402"
+          ],
+          "500",
+          [
+            "180500"
+          ],
+          "500",
+          [
+            "180501"
+          ],
+          "500",
+          [
+            "180502"
+          ],
+          "500",
+          [
+            "180503"
+          ],
+          "500",
+          [
+            "180504"
+          ],
+          "500",
+          [
+            "180505"
+          ],
+          "500",
+          [
+            "190500"
+          ],
+          "377",
+          [
+            "190700"
+          ],
+          "378",
+          [
+            "190701"
+          ],
+          "378",
+          [
+            "190702"
+          ],
+          "378",
+          [
+            "200000"
+          ],
+          "500",
+          [
+            "200100"
+          ],
+          "500",
+          [
+            "200200"
+          ],
+          "500",
+          [
+            "200400"
+          ],
+          "500",
+          [
+            "200300"
+          ],
+          "419",
+          [
+            "200301"
+          ],
+          "419",
+          [
+            "200302"
+          ],
+          "419",
+          [
+            "200303"
+          ],
+          "419",
+          [
+            "210000"
+          ],
+          "310",
+          [
+            "210200"
+          ],
+          "310",
+          [
+            "210101"
+          ],
+          "312",
+          [
+            "210205"
+          ],
+          "500",
+          [
+            "210206"
+          ],
+          "500",
+          [
+            "210300"
+          ],
+          "500",
+          [
+            "210301"
+          ],
+          "500",
+          [
+            "210302"
+          ],
+          "500",
+          [
+            "210400"
+          ],
+          "500",
+          [
+            "210401"
+          ],
+          "500",
+          [
+            "220000"
+          ],
+          "500",
+          [
+            "220100"
+          ],
+          "500",
+          [
+            "220303"
+          ],
+          "500",
+          [
+            "230504"
+          ],
+          "379",
+          [
+            "230506"
+          ],
+          "379",
+          [
+            "230601"
+          ],
+          "379",
+          [
+            "230701"
+          ],
+          "379",
+          [
+            "230702"
+          ],
+          "379",
+          [
+            "230703"
+          ],
+          "379",
+          [
+            "230300"
+          ],
+          "500",
+          [
+            "230400"
+          ],
+          "500",
+          [
+            "230401"
+          ],
+          "500",
+          [
+            "230402"
+          ],
+          "500",
+          [
+            "230403"
+          ],
+          "500",
+          [
+            "230404"
+          ],
+          "500",
+          [
+            "230405"
+          ],
+          "500",
+          [
+            "230406"
+          ],
+          "500",
+          [
+            "230407"
+          ],
+          "500",
+          [
+            "230408"
+          ],
+          "500",
+          [
+            "230409"
+          ],
+          "500",
+          [
+            "230600"
+          ],
+          "500",
+          [
+            "230602"
+          ],
+          "500",
+          [
+            "230603"
+          ],
+          "500",
+          [
+            "230604"
+          ],
+          "500",
+          [
+            "230605"
+          ],
+          "500",
+          [
+            "230606"
+          ],
+          "500",
+          [
+            "240000"
+          ],
+          "500",
+          [
+            "240900"
+          ],
+          "500",
+          [
+            "241000"
+          ],
+          "500",
+          [
+            "241100"
+          ],
+          "500",
+          [
+            "241101"
+          ],
+          "500",
+          [
+            "241102"
+          ],
+          "500",
+          [
+            "241103"
+          ],
+          "500",
+          [
+            "241104"
+          ],
+          "500",
+          [
+            "241105"
+          ],
+          "500",
+          [
+            "241200"
+          ],
+          "500",
+          [
+            "260000"
+          ],
+          "500",
+          [
+            "260200"
+          ],
+          "500",
+          [
+            "260400"
+          ],
+          "500",
+          [
+            "260500"
+          ],
+          "500",
+          [
+            "260501"
+          ],
+          "500",
+          [
+            "260600"
+          ],
+          "500",
+          [
+            "260300"
+          ],
+          "413",
+          [
+            "270000"
+          ],
+          "500",
+          [
+            "270100"
+          ],
+          "500",
+          [
+            "270200"
+          ],
+          "500",
+          [
+            "270201"
+          ],
+          "500",
+          [
+            "270202"
+          ],
+          "500",
+          [
+            "270203"
+          ],
+          "500",
+          [
+            "270204"
+          ],
+          "500",
+          [
+            "270206"
+          ],
+          "500",
+          [
+            "270207"
+          ],
+          "500",
+          [
+            "270208"
+          ],
+          "500",
+          [
+            "270209"
+          ],
+          "500",
+          [
+            "270300"
+          ],
+          "500",
+          [
+            "270400"
+          ],
+          "500",
+          [
+            "270401"
+          ],
+          "500",
+          [
+            "270404"
+          ],
+          "500",
+          [
+            "270405"
+          ],
+          "500",
+          [
+            "270406"
+          ],
+          "500",
+          [
+            "270407"
+          ],
+          "500",
+          [
+            "270408"
+          ],
+          "500",
+          [
+            "290000"
+          ],
+          "00000",
+          [
+            "290100"
+          ],
+          "500",
+          ""
+        ],
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0.9,
+          0
+        ],
+        "text-anchor": "left",
+        "text-field": "{Name_chn}",
+        "text-max-width": 8,
+        "symbol-placement": "point",
+        "text-rotation-alignment": "viewport",
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "text-size": 14
+      },
+      "paint": {
+        "icon-color": "#ff0000",
+        "text-color": "#575957",
+        "text-halo-color": "#FFFFFF",
+        "text-halo-width": 0.5
+      },
+      "interactive": true
+    },
+    {
+      "id": "poi-zoom-18-02",
+      "name": "宾馆酒店、高尔夫相关、综合医院、公园广场、楼宇、政府机关、科研机构、学校",
+      "type": "symbol",
+      "source": "china_poi_18",
+      "source-layer": "china_poi",
+      "minzoom": 18.5,
+      "maxzoom": 20,
+      "layout": {
+        "icon-image": [
+          "match",
+          [
+            "get",
+            "Type"
+          ],
+          [
+            "100000"
+          ],
+          "307",
+          [
+            "100200"
+          ],
+          "307",
+          [
+            "100201"
+          ],
+          "307",
+          [
+            "110000"
+          ],
+          "384",
+          [
+            "110400"
+          ],
+          "384",
+          [
+            "110500"
+          ],
+          "384",
+          [
+            "110600"
+          ],
+          "384",
+          [
+            "110700"
+          ],
+          "384",
+          [
+            "110800"
+          ],
+          "384",
+          [
+            "110900"
+          ],
+          "384",
+          [
+            "110901"
+          ],
+          "384",
+          [
+            "111000"
+          ],
+          "384",
+          [
+            "150000"
+          ],
+          "318",
+          [
+            "150100"
+          ],
+          "318",
+          [
+            "150101"
+          ],
+          "318",
+          [
+            "150104"
+          ],
+          "318",
+          [
+            "150105"
+          ],
+          "318",
+          [
+            "150107"
+          ],
+          "318",
+          [
+            "150109"
+          ],
+          "318",
+          [
+            "150110"
+          ],
+          "318",
+          [
+            "150112"
+          ],
+          "318",
+          [
+            "150116"
+          ],
+          "318",
+          [
+            "150117"
+          ],
+          "318",
+          [
+            "150118"
+          ],
+          "318",
+          [
+            "150119"
+          ],
+          "318",
+          [
+            "150120"
+          ],
+          "318",
+          [
+            "150121"
+          ],
+          "318",
+          [
+            "150122"
+          ],
+          "318",
+          [
+            "150123"
+          ],
+          "318",
+          [
+            "150200"
+          ],
+          "318",
+          [
+            "150201"
+          ],
+          "318",
+          [
+            "150202"
+          ],
+          "318",
+          [
+            "150203"
+          ],
+          "318",
+          [
+            "150204"
+          ],
+          "318",
+          [
+            "150205"
+          ],
+          "318",
+          [
+            "150206"
+          ],
+          "318",
+          [
+            "150207"
+          ],
+          "318",
+          [
+            "150208"
+          ],
+          "318",
+          [
+            "150209"
+          ],
+          "318",
+          [
+            "150210"
+          ],
+          "318",
+          [
+            "150211"
+          ],
+          "318",
+          [
+            "150212"
+          ],
+          "318",
+          [
+            "150213"
+          ],
+          "318",
+          [
+            "150214"
+          ],
+          "318",
+          [
+            "150215"
+          ],
+          "318",
+          [
+            "150216"
+          ],
+          "318",
+          [
+            "150217"
+          ],
+          "318",
+          [
+            "150300"
+          ],
+          "318",
+          [
+            "150301"
+          ],
+          "318",
+          [
+            "150302"
+          ],
+          "318",
+          [
+            "150303"
+          ],
+          "318",
+          [
+            "150400"
+          ],
+          "318",
+          [
+            "150500"
+          ],
+          "321",
+          [
+            "150600"
+          ],
+          "321",
+          [
+            "160800"
+          ],
+          "500",
+          [
+            "160900"
+          ],
+          "500",
+          [
+            "160901"
+          ],
+          "500",
+          [
+            "160902"
+          ],
+          "500",
+          [
+            "161100"
+          ],
+          "500",
+          [
+            "161101"
+          ],
+          "500",
+          [
+            "161102"
+          ],
+          "500",
+          [
+            "161103"
+          ],
+          "500",
+          [
+            "161104"
+          ],
+          "500",
+          [
+            "161200"
+          ],
+          "500",
+          [
+            "161201"
+          ],
+          "500",
+          [
+            "161202"
+          ],
+          "00000",
+          [
+            "161203"
+          ],
+          "500",
+          [
+            "161204"
+          ],
+          "500",
+          [
+            "161206"
+          ],
+          "500",
+          [
+            "161207"
+          ],
+          "500",
+          [
+            "161208"
+          ],
+          "500",
+          [
+            "161209"
+          ],
+          "500",
+          [
+            "161210"
+          ],
+          "500",
+          [
+            "161211"
+          ],
+          "500",
+          [
+            "161212"
+          ],
+          "500",
+          [
+            "161216"
+          ],
+          "500",
+          [
+            "161300"
+          ],
+          "500",
+          [
+            "161301"
+          ],
+          "500",
+          [
+            "161302"
+          ],
+          "500",
+          [
+            "161400"
+          ],
+          "500",
+          [
+            "170000"
+          ],
+          "500",
+          [
+            "170100"
+          ],
+          "500",
+          [
+            "170300"
+          ],
+          "500",
+          [
+            "170306"
+          ],
+          "500",
+          [
+            "170500"
+          ],
+          "500",
+          [
+            "170602"
+          ],
+          "500",
+          [
+            "170603"
+          ],
+          "500",
+          [
+            "170700"
+          ],
+          "500",
+          [
+            "170701"
+          ],
+          "500",
+          [
+            "170702"
+          ],
+          "500",
+          [
+            "170703"
+          ],
+          "500",
+          [
+            "170704"
+          ],
+          "500",
+          [
+            "170705"
+          ],
+          "500",
+          [
+            "170706"
+          ],
+          "500",
+          [
+            "170800"
+          ],
+          "500",
+          [
+            "170900"
+          ],
+          "500",
+          [
+            "171000"
+          ],
+          "500",
+          [
+            "171100"
+          ],
+          "500",
+          [
+            "171500"
+          ],
+          "500",
+          [
+            "171700"
+          ],
+          "500",
+          [
+            "171701"
+          ],
+          "500",
+          [
+            "171702"
+          ],
+          "500",
+          [
+            "171703"
+          ],
+          "500",
+          [
+            "171800"
+          ],
+          "500",
+          [
+            "171801"
+          ],
+          "500",
+          [
+            "180000"
+          ],
+          "500",
+          [
+            "160102"
+          ],
+          "305",
+          [
+            "160103"
+          ],
+          "305",
+          [
+            "170600"
+          ],
+          "425",
+          [
+            "170601"
+          ],
+          "425",
+          [
+            "180300"
+          ],
+          "422",
+          [
+            "180301"
+          ],
+          "422",
+          [
+            "180302"
+          ],
+          "422",
+          [
+            "180303"
+          ],
+          "422",
+          [
+            "180305"
+          ],
+          "500",
+          [
+            "180306"
+          ],
+          "500",
+          [
+            "180307"
+          ],
+          "500",
+          [
+            "180308"
+          ],
+          "500",
+          [
+            "180400"
+          ],
+          "500",
+          [
+            "180401"
+          ],
+          "500",
+          [
+            "180402"
+          ],
+          "500",
+          [
+            "180500"
+          ],
+          "500",
+          [
+            "180501"
+          ],
+          "500",
+          [
+            "180502"
+          ],
+          "500",
+          [
+            "180503"
+          ],
+          "500",
+          [
+            "180504"
+          ],
+          "500",
+          [
+            "180505"
+          ],
+          "500",
+          [
+            "190500"
+          ],
+          "377",
+          [
+            "190700"
+          ],
+          "378",
+          [
+            "190701"
+          ],
+          "378",
+          [
+            "190702"
+          ],
+          "378",
+          [
+            "200000"
+          ],
+          "500",
+          [
+            "200100"
+          ],
+          "500",
+          [
+            "200200"
+          ],
+          "500",
+          [
+            "200400"
+          ],
+          "500",
+          [
+            "200300"
+          ],
+          "419",
+          [
+            "200301"
+          ],
+          "419",
+          [
+            "200302"
+          ],
+          "419",
+          [
+            "200303"
+          ],
+          "419",
+          [
+            "210000"
+          ],
+          "310",
+          [
+            "210200"
+          ],
+          "310",
+          [
+            "210101"
+          ],
+          "312",
+          [
+            "210205"
+          ],
+          "500",
+          [
+            "210206"
+          ],
+          "500",
+          [
+            "210300"
+          ],
+          "500",
+          [
+            "210301"
+          ],
+          "500",
+          [
+            "210302"
+          ],
+          "500",
+          [
+            "210400"
+          ],
+          "500",
+          [
+            "210401"
+          ],
+          "500",
+          [
+            "220000"
+          ],
+          "500",
+          [
+            "220100"
+          ],
+          "500",
+          [
+            "220303"
+          ],
+          "500",
+          [
+            "230504"
+          ],
+          "379",
+          [
+            "230506"
+          ],
+          "379",
+          [
+            "230601"
+          ],
+          "379",
+          [
+            "230701"
+          ],
+          "379",
+          [
+            "230702"
+          ],
+          "379",
+          [
+            "230703"
+          ],
+          "379",
+          [
+            "230300"
+          ],
+          "500",
+          [
+            "230400"
+          ],
+          "500",
+          [
+            "230401"
+          ],
+          "500",
+          [
+            "230402"
+          ],
+          "500",
+          [
+            "230403"
+          ],
+          "500",
+          [
+            "230404"
+          ],
+          "500",
+          [
+            "230405"
+          ],
+          "500",
+          [
+            "230406"
+          ],
+          "500",
+          [
+            "230407"
+          ],
+          "500",
+          [
+            "230408"
+          ],
+          "500",
+          [
+            "230409"
+          ],
+          "500",
+          [
+            "230600"
+          ],
+          "500",
+          [
+            "230602"
+          ],
+          "500",
+          [
+            "230603"
+          ],
+          "500",
+          [
+            "230604"
+          ],
+          "500",
+          [
+            "230605"
+          ],
+          "500",
+          [
+            "230606"
+          ],
+          "500",
+          [
+            "240000"
+          ],
+          "500",
+          [
+            "240900"
+          ],
+          "500",
+          [
+            "241000"
+          ],
+          "500",
+          [
+            "241100"
+          ],
+          "500",
+          [
+            "241101"
+          ],
+          "500",
+          [
+            "241102"
+          ],
+          "500",
+          [
+            "241103"
+          ],
+          "500",
+          [
+            "241104"
+          ],
+          "500",
+          [
+            "241105"
+          ],
+          "500",
+          [
+            "241200"
+          ],
+          "500",
+          [
+            "260000"
+          ],
+          "500",
+          [
+            "260200"
+          ],
+          "500",
+          [
+            "260400"
+          ],
+          "500",
+          [
+            "260500"
+          ],
+          "500",
+          [
+            "260501"
+          ],
+          "500",
+          [
+            "260600"
+          ],
+          "500",
+          [
+            "260300"
+          ],
+          "413",
+          [
+            "270000"
+          ],
+          "500",
+          [
+            "270100"
+          ],
+          "500",
+          [
+            "270200"
+          ],
+          "500",
+          [
+            "270201"
+          ],
+          "500",
+          [
+            "270202"
+          ],
+          "500",
+          [
+            "270203"
+          ],
+          "500",
+          [
+            "270204"
+          ],
+          "500",
+          [
+            "270206"
+          ],
+          "500",
+          [
+            "270207"
+          ],
+          "500",
+          [
+            "270208"
+          ],
+          "500",
+          [
+            "270209"
+          ],
+          "500",
+          [
+            "270300"
+          ],
+          "500",
+          [
+            "270400"
+          ],
+          "500",
+          [
+            "270401"
+          ],
+          "500",
+          [
+            "270404"
+          ],
+          "500",
+          [
+            "270405"
+          ],
+          "500",
+          [
+            "270406"
+          ],
+          "500",
+          [
+            "270407"
+          ],
+          "500",
+          [
+            "270408"
+          ],
+          "500",
+          [
+            "290000"
+          ],
+          "00000",
+          [
+            "290100"
+          ],
+          "500",
+          ""
+        ],
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0.9,
+          0
+        ],
+        "text-anchor": "left",
+        "text-field": "{Name_chn}",
+        "text-max-width": 8,
+        "symbol-placement": "point",
+        "text-rotation-alignment": "viewport",
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "text-size": 14
+      },
+      "paint": {
+        "icon-color": "#ff0000",
+        "text-color": "#575957",
+        "text-halo-color": "#FFFFFF",
+        "text-halo-width": 0.5
+      },
+      "interactive": true
+    },
+    {
+      "id": "china_proivce",
+      "type": "symbol",
+      "name": "直辖市、行政中心",
+      "source": "china_city_name",
+      "source-layer": "china_city_name",
+      "minzoom": 3.3,
+      "maxzoom": 10,
+      "filter": [
+        "all",
+        [
+          "in",
+          "NAME",
+          "北京",
+          "天津",
+          "石家庄",
+          "太原",
+          "呼和浩特",
+          "沈阳",
+          "长春",
+          "哈尔滨",
+          "上海",
+          "杭州",
+          "合肥",
+          "福州",
+          "南昌",
+          "济南",
+          "郑州",
+          "武汉",
+          "长沙",
+          "广州",
+          "南宁",
+          "海口",
+          "重庆",
+          "成都",
+          "贵阳",
+          "昆明",
+          "拉萨",
+          "西安",
+          "兰州",
+          "西宁",
+          "银川",
+          "南京",
+          "乌鲁木齐",
+          "台湾省",
+          "香港特别行政区",
+          "澳门特别行政区"
+        ]
+      ],
+      "layout": {
+        "icon-image": [
+          "match",
+          [
+            "get",
+            "NAME"
+          ],
+          [
+            "北京"
+          ],
+          "5500",
+          "5501"
+        ],
+        "symbol-avoid-edges": true,
+        "text-pitch-alignment": "viewport",
+        "visibility": "visible",
+        "text-max-width": 5,
+        "text-field": "{NAME}",
+        "text-rotation-alignment": "viewport",
+        "text-size": 14.6,
+        "icon-size": 0.8,
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0,
+          1
+        ],
+        "text-anchor": "center",
+        "text-padding": 0,
+        "symbol-placement": "point"
+      },
+      "paint": {
+        "text-halo-color": "#ffffff",
+        "text-translate-anchor": "viewport",
+        "icon-color": "#4d98dd",
+        "text-color": "#000000",
+        "text-halo-width": 1,
+        "icon-opacity": 1,
+        "text-opacity": 0.8,
+        "text-translate": [
+          0,
+          0
+        ]
+      },
+      "interactive": true
+    },
+    {
+      "id": "china_city",
+      "type": "symbol",
+      "name": "市",
+      "source": "china_city_name",
+      "source-layer": "china_city_name",
+      "minzoom": 5,
+      "maxzoom": 14,
+      "filter": [
+        "all",
+        [
+          "!in",
+          "NAME",
+          "北京",
+          "天津",
+          "石家庄",
+          "太原",
+          "呼和浩特",
+          "沈阳",
+          "长春",
+          "哈尔滨",
+          "上海",
+          "杭州",
+          "合肥",
+          "福州",
+          "南昌",
+          "济南",
+          "郑州",
+          "武汉",
+          "长沙",
+          "广州",
+          "南宁",
+          "海口",
+          "重庆",
+          "成都",
+          "贵阳",
+          "昆明",
+          "拉萨",
+          "西安",
+          "兰州",
+          "西宁",
+          "银川",
+          "南京",
+          "乌鲁木齐",
+          "台湾省",
+          "香港特别行政区",
+          "澳门特别行政区"
+        ]
+      ],
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-pitch-alignment": "viewport",
+        "visibility": "visible",
+        "text-max-width": 6,
+        "text-field": "{NAME}",
+        "text-rotation-alignment": "viewport",
+        "text-size": 12,
+        "icon-size": 0.5,
+        "text-offset": [
+          0.5,
+          0
+        ],
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "icon-image": "500",
+        "text-anchor": "left",
+        "text-padding": 0,
+        "symbol-placement": "point"
+      },
+      "paint": {
+        "text-halo-color": "#f6f5f4",
+        "text-translate-anchor": "viewport",
+        "text-color": "#677686",
+        "text-halo-width": 1.5,
+        "text-opacity": 1
+      },
+      "interactive": true
+    },
+    {
+      "id": "world_poi",
+      "type": "symbol",
+      "source": "world_poi",
+      "source-layer": "world_poi",
+      "minzoom": 20,
+      "filter": [
+        "all",
+        [
+          "!in",
+          "SOC",
+          "CHN"
+        ]
+      ],
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-pitch-alignment": "viewport",
+        "visibility": "visible",
+        "text-max-width": 6,
+        "text-field": "{NAME_CHN}",
+        "text-rotation-alignment": "viewport",
+        "text-size": 12,
+        "icon-size": 0.5,
+        "text-offset": [
+          0.5,
+          0
+        ],
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "icon-image": "500",
+        "text-anchor": "left",
+        "text-padding": 0,
+        "symbol-placement": "point"
+      },
+      "paint": {
+        "text-halo-color": "#f6f5f4",
+        "text-translate-anchor": "viewport",
+        "text-color": "#677686",
+        "text-halo-width": 1.5,
+        "text-opacity": 1
+      },
+      "interactive": true
+    },
+  {
+      "id": "cross_radiuscp",
+      "name": "转弯半径",
+      "type": "symbol",
+      "source": "cross_radiuscp",
+      "source-layer": "cross_radiuscp",
+      "minzoom": 14,
+      "maxzoom": 20,
+      "layout": {
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0.9,
+          0
+        ],
+        "text-anchor": "left",
+        "text-field": "转弯半径:{RADIUS}",
+        "text-max-width": 8,
+        "symbol-placement": "point",
+        "text-rotation-alignment": "viewport",
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "text-size": 14
+      },
+      "paint": {
+        "icon-color": "#ff0000",
+        "text-color": "#575957",
+        "text-halo-color": "#FFFFFF",
+        "text-halo-width": 0.5
+      },
+      "interactive": true
+    },
+    {
+      "id": "road_furniturejy",
+      "name": "",
+      "type": "symbol",
+      "source": "road_furniturejy",
+      "source-layer": "road_furniturejy",
+      "minzoom": 14,
+      "maxzoom": 20,
+      "layout": {
+        "text-font": [
+          "Microsoft YaHei"
+        ],
+        "text-offset": [
+          0.9,
+          0
+        ],
+        "text-field": [
+          "match",
+          [
+            "get",
+            "RF_TYPE"
+          ],
+          [
+            71
+          ],
+          "限高/r{RF_INFO}/r{RF_TEXT}",
+          [
+            72
+          ],
+          "限宽r/{RF_INFO}",
+          [
+            73
+          ],
+          "限重/t{RF_INFO}",
+          ""
+        ],
+        "text-max-width": 8,
+        "symbol-placement": "point",
+        "text-rotation-alignment": "viewport",
+        "symbol-avoid-edges": true,
+        "icon-rotation-alignment": "viewport",
+        "text-pitch-alignment": "viewport",
+        "text-size": 10
+      },
+      "paint": {
+        "icon-color": "#ff0000",
+        "text-color": "#575957",
+        "text-halo-color": "#FFFFFF",
+        "text-halo-width": 0.5
+      },
+      "interactive": true
+    },
+      
+    {
+      "id": "world_area_name",
+      "type": "symbol",
+      "source": "world_area",
+      "source-layer": "world_area",
+      "minzoom": 10,
+      "maxzoom": 20,
+      "layout": {
+        "symbol-avoid-edges": true,
+        "text-pitch-alignment": "viewport",
+        "visibility": "visible",
+        "text-field": "{NAME_CHN}",
+        "text-offset": [
+          0,
+          0
+        ],
+        "text-rotation-alignment": "viewport",
+        "text-size": 14,
+        "text-anchor": "center",
+        "text-ignore-placement": false,
+        "text-allow-overlap": false
+      },
+      "paint": {
+        "text-halo-color": "#ffffff",
+        "text-translate-anchor": "viewport",
+        "icon-color": "#ff0000",
+        "text-color": "#3e3e3e",
+        "text-halo-width": 1
+      },
+      "interactive": true
+    }
+
+  
+
+  ],
+  "_ssl": true
+}

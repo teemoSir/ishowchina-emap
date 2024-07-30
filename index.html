@@ -1,0 +1,649 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>emap</title>
+    <meta charset="utf-8"/>
+
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        #map {
+            height: 100%;
+            z-index: 0;
+        }
+        .panel_shadown,.search_page{
+            box-shadow: 2px 2px 3px #cccccc;
+        }
+
+    </style>
+    <script>
+
+    </script>
+</head>
+<body>
+<div id='map'></div>
+
+
+<div class="map_left_all">
+    <div class="panel_top">
+        <div class="search_page panel_shadown">
+            <div class="search_logo">
+                <a title="返回首页" href="#" class="ishowgohome">
+                    <!-- <img src="images/img_1.gif"/> -->
+                    <span style="font-size:18px;line-height: 30px;">导航</span>
+                </a>
+            </div>
+            <div class="search_box">
+                <!-- defaultval="搜索地点、公交、地铁"  -->
+                <input id="searchWord" type="text" class="search_input" placeholder="搜索地点、公交、地铁"
+                       onkeyup="onSearchKeyUp(event, '#searchWord','#smartTopTip');" autocomplete="off"/>
+                <!--  <div class="search_do" onclick="doSearch();">
+                     <img src="images/leftpanel/search_btn.png">
+                 </div>
+                 <div class="search_vertical"></div>  -->
+                <div class="search_2line" onclick="totalSearch2linePage(this)">
+                    <img src="images/leftpanel/search_2line.png">
+                </div>
+                <div class="search_close" onclick="backofLeftHome()">
+                    <img src="images/leftpanel/search_close_sm.png">
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="route_page" style="display: none;">
+            <div class="route_top panel_shadown">
+                <ul class="route_choose">
+                    <li class="route_type driver" onclick="setNavType(this)">
+                        <img class="icon_type" src="images/img_1.gif"/>
+                        <div>驾车</div>
+                    </li>
+                    <li class="route_type walk" onclick="setNavType(this)">
+                        <img class="icon_type" src="images/img_1.gif"/>
+                        <div>步行</div>
+                    </li>
+                    <!--
+                    <li class="route_type bus" onclick="setNavType(this)">
+                        <img class="icon_type" src="images/img_1.gif"/>
+                        <div>公交</div>
+                    </li>
+                    -->
+                </ul>
+                <div class="route_do">
+                    <img src="images/leftpanel/search_btn.png">
+                </div>
+                <div class="route_vertical"></div>
+                <div class="route_close" onclick="backofLeftHome()">
+                    <img src="images/leftpanel/search_close_sm.png">
+                </div>
+                <div class="clearfix"></div>
+            </div>
+
+            <div class="route_search panel_shadown">
+                <div class="route_search_content">
+                    <form class="route_input_form">
+                        <div class="exchange">
+                            <!-- <img src="images/img_1.gif" class="change_img" onclick="exchangeLine();"> -->
+                        </div>
+                        <div class="input_list">
+                            <div class="input_wrap route_start">
+                                <span>起：</span>
+                                <input name="" type="text" class="route_input" id="inputfrom"
+                                       onkeyup="onSearchKeyUpForLine(event, '.panel_top .route_search .route_start .route_input', '#smartTopTip');"
+                                       placeholder="请输入起点" autocomplete="off"/>
+                                <!--
+                            <div class="input_clean">
+                                <img src="images/leftpanel/search_close.png">
+                            </div>
+                             -->
+                                <div class="route_addinput" onclick="changePassingPointStatus(this, 1);">
+                                    <img src="images/leftpanel/icon_add.png">
+                                </div>
+                            </div>
+                            <div class="route_through_list">
+                                <!--
+                            <div class="input_wrap route_through">
+                                <span>经：</span>
+                                <input name="" type="text" class="route_input" onkeyup="onSearchKeyUpForLine(event, '.panel_top .route_search .route_through:eq(0) .route_input', '#smartTip');" placeholder="请输入途经点"  autocomplete="off"/>
+                                <div class="route_removeinput" onclick="changePassingPointStatus(this, 2);">
+                                    <img src="images/leftpanel/icon_remove.png">
+                                </div>
+                            </div>
+                             -->
+                            </div>
+                            <div class="input_wrap route_end">
+                                <span>终：</span>
+                                <input name="" type="text" id="inputto" class="route_input"
+                                       onkeyup="onSearchKeyUpForLine(event, '.panel_top .route_search .route_end .route_input', '#smartTopTip');"
+                                       placeholder="请输入终点" autocomplete="off"/>
+                            </div>
+                        </div>
+                    </form>
+                    <a class="cleanlines" href="#" onclick="initLinePageStatus(); return false;">清除路线</a>
+                    <div class="route_reckon">查询路线
+                        <img src="images/leftpanel/icon_loading.png">
+                    </div>
+                </div>
+            </div>
+
+            <div class="total2line_record panel_shadown" style="display: none;">
+                <ul class="record_list">
+
+                </ul>
+                <div class="remove_record_all">
+                    <span class="del_btn">删除所有历史记录</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <div class="search_result_info" style="display: none;">
+            <img class="left_img" src="images/leftpanel/icon_warning.png">
+            <span class="content">已切换至北京市</span>
+        </div>
+
+        <!--<div id="smartTip" class="input_point_bj"><ul></ul></div>-->
+    </div>
+
+    <div class="all_panel panel_close" data-current="home">
+        <div id="smartTopTip" class="suggest_panel" style="display: none;">
+            <ul class="map_left_panel panel_shadown">
+
+            </ul>
+        </div>
+
+
+        <div class="collection_panel" style="display: none;">
+            <ul class="map_left_panel panel_shadown">
+                <li class="coll_wrap point">
+                    <ul class="coll_type_choose clearfix">
+                        <li class="coll_type type_point">
+                            <img src="images/img_1.gif" class="icon_coll_type"/>
+                            <div>地点</div>
+                        </li>
+                        <li class="coll_type type_line">
+                            <img src="images/img_1.gif" class="icon_coll_type"/>
+                            <div>路线</div>
+                        </li>
+                    </ul>
+                    <ul class="coll_point_content">
+                        <li class="coll-item">
+
+                        </li>
+                    </ul>
+                    <ul class="coll_line_content">
+                        <li class="coll-item">
+
+                        </li>
+                    </ul>
+                </li>
+                <li class="coll_no_coll">
+
+                </li>
+            </ul>
+        </div>
+
+        <div class="search_panel" style="display: none;">
+            <ul class="map_left_panel panel_shadown">
+                <li class="rs_nrst">
+                    <div class="rs_nrst_title">
+                        <img class="left_img" src="images/leftpanel/icon_warning.png">
+                        <p>抱歉，未找到与"<span class="search_name">大大大大小小小小</span>"相关的地点</p>
+                    </div>
+                    <p class="rs_nrst_detail">您还可以：</p>
+                    <ul class="rs_nrst_list">
+                        <li>检查输入的是否正确</li>
+                        <li>尝试更换不同的关键字</li>
+                    </ul>
+                </li>
+                <!-- 						<li class="rs_pois">diatrict、busline、bus、pois....</li> -->
+                <li class="rs_pois">
+                    <ul class="rs_pois_content"></ul>
+                    <!--
+                <div class="page_two">
+                    <p><a href="javascript:void(0);" title="上一页" onclick="toPrePage();"><img src="images/img_1.gif" class="img_left"/></a></p>
+                    <p class="page_s"><u>首页</u>1/200页</p>
+                    <p><a href="javascript:void(0);" title="下一页" onclick="toProPage();"><img src="images/img_1.gif" class="img_right"/></a></p>
+                </div>
+                -->
+                    <div class="page-number-list">
+                        <div class="page-number"><span class="page-text">1/5</span>页</div>
+                        <div class="page-control">
+                            <div class="page-control-index" onclick="toIndexPage(this);">首页</div>
+                            <div class="page-control-prev disabled" title="上一页" onclick="toPrePage(this);"></div>
+                            <div class="page-control-next" title="下一页" onclick="toProPage(this);"></div>
+                        </div>
+                    </div>
+                </li>
+                <li class="rs_buslines">
+                    <ul class="rs_buslines_content"></ul>
+                    <p class="red_content">
+                        <a href="javascript:void(0);" onclick="onBusline2POIs(true);">
+                            查找其他名称中含有"
+                            <strong>996地铁</strong> "的结果
+                        </a>
+                    </p>
+                </li>
+                <li class="rs_othercitys">
+                    <ul class="rs_othercitys_content">
+                        <li class="no_find_info">
+                            <img src="images/leftpanel/icon_warning.png">
+										<span class="content">
+										在<span class="currentcity">武汉市</span>没有找到相关地点
+										</span>
+                        </li>
+                        <li class="citys_topInfo">在以下城市找到相关地点，请选择城市：</li>
+                        <li class="citys_list">
+                            <div class="citys-list-item"
+                                 data-cityobj="{&quot;adcode&quot;:&quot;110000&quot;,&quot;resultnum&quot;:&quot;3&quot;,&quot;name&quot;:&quot;北京市&quot;,&quot;city_code&quot;:&quot;010&quot;}">
+                                <a class="rs_cityname">北京市</a>
+                                <span class="rs_poinum">(3)</span>
+                            </div>
+                            <div class="citys-list-item"
+                                 data-cityobj="{&quot;adcode&quot;:&quot;110000&quot;,&quot;resultnum&quot;:&quot;3&quot;,&quot;name&quot;:&quot;北京市&quot;,&quot;city_code&quot;:&quot;010&quot;}">
+                                <a class="rs_cityname">北京市</a>
+                                <span class="rs_poinum">(3)</span>
+                            </div>
+                            <div class="citys-list-item"
+                                 data-cityobj="{&quot;adcode&quot;:&quot;110000&quot;,&quot;resultnum&quot;:&quot;3&quot;,&quot;name&quot;:&quot;北京市&quot;,&quot;city_code&quot;:&quot;010&quot;}">
+                                <a class="rs_cityname">北京市</a>
+                                <span class="rs_poinum">(3)</span>
+                            </div>
+                            <div class="citys-list-item"
+                                 data-cityobj="{&quot;adcode&quot;:&quot;110000&quot;,&quot;resultnum&quot;:&quot;3&quot;,&quot;name&quot;:&quot;北京市&quot;,&quot;city_code&quot;:&quot;010&quot;}">
+                                <a class="rs_cityname">北京市</a>
+                                <span class="rs_poinum">(3)</span>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="route_swap_panel" style="display: none;">
+            <ul class="map_left_panel panel_shadown">
+                <li class="route_record">
+                    <div class="record_title">
+                        <p>
+                            <span>路线搜索记录</span>
+                            <a class="remove_record_all" onclick="cleanAllSearchRecord();">删除所有历史记录</a>
+                        </p>
+                    </div>
+                    <ul class="record_list">
+
+                    </ul>
+                </li>
+            </ul>
+        </div>
+        <div class="route_panel" style="display: none;">
+            <ul class="map_left_panel panel_shadown" style="height:648px;">
+                <li class="error_choose">
+                    <div class="error_top">请选择准确的起点和终点</div>
+                    <div class="error_content_list">
+                        <div class="error_start">
+                            <div class="error_wrap doubt open" is="begin">
+                                <div class="error_title" title="df">
+												<span class="title_prefix">
+												<img src="images/img_1.gif">
+											</span>
+                                    <span class="content">起点：df</span>
+												<span class="error_fold">
+												<img src="images/img_1.gif">
+											</span>
+                                </div>
+                                <ul class="error_list">
+
+                                </ul>
+                                <div class="page_two">
+                                    <p>
+                                        <a href="javascript:void(0);" title="上一页" onclick="prevErrorPage(this);"><img
+                                                src="images/img_1.gif" class="img_left"></a>
+                                    </p>
+                                    <p class="page_s">1/807</p>
+                                    <p>
+                                        <a href="javascript:void(0);" title="下一页" onclick="nextErrorPage(this);"><img
+                                                src="images/img_1.gif" class="img_right"></a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="error_through">
+
+                        </div>
+
+                        <div class="error_end">
+                            <div class="error_wrap doubt" is="end">
+                                <div class="error_title" title="df">
+												<span class="title_prefix">
+												<img src="images/img_1.gif">
+											</span>
+                                    <span class="content">终点：df</span>
+												<span class="error_fold">
+												<img src="images/img_1.gif">
+											</span>
+                                </div>
+                                <ul class="error_list">
+                                    <li class="error_list_item">
+                                        <p class="number bubble0">1</p>
+                                        <div class="adress">
+                                            <p class="address_name">DF冰雪精灵</p>
+                                            <p class="address_info">民生路198号宝利金国际广场5座2楼24号(近花楼街)</p>
+                                        </div>
+                                        <span class="item_choose">设为终点</span>
+                                    </li>
+                                    <li class="error_list_item">
+                                        <p class="number bubble1">2</p>
+                                        <div class="adress">
+                                            <p class="address_name">DF冰雪精灵</p>
+                                            <p class="address_info">民生路198号宝利金国际广场5座2楼24号(近花楼街)</p>
+                                        </div>
+                                        <span class="item_choose">设为终点</span>
+                                    </li>
+                                    <div class="clearfix"></div>
+                                </ul>
+                                <div class="page_two">
+                                    <p>
+                                        <a href="javascript:void(0);" title="上一页" onclick="prevErrorPage(this);"><img
+                                                src="images/img_1.gif" class="img_left"></a>
+                                    </p>
+                                    <p class="page_s">1/807</p>
+                                    <p>
+                                        <a href="javascript:void(0);" title="下一页" onclick="nextErrorPage(this);"><img
+                                                src="images/img_1.gif" class="img_right"></a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </li>
+
+                <li class="route_bus">
+                    <div class="tactic_choose">
+                        <table>
+                            <tr class="item_list">
+                                <td data-tactics="11" class="active">时间短</td>
+                                <td data-tactics="14">少步行</td>
+                                <td data-tactics="13">少换乘</td>
+                                <td data-tactics="5">不坐地铁</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <form action="#">
+                        <!-- step step_walk -->
+                        <!-- step step_bus -->
+                        <!-- step step_subway -->
+                        <div class="scheme_list">
+                            <div class="scheme_item open">
+                                <div class="scheme_header">
+												<span class="title_prefix">
+												<span class="number">1</span>
+												</span>
+                                    <div class="item_content">
+                                        <p class="item_title">地铁10号线内 > 地铁5号线</p>
+                                        <p class="item_detail">50分钟 | 2公里</p>
+                                    </div>
+												<span class="item_fold">
+												<img src="images/img_1.gif">
+											</span>
+                                </div>
+                                <div class="step_list">
+                                    <div class="step step_start">
+                                        <span class="step_prefix">起</span>
+                                        <div class="step_content">
+                                            <span class="poi_name">皇冠假日酒店</span>
+                                        </div>
+                                    </div>
+                                    <div class="step step_walk">
+                                        <span class="step_prefix"></span>
+                                        <div class="step_content">
+                                            步行20米
+                                        </div>
+                                    </div>
+                                    <div class="step step_bus">
+													<span class="step_prefix">
+													<img class="icon icon_top" src="images/img_1.gif">
+													<img class="icon icon_middle" src="images/img_1.gif">
+													<img class="icon icon_bottom" src="images/img_1.gif">
+												</span>
+                                        <div class="step_content">
+                                            <p class="step_title">
+                                                <span class="bus_name">地铁10号线</span>
+                                                <span class="right_extra">8站</span>
+                                            </p>
+                                            <p class="step_detail step_start"><span class="poi_name">海淀黄庄</span> 上车</p>
+                                            <p class="step_detail step_end"><span class="poi_name">惠新西街南口</span> 下车</p>
+                                        </div>
+                                    </div>
+                                    <div class="step step_walk">
+                                        <span class="step_prefix"></span>
+                                        <div class="step_content">
+                                            步行20米
+                                        </div>
+                                    </div>
+                                    <div class="step step_end">
+                                        <span class="step_prefix">终</span>
+                                        <div class="step_content">
+                                            <span class="poi_name">天通苑</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </li>
+                <li class="route_driver">
+                    <div class="tactic_choose">
+                        <table>
+                            <tr class="item_list">
+                                <td data-tactics="11" class="active">推荐线路</td>
+                                <td data-tactics="12">最短路程</td>
+                                <td data-tactics="10">不走高速</td>
+                                <!--<td data-tactics="1">躲避拥堵</td>-->
+                            </tr>
+                        </table>
+                    </div>
+                    <form action="#">
+                        <div class="scheme_list">
+                            <div class="scheme_item open">
+                                <div class="scheme_header">
+												<span class="title_prefix">
+												<span class="number">1</span>
+												</span>
+                                    <div class="item_content">
+                                        <p class="item_title">地铁10号线内 > 地铁5号线</p>
+                                        <p class="item_detail">50分钟 | 2公里</p>
+                                    </div>
+												<span class="item_fold">
+												<img src="images/img_1.gif">
+											</span>
+                                </div>
+                                <div class="step_list">
+                                    <div class="step step_start">
+                                        <span class="step_prefix">起</span>
+                                        <div class="step_content">
+                                            <span class="poi_name">皇冠假日酒店</span>
+                                        </div>
+                                    </div>
+                                    <div class="step step_driver">
+                                        <span class="step_prefix"></span>
+                                        <div class="step_content">
+                                            右转，行驶20米
+                                        </div>
+                                    </div>
+                                    <div class="step step_driver">
+													<span class="step_prefix">
+													<img class="icon icon_middle" src="images/img_1.gif">
+													<img class="icon icon_middle person" src="images/img_1.gif">
+												</span>
+                                        <div class="step_content">
+                                            <p class="step_detail step_start">
+                                                <span class="turn_info">右转</span>，进入<span class="poi_name">育芳园北路</span>，<span
+                                                    class="desc_info">行驶480米</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="step step_driver">
+                                        <span class="step_prefix"></span>
+                                        <div class="step_content">
+                                            <span class="turn_info">右转</span>，进入<span
+                                                class="poi_name">育芳园北路</span>，<span class="desc_info">行驶480米</span>
+                                        </div>
+                                    </div>
+                                    <div class="step step_end">
+                                        <span class="step_prefix">终</span>
+                                        <div class="step_content">
+                                            <span class="poi_name">天通苑</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+    <!--
+<div class="map_left_panel panel_shadown">
+</div>
+ -->
+    <div class="clearfix"></div>
+</div>
+<link href="../emap/css/font-awesome.css" rel="stylesheet"/>
+<script src="../emap/js/imap-gl.js"></script>
+<link href="../emap/css/imap-gl.css" rel="stylesheet"/>
+<link href="../emap/css/map.css" rel="stylesheet"/>
+<script src="../emap/js/jquery.min.js"></script>
+<link href="../emap/js/nz-menu.min.css" rel="stylesheet"/>
+<script src="../emap/js/nz-menu.min.js"></script>
+
+<script src="../emap/js/lib.js"></script>
+<script src="../emap/js/index.js"></script>
+<script>
+
+    var selectBuilding = null;
+    var popupStart = null;
+
+    map.on('load', function () {
+        console.log("load")
+
+        map.on('click', "building", function (e) {
+            if (e.features.length > 0) {
+                // Change the cursor style as a UI indicator.
+                if (!window.buildingselect) {
+                    window.buildingselect = map.addLayer({
+                        "id": "building-select",
+                        "source": "china_settlementarea",
+                        "source-layer": "china_settlementarea",
+                        "type": "fill-extrusion",
+                        "minzoom": 14.9,
+                        "filter": [
+                            "all",
+                            [
+                                "in",
+                                "SETT_TYPE",
+                                "3000",
+                                "3010",
+                                "3011",
+                                "3012",
+                                "3013",
+                                "3014",
+                                "3015",
+                                "3016",
+                                "3017",
+                                "3100",
+                                "3101",
+                                "3102"
+                            ],
+                            [
+                                "in",
+                                "SETT_ID", ""
+                            ]
+                        ],
+                        "paint": {
+                            "fill-extrusion-color": "red"
+                            ,
+                            "fill-extrusion-height": [
+                                "+",
+                                5,
+                                [
+                                    "*",
+                                    5,
+                                    [
+                                        "to-number",
+                                        [
+                                            "get",
+                                            "GRADE_LEVE"
+                                        ]
+                                    ]
+                                ]
+                            ],
+                            "fill-extrusion-base": 0,
+                            "fill-extrusion-opacity": 0.6
+                        }
+                    })
+                }
+
+                var coordinates = e.lngLat;
+                var bbox = [
+                    [e.point.x - 5, e.point.y - 5],
+                    [e.point.x + 5, e.point.y + 5]
+                ];
+                var features = map.queryRenderedFeatures(e.point, {
+                    layers: ['building']
+                });
+
+                //console.log(coordinates, features)
+                if (!features[0].properties.NAME_CHN) {
+                    features[0].properties.NAME_CHN = "未知楼栋"
+                }
+                if (!features[0].properties.GRADE_LEVE) {
+                    features[0].properties.GRADE_LEVE=1
+                }
+
+                popupStart = new imapgl.Popup()
+                        .setLngLat(coordinates)
+                        .setHTML("<label>地址：</label>" + features[0].properties.NAME_CHN + "<br><label>楼层：</label>" + features[0].properties.GRADE_LEVE  + "<br>")
+                        .addTo(map);
+
+                for (var i in features) {
+                    features[i].properties.MESH = "1";
+                }
+
+                //  var feaarr = map.querySourceFeatures("china_settlementarea",
+                //    {sourceLayer: "china_settlementarea", filter: ['in', 'SETT_ID', features[0].properties.SETT_ID]})
+
+                map.setFilter('building-select', [
+                    'in',
+                    'SETT_ID',
+                    features[0].properties.SETT_ID
+                ]);
+            }
+        })
+
+
+        map.on('mouseleave', 'building', function () {
+            map.getCanvas().style.cursor = '';
+
+        })
+        map.on('mousemove', 'building', function (e) {
+            map.getCanvas().style.cursor = 'pointer';
+
+        })
+
+    })
+</script>
+
+</body>
+</html>
